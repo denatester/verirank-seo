@@ -1,20 +1,23 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>VeriRank SEO Studio â€” Google &amp; Bing Zero-Hallucination Optimizer</title>
+  <title>VeriRank SEO Studio — Google &amp; Bing Zero-Hallucination Optimizer</title>
   <style>:root {
-  --bg: #f1f5f9;
+  --bg: #f4f6fb;
   --surface: #ffffff;
   --surface-alt: #f8fafc;
-  --border: #cbd5e1;
+  --surface-elevated: #ffffff;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
   --text: #0f172a;
   --text-muted: #475569;
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
   --primary-soft: #eff6ff;
   --bing: #0d9488;
+  --bing-hover: #0f766e;
   --bing-soft: #f0fdfa;
   --ok: #059669;
   --ok-soft: #ecfdf5;
@@ -22,31 +25,36 @@
   --warn-soft: #fffbeb;
   --bad: #dc2626;
   --bad-soft: #fef2f2;
-  --shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 14px rgba(15, 23, 42, 0.04);
-  --radius: 10px;
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 4px 16px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 28px rgba(15, 23, 42, 0.12);
+  --radius: 12px;
   --font-sans: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: Consolas, "Cascadia Code", "Courier New", monospace;
 }
 
 body.dark {
-  --bg: #0b1120;
+  --bg: #090e1a;
   --surface: #111827;
-  --surface-alt: #1e293b;
-  --border: #334155;
+  --surface-alt: #1a2334;
+  --surface-elevated: #1e293b;
+  --border: #283548;
+  --border-strong: #3b4b63;
   --text: #f1f5f9;
   --text-muted: #94a3b8;
   --primary: #3b82f6;
   --primary-hover: #60a5fa;
-  --primary-soft: #172554;
+  --primary-soft: rgba(59, 130, 246, 0.14);
   --bing: #14b8a6;
-  --bing-soft: #042f2e;
+  --bing-hover: #2dd4bf;
+  --bing-soft: rgba(20, 184, 166, 0.14);
   --ok: #10b981;
-  --ok-soft: #064e3b;
+  --ok-soft: rgba(16, 185, 129, 0.14);
   --warn: #f59e0b;
-  --warn-soft: #451a03;
+  --warn-soft: rgba(245, 158, 11, 0.14);
   --bad: #f87171;
-  --bad-soft: #450a0a;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --bad-soft: rgba(248, 113, 113, 0.14);
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
 * { box-sizing: border-box; }
@@ -58,33 +66,35 @@ html, body {
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 .topbar {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-  padding: 12px 24px;
+  padding: 10px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
   position: sticky;
   top: 0;
   z-index: 50;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
 }
 
 .brand-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 9px;
-  background: linear-gradient(135deg, var(--primary), var(--bing));
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2563eb 0%, #0d9488 100%);
   color: #fff;
   font-weight: 800;
   font-size: 15px;
@@ -92,62 +102,75 @@ html, body {
   align-items: center;
   justify-content: center;
   letter-spacing: -0.5px;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
 }
 
-.brand-title { font-weight: 700; font-size: 16px; }
-.brand-sub { font-size: 12px; color: var(--text-muted); }
+.brand-title { font-weight: 800; font-size: 15.5px; letter-spacing: -0.2px; }
+.brand-sub { font-size: 11.5px; color: var(--text-muted); }
 
 .nav-tabs {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   flex-wrap: wrap;
+  background: var(--surface-alt);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
 }
 
 .nav-tab {
   background: transparent;
   border: 1px solid transparent;
   color: var(--text-muted);
-  padding: 7px 14px;
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 7px;
   font-weight: 600;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
 }
 
-.nav-tab:hover { background: var(--surface-alt); color: var(--text); }
+.nav-tab svg { width: 14px; height: 14px; flex-shrink: 0; }
+.nav-tab:hover { background: var(--surface); color: var(--text); }
 .nav-tab.active {
-  background: var(--primary-soft);
+  background: var(--surface);
   color: var(--primary);
-  border-color: var(--primary);
+  border-color: var(--border);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
 }
 
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 4px 10px;
+  padding: 3px 9px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   background: var(--surface-alt);
+  font-variant-numeric: tabular-nums;
 }
 
 .badge.ok { background: var(--ok-soft); color: var(--ok); border-color: var(--ok); }
 .badge.warn { background: var(--warn-soft); color: var(--warn); border-color: var(--warn); }
 .badge.bad { background: var(--bad-soft); color: var(--bad); border-color: var(--bad); }
 .badge.primary { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
+.badge.bing { background: var(--bing-soft); color: var(--bing); border-color: var(--bing); }
 
 .container {
-  max-width: 1480px;
+  max-width: 1500px;
   margin: 0 auto;
-  padding: 18px 24px 40px;
+  padding: 18px 24px 44px;
 }
 
 .tab-panel { display: none; }
@@ -155,12 +178,12 @@ html, body {
 
 .studio-grid {
   display: grid;
-  grid-template-columns: 440px 1fr;
+  grid-template-columns: 450px 1fr;
   gap: 18px;
   align-items: start;
 }
 
-@media (max-width: 1120px) {
+@media (max-width: 1140px) {
   .studio-grid { grid-template-columns: 1fr; }
 }
 
@@ -168,12 +191,12 @@ html, body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px;
+  padding: 16px 18px;
   box-shadow: var(--shadow);
 }
 
 .card-title {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 700;
   margin: 0 0 10px;
   display: flex;
@@ -183,39 +206,41 @@ html, body {
 }
 
 .btn {
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   background: var(--surface);
   color: var(--text);
   padding: 7px 12px;
-  border-radius: 7px;
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 12.5px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  transition: all 0.14s ease;
 }
 
-.btn:hover { background: var(--surface-alt); }
+.btn:hover { background: var(--surface-alt); border-color: var(--text-muted); }
 .btn.primary {
   background: var(--primary);
   color: #fff;
   border-color: var(--primary);
 }
-.btn.primary:hover { background: var(--primary-hover); }
+.btn.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
 .btn.bing {
   background: var(--bing);
   color: #fff;
   border-color: var(--bing);
 }
+.btn.bing:hover { background: var(--bing-hover); border-color: var(--bing-hover); }
 .btn.danger {
   background: var(--bad-soft);
   color: var(--bad);
   border-color: var(--bad);
 }
-.btn.sm { padding: 4px 9px; font-size: 12px; }
-.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.btn.sm { padding: 4px 10px; font-size: 12px; border-radius: 6px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .sample-row {
   display: flex;
@@ -228,37 +253,62 @@ textarea, input[type="text"], input[type="password"], input[type="number"], sele
   width: 100%;
   background: var(--surface-alt);
   color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  padding: 9px 11px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 8px 11px;
   font-family: var(--font-sans);
   font-size: 13px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+textarea:focus, input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
 textarea.code-input {
   font-family: var(--font-mono);
   font-size: 12.5px;
-  line-height: 1.5;
+  line-height: 1.55;
   resize: vertical;
+}
+
+.telemetry-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px 10px;
+  margin-top: 6px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .pill-list {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin: 8px 0;
+  margin: 6px 0;
 }
 
 .pill {
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   background: var(--surface-alt);
   font-size: 12px;
   cursor: pointer;
   color: var(--text);
+  transition: all 0.12s ease;
 }
 
+.pill:hover { border-color: var(--primary); }
 .pill.selected {
   background: var(--primary-soft);
   border-color: var(--primary);
@@ -269,15 +319,15 @@ textarea.code-input {
 .options-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px 12px;
-  margin: 10px 0 12px;
+  gap: 7px 12px;
+  margin: 12px 0 14px;
   font-size: 12.5px;
 }
 
 .options-grid label {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   cursor: pointer;
 }
 
@@ -288,24 +338,47 @@ textarea.code-input {
   margin-bottom: 14px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .scoreboard { grid-template-columns: repeat(2, 1fr); }
 }
 
 .score-tile {
   background: var(--surface);
   border: 1px solid var(--border);
+  border-top: 3px solid var(--primary);
   border-radius: var(--radius);
   padding: 12px 14px;
   box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
-.score-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
-.score-value { font-size: 24px; font-weight: 800; margin-top: 2px; }
-.score-delta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.score-tile.tile-bing { border-top-color: var(--bing); }
+.score-tile.tile-harmony { border-top-color: #6366f1; }
+.score-tile.tile-factlock { border-top-color: var(--ok); }
+
+.score-label { font-size: 11.5px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+.score-value { font-size: 22px; font-weight: 800; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.score-delta { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
 .score-value.ok { color: var(--ok); }
 .score-value.warn { color: var(--warn); }
 .score-value.bad { color: var(--bad); }
+
+.score-ring {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+}
+
+.score-ring-bg { fill: none; stroke: var(--border); stroke-width: 4; }
+.score-ring-fg { fill: none; stroke: var(--primary); stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 0.35s ease; }
+.score-ring-fg.bing { stroke: var(--bing); }
+.score-ring-fg.ok { stroke: var(--ok); }
+.score-ring-fg.warn { stroke: var(--warn); }
+.score-ring-fg.bad { stroke: var(--bad); }
 
 .subtabs {
   display: flex;
@@ -325,8 +398,10 @@ textarea.code-input {
   font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.14s ease;
 }
 
+.subtab:hover { color: var(--text); }
 .subtab.active {
   background: var(--primary);
   color: #fff;
@@ -339,15 +414,45 @@ textarea.code-input {
 .rendered-preview {
   background: var(--surface-alt);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 9px;
   padding: 18px 22px;
   max-height: 540px;
   overflow-y: auto;
 }
 
 .rendered-preview h1 { font-size: 1.55rem; margin-top: 0; line-height: 1.25; }
-.rendered-preview h2 { font-size: 1.18rem; margin-top: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+.rendered-preview h2 { font-size: 1.16rem; margin-top: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
 .rendered-preview h3 { font-size: 1.02rem; margin-top: 1rem; }
+
+.split-compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .split-compare-grid { grid-template-columns: 1fr; }
+}
+
+.split-pane {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 12px 14px;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.split-pane-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 700;
+}
 
 .alert-banner {
   padding: 10px 14px;
@@ -362,7 +467,7 @@ textarea.code-input {
 .alert-banner.bad { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
 
 .progress-row { margin-bottom: 10px; }
-.progress-head { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 600; margin-bottom: 3px; }
+.progress-head { display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 600; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
 .progress-track { height: 8px; border-radius: 999px; background: var(--surface-alt); border: 1px solid var(--border); overflow: hidden; }
 .progress-fill { height: 100%; background: var(--primary); transition: width 0.25s ease; }
 .progress-fill.bing { background: var(--bing); }
@@ -371,9 +476,9 @@ textarea.code-input {
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  padding: 8px 10px;
+  padding: 9px 11px;
   border: 1px solid var(--border);
-  border-radius: 7px;
+  border-radius: 8px;
   margin-bottom: 7px;
   background: var(--surface-alt);
 }
@@ -393,7 +498,7 @@ textarea.code-input {
   background: #ffffff;
   color: #1f2937;
   border: 1px solid #d1d5db;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 14px 16px;
 }
 
@@ -410,7 +515,7 @@ table {
 
 th, td {
   border: 1px solid var(--border);
-  padding: 7px 9px;
+  padding: 8px 10px;
   text-align: left;
   vertical-align: top;
 }
@@ -437,7 +542,7 @@ th {
 .code-block {
   background: var(--surface-alt);
   border: 1px solid var(--border);
-  border-radius: 7px;
+  border-radius: 8px;
   padding: 10px 12px;
   font-family: var(--font-mono);
   font-size: 12px;
@@ -448,25 +553,62 @@ th {
 }
 
 .dropzone {
-  border: 2px dashed var(--border);
+  border: 2px dashed var(--border-strong);
   border-radius: 10px;
   padding: 24px;
   text-align: center;
   background: var(--surface-alt);
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .dropzone.dragover {
   border-color: var(--primary);
   background: var(--primary-soft);
 }
+
+.toast-container {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  max-width: 380px;
+}
+
+.toast {
+  pointer-events: auto;
+  background: var(--surface-elevated);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-left: 4px solid var(--primary);
+  border-radius: 9px;
+  padding: 10px 14px;
+  box-shadow: var(--shadow-lg);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.toast.ok { border-left-color: var(--ok); }
+.toast.warn { border-left-color: var(--warn); }
+.toast.bad { border-left-color: var(--bad); }
+
+details.sql-details {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--surface-alt);
+}
+
+details.sql-details summary {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 12.5px;
+}
 </style>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    window.__VERIRANK_CLOUD__ = {
-      defaultKey: "sb_publishable_iesn1BgrUZxn5uXaFK_EjQ_2DxuuZxM"
-    };
-  </script>
 </head>
 <body>
   <header class="topbar">
@@ -479,15 +621,31 @@ th {
     </div>
 
     <nav class="nav-tabs" aria-label="Primary Views">
-      <button type="button" class="nav-tab active" data-tab="studio">Interactive SEO Studio</button>
-      <button type="button" class="nav-tab" data-tab="batch">Batch Processor</button>
-      <button type="button" class="nav-tab" data-tab="profiles">Ranking Profiles &amp; Grounded AI</button>
-      <button type="button" class="nav-tab" data-tab="selftest">Engine Verification &amp; Self-Tests</button>
-      <button type="button" class="nav-tab" data-tab="supabase" style="color:var(--bing);font-weight:700;">Supabase Cloud</button>
+      <button type="button" class="nav-tab active" data-tab="studio">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Interactive SEO Studio
+      </button>
+      <button type="button" class="nav-tab" data-tab="batch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Batch Processor
+      </button>
+      <button type="button" class="nav-tab" data-tab="supabase">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        Cloud Sync (Supabase)
+      </button>
+      <button type="button" class="nav-tab" data-tab="profiles">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Ranking Profiles &amp; AI
+      </button>
+      <button type="button" class="nav-tab" data-tab="selftest">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Verification Suite
+      </button>
     </nav>
 
     <div class="topbar-right">
-      <span id="hostModeBadge" class="badge primary">Cloud Vercel & Supabase Edition</span>
+      <span id="engineSpeedBadge" class="badge ok" title="Deterministic optimization latency">-- ms</span>
+      <span id="hostModeBadge" class="badge primary">Offline Portable Mode</span>
       <button type="button" id="themeToggleBtn" class="btn sm">Dark Theme</button>
     </div>
   </header>
@@ -500,15 +658,24 @@ th {
         <div class="card">
           <div class="card-title">
             <span>1. Source Document &amp; Subject Controls</span>
-            <label class="btn sm" style="cursor:pointer;">
-              Import File
-              <input type="file" id="singleFileInput" accept=".txt,.md,.html,.htm" style="display:none;">
-            </label>
+            <div class="flex-row">
+              <button type="button" id="clearSourceBtn" class="btn sm">Clear</button>
+              <label class="btn sm" style="cursor:pointer;">
+                Import File
+                <input type="file" id="singleFileInput" accept=".txt,.md,.html,.htm" style="display:none;">
+              </label>
+            </div>
           </div>
 
           <div class="sample-row" id="sampleButtons"></div>
 
           <textarea id="sourceTextarea" class="code-input" rows="13" placeholder="Paste any Plain Text, Markdown, or HTML article, product page, compliance note, or knowledge-base draft..."></textarea>
+          <div id="sourceStatsBar" class="telemetry-bar">
+            <span>Words: <strong>0</strong></span>
+            <span>Sentences: <strong>0</strong></span>
+            <span>Format: <strong>Plain</strong></span>
+            <span>Read Time: <strong>0m</strong></span>
+          </div>
 
           <div class="mt-12">
             <div class="muted" style="font-weight:600;margin-bottom:4px;">Detected Subject &amp; Target Keyphrase (Click to Switch or Leave Auto):</div>
@@ -533,6 +700,7 @@ th {
           </div>
           <div class="flex-row mt-8">
             <button type="button" id="aiPolishBtn" class="btn" style="flex:1;">Optional Grounded AI Polish (Fact-Locked)</button>
+            <button type="button" id="quickCloudSaveBtn" class="btn sm bing" title="Save current result to Supabase Cloud">Save to Cloud</button>
           </div>
           <div id="studioActionStatus" class="muted mt-8"></div>
         </div>
@@ -543,24 +711,48 @@ th {
 
           <div class="scoreboard">
             <div class="score-tile">
-              <div class="score-label">Google Search Score</div>
-              <div id="scoreGoogleAfter" class="score-value">--</div>
-              <div id="scoreGoogleDelta" class="score-delta">Before: --</div>
+              <div>
+                <div class="score-label">Google Search</div>
+                <div id="scoreGoogleAfter" class="score-value">--</div>
+                <div id="scoreGoogleDelta" class="score-delta">Before: --</div>
+              </div>
+              <svg class="score-ring" viewBox="0 0 44 44">
+                <circle class="score-ring-bg" cx="22" cy="22" r="18"></circle>
+                <circle id="ringGoogle" class="score-ring-fg" cx="22" cy="22" r="18" stroke-dasharray="113.1" stroke-dashoffset="113.1"></circle>
+              </svg>
             </div>
-            <div class="score-tile">
-              <div class="score-label">Bing &amp; Copilot Score</div>
-              <div id="scoreBingAfter" class="score-value">--</div>
-              <div id="scoreBingDelta" class="score-delta">Before: --</div>
+            <div class="score-tile tile-bing">
+              <div>
+                <div class="score-label">Bing &amp; Copilot</div>
+                <div id="scoreBingAfter" class="score-value">--</div>
+                <div id="scoreBingDelta" class="score-delta">Before: --</div>
+              </div>
+              <svg class="score-ring" viewBox="0 0 44 44">
+                <circle class="score-ring-bg" cx="22" cy="22" r="18"></circle>
+                <circle id="ringBing" class="score-ring-fg bing" cx="22" cy="22" r="18" stroke-dasharray="113.1" stroke-dashoffset="113.1"></circle>
+              </svg>
             </div>
-            <div class="score-tile">
-              <div class="score-label">Dual-Engine Harmony</div>
-              <div id="scoreHarmony" class="score-value">--</div>
-              <div id="scoreDensityInfo" class="score-delta">Density: --</div>
+            <div class="score-tile tile-harmony">
+              <div>
+                <div class="score-label">Dual Harmony</div>
+                <div id="scoreHarmony" class="score-value">--</div>
+                <div id="scoreDensityInfo" class="score-delta">Density: --</div>
+              </div>
+              <svg class="score-ring" viewBox="0 0 44 44">
+                <circle class="score-ring-bg" cx="22" cy="22" r="18"></circle>
+                <circle id="ringHarmony" class="score-ring-fg" cx="22" cy="22" r="18" stroke-dasharray="113.1" stroke-dashoffset="113.1"></circle>
+              </svg>
             </div>
-            <div class="score-tile">
-              <div class="score-label">Fact-Lock&trade; Verification</div>
-              <div id="scoreFactLock" class="score-value">--</div>
-              <div id="scoreFactLockDetail" class="score-delta">0 issues</div>
+            <div class="score-tile tile-factlock">
+              <div>
+                <div class="score-label">Fact-Lock&trade;</div>
+                <div id="scoreFactLock" class="score-value">--</div>
+                <div id="scoreFactLockDetail" class="score-delta">0 issues</div>
+              </div>
+              <svg class="score-ring" viewBox="0 0 44 44">
+                <circle class="score-ring-bg" cx="22" cy="22" r="18"></circle>
+                <circle id="ringFactLock" class="score-ring-fg ok" cx="22" cy="22" r="18" stroke-dasharray="113.1" stroke-dashoffset="113.1"></circle>
+              </svg>
             </div>
           </div>
 
@@ -578,6 +770,7 @@ th {
               <div class="flex-row" style="justify-content:space-between;margin-bottom:10px;">
                 <div class="flex-row">
                   <button type="button" class="btn sm primary view-mode-btn" data-mode="preview">Rendered Preview</button>
+                  <button type="button" class="btn sm view-mode-btn" data-mode="split">Before vs. After Split</button>
                   <button type="button" class="btn sm view-mode-btn" data-mode="markdown">Edit Markdown</button>
                   <button type="button" class="btn sm view-mode-btn" data-mode="html">HTML Article</button>
                 </div>
@@ -587,6 +780,22 @@ th {
                 </div>
               </div>
               <div id="previewPane" class="rendered-preview"></div>
+              <div id="splitComparePane" class="split-compare-grid" style="display:none;">
+                <div class="split-pane">
+                  <div class="split-pane-head">
+                    <span>Original Unstructured Draft</span>
+                    <span id="splitBeforeBadge" class="badge warn">Before</span>
+                  </div>
+                  <div id="splitBeforeContent" style="white-space:pre-wrap;font-size:13px;line-height:1.6;"></div>
+                </div>
+                <div class="split-pane">
+                  <div class="split-pane-head">
+                    <span>Optimized Google + Bing Output</span>
+                    <span id="splitAfterBadge" class="badge ok">After</span>
+                  </div>
+                  <div id="splitAfterContent" class="rendered-preview" style="border:none;padding:0;max-height:none;background:transparent;"></div>
+                </div>
+              </div>
               <textarea id="markdownOutputArea" class="code-input" rows="20" style="display:none;"></textarea>
               <pre id="htmlOutputPre" class="code-block" style="display:none;max-height:540px;"></pre>
             </div>
@@ -596,7 +805,7 @@ th {
               <div class="flex-row" style="justify-content:space-between;margin-bottom:10px;">
                 <div>
                   <strong>Fact-Lock&trade; Zero-Hallucination Guard</strong>
-                  <span class="muted"> â€” Deterministic verification of numbers, acronyms, entities, polarity, and claim provenance.</span>
+                  <span class="muted"> — Deterministic verification of numbers, acronyms, entities, polarity, and claim provenance.</span>
                 </div>
                 <div class="flex-row">
                   <button type="button" id="simulateHallucinationBtn" class="btn sm danger">Simulate Hallucination Attack</button>
@@ -648,7 +857,7 @@ th {
                 </div>
                 <div class="card" style="box-shadow:none;background:var(--surface-alt);">
                   <div class="card-title">Live Autocomplete Grounding Check</div>
-                  <div id="autocompleteResultsBox" class="muted">Click "Live Autocomplete" to query Google &amp; Bing suggestions (Desktop mode) and classify grounded phrasings vs future topic gaps.</div>
+                  <div id="autocompleteResultsBox" class="muted">Click "Live Autocomplete" to query Google &amp; Bing search suggestions and classify grounded phrasings vs future topic gaps.</div>
                 </div>
               </div>
               <div class="mt-12">
@@ -744,8 +953,16 @@ th {
 
         <div id="batchDropzone" class="dropzone">
           <div><strong>Drop .txt, .md, or .html files here</strong> or click to select multiple corporate documents</div>
-          <div class="muted mt-8">100% deterministic local processing â€” zero network leakage of proprietary drafts.</div>
+          <div class="muted mt-8">100% deterministic local processing — zero network leakage of proprietary drafts.</div>
           <input type="file" id="batchFileInput" multiple accept=".txt,.md,.html,.htm" style="display:none;">
+        </div>
+
+        <div id="batchProgressWrap" class="mt-12" style="display:none;">
+          <div class="progress-head">
+            <span id="batchProgressLabel">Processing batch...</span>
+            <span id="batchProgressPct">0%</span>
+          </div>
+          <div class="progress-track"><div id="batchProgressBar" class="progress-fill bing" style="width:0%;"></div></div>
         </div>
 
         <div id="desktopBatchFolderPanel" class="mt-12" style="display:none;">
@@ -784,7 +1001,67 @@ th {
       </div>
     </section>
 
-    <!-- TAB 3: RANKING PROFILES & GROUNDED AI -->
+    <!-- TAB 3: CLOUD SYNC (SUPABASE) -->
+    <section id="tab-supabase" class="tab-panel">
+      <div class="card">
+        <div class="card-title">
+          <span>Supabase Cloud Sync &amp; Team Document Repository</span>
+          <span id="sbConnectionBadge" class="badge primary">Not Configured</span>
+        </div>
+        <p class="muted">Optionally connect your company Supabase project to archive optimized documents, SEO score improvements, and Fact-Lock&trade; compliance audits. Accepts either your API URL (<code>https://ref.supabase.co</code>) or your Supabase Dashboard URL (auto-converted).</p>
+
+        <div class="two-col">
+          <div>
+            <label class="muted" style="font-weight:600;display:block;margin-bottom:4px;">Supabase Project URL (or Dashboard URL)</label>
+            <input type="text" id="sbUrlInput" placeholder="https://your-project-ref.supabase.co">
+          </div>
+          <div>
+            <label class="muted" style="font-weight:600;display:block;margin-bottom:4px;">Supabase Publishable / Anon Key</label>
+            <input type="text" id="sbKeyInput" placeholder="sb_publishable_... or eyJ...">
+          </div>
+        </div>
+
+        <div class="flex-row mt-12">
+          <button type="button" id="saveSbConfigBtn" class="btn primary">Save &amp; Test Connection</button>
+          <button type="button" id="saveDocToSbBtn" class="btn bing">Save Active Studio Document to Cloud</button>
+          <button type="button" id="loadSbDocsBtn" class="btn sm">Refresh Saved Documents</button>
+        </div>
+        <div id="sbStatusMsg" class="mt-8 muted" style="font-weight:600;"></div>
+
+        <details class="sql-details mt-12">
+          <summary>First-Time Setup: View &amp; Copy Supabase SQL Schema (<code>seo_documents</code> table)</summary>
+          <div class="flex-row mt-8" style="justify-content:space-between;">
+            <span class="muted">Run this once in your Supabase Dashboard &rarr; SQL Editor:</span>
+            <button type="button" id="copySbSqlBtn" class="btn sm">Copy SQL</button>
+          </div>
+          <pre id="sbSqlPre" class="code-block mt-8"></pre>
+        </details>
+
+        <div class="mt-12">
+          <div class="card-title">Saved Cloud Documents</div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Subject</th>
+                  <th>Google</th>
+                  <th>Bing</th>
+                  <th>Fact-Lock&trade;</th>
+                  <th>Saved At</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sbDocsTableBody">
+                <tr><td colspan="7" class="muted">Enter your Supabase Project URL and click "Save &amp; Test Connection" to view saved documents.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: RANKING PROFILES & GROUNDED AI -->
     <section id="tab-profiles" class="tab-panel">
       <div class="two-col">
         <div class="card">
@@ -822,12 +1099,12 @@ th {
             <span>Optional Grounded AI Co-Writer (Fact-Lock Protected)</span>
             <span class="badge ok">Disabled by Default</span>
           </div>
-          <p class="muted">VeriRank runs 100% offline with zero AI keys. If a buyer optionally connects Local Ollama or an OpenAI/Gemini/Anthropic endpoint, every returned paragraph is verified by <strong>Fact-Lock&trade;</strong> and any hallucinated claim is automatically quarantined and replaced with the deterministic version.</p>
+          <p class="muted">VeriRank runs deterministically with zero AI keys required. If a buyer optionally connects Local Ollama (Desktop app) or an OpenAI/Gemini/Anthropic endpoint, every returned paragraph is verified by <strong>Fact-Lock&trade;</strong> and any hallucinated claim is automatically quarantined and replaced with the deterministic version.</p>
           <div class="two-col">
             <div>
               <label class="muted">Provider</label>
               <select id="aiProviderSelect">
-                <option value="ollama">Local Ollama (127.0.0.1:11434)</option>
+                <option value="ollama">Local Ollama (127.0.0.1:11434 — Desktop Only)</option>
                 <option value="openai">OpenAI-Compatible API</option>
                 <option value="gemini">Google Gemini API</option>
                 <option value="anthropic">Anthropic Claude API</option>
@@ -850,7 +1127,7 @@ th {
       </div>
     </section>
 
-    <!-- TAB 4: ENGINE VERIFICATION & SELF-TESTS -->
+    <!-- TAB 5: ENGINE VERIFICATION & SELF-TESTS -->
     <section id="tab-selftest" class="tab-panel">
       <div class="card">
         <div class="card-title">
@@ -866,61 +1143,13 @@ th {
         </table>
       </div>
     </section>
-      <!-- TAB 5: SUPABASE CLOUD SYNC -->
-    <section id="tab-supabase" class="tab-panel">
-      <div class="card">
-        <div class="card-title">
-          <span>Supabase Cloud Integration</span>
-          <span id="sbBadge" class="badge ok">Cloud Ready</span>
-        </div>
-        <p class="muted" style="margin-bottom:16px;">Connect your Supabase project to automatically save optimized articles, SEO scores, and Fact-Lock compliance audits to your database.</p>
-        
-        <div class="two-col">
-          <div>
-            <label style="font-weight:600;font-size:12px;display:block;margin-bottom:6px;">Supabase Project URL</label>
-            <input type="text" id="sbUrlInput" placeholder="https://your-project.supabase.co" style="width:100%;padding:9px;border:1px solid var(--border);border-radius:6px;box-sizing:border-box;">
-            <div class="muted mt-8" style="font-size:11.5px;">Found in Supabase Dashboard &rarr; Project Settings &rarr; API &rarr; Project URL</div>
-          </div>
-          <div>
-            <label style="font-weight:600;font-size:12px;display:block;margin-bottom:6px;">Supabase Publishable / Anon Key</label>
-            <input type="text" id="sbKeyInput" placeholder="sb_publishable_..." style="width:100%;padding:9px;border:1px solid var(--border);border-radius:6px;box-sizing:border-box;">
-            <div class="muted mt-8" style="font-size:11.5px;">Pre-configured with your publishable key.</div>
-          </div>
-        </div>
-
-        <div class="flex-row mt-12" style="gap:10px;">
-          <button type="button" id="saveSbConfigBtn" class="btn primary">Save Connection Settings</button>
-          <button type="button" id="saveDocToSbBtn" class="btn bing">Save Current Studio Document to Cloud</button>
-          <button type="button" id="loadSbDocsBtn" class="btn sm">Refresh Saved Documents</button>
-        </div>
-
-        <div id="sbStatusMsg" class="mt-8" style="font-size:13px;font-weight:600;"></div>
-
-        <div class="mt-12" style="border-top:1px solid var(--border);padding-top:16px;">
-          <div class="card-title">Recently Saved Cloud Documents (Supabase <code>seo_documents</code>)</div>
-          <div style="overflow-x:auto;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Primary Keyphrase</th>
-                  <th>Google Score</th>
-                  <th>Bing Score</th>
-                  <th>Fact-Lock</th>
-                  <th>Saved At</th>
-                </tr>
-              </thead>
-              <tbody id="sbDocsTableBody">
-                <tr><td colspan="6" class="muted">No documents loaded yet. Click "Refresh Saved Documents" after saving.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
-  <script>/* === engine\lexicon.js === */
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script>
+window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_iesn1BgrUZxn5uXaFK_EjQ_2DxuuZxM" };
+/* === engine\lexicon.js === */
 (function (global) {
   "use strict";
   var VeriRank = (global.VeriRank = global.VeriRank || {});
@@ -1255,6 +1484,13 @@ th {
   var VeriRank = (global.VeriRank = global.VeriRank || {});
   var Lex = VeriRank.Lexicon;
 
+  var INTENT_REGEX_MAP = {};
+  Object.keys(Lex.INTENT_SIGNALS).forEach(function (intent) {
+    INTENT_REGEX_MAP[intent] = Lex.INTENT_SIGNALS[intent].map(function (term) {
+      return new RegExp("\\b" + term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "g");
+    });
+  });
+
   function decodeHtmlEntities(str) {
     return String(str || "")
       .replace(/&nbsp;/gi, " ")
@@ -1315,7 +1551,7 @@ th {
     var lists = [];
     var links = [];
     var images = [];
-    var hasJsonLd = /<script[^>]*type=["']application\/ld\+json["'][^>]*>/i.test(raw);
+    var hasJsonLd = new RegExp("<" + "script[^>]*type=[\"']application\\/ld\\+json[\"'][^>]*>", "i").test(raw);
     var hasOpenGraph = /<meta[^>]*property=["']og:title["']/i.test(raw);
 
     if (format === "html") {
@@ -1342,7 +1578,7 @@ th {
       }
 
       var bodyHtml = raw
-        .replace(/<script[\s\S]*?<\/script>/gi, " ")
+        .replace(new RegExp("<" + "script[\\s\\S]*?<\\/script>", "gi"), " ")
         .replace(/<style[\s\S]*?<\/style>/gi, " ");
       var blockRegex = /<(h[1-6]|p|ul|ol)\b[^>]*>([\s\S]*?)<\/\1>/gi;
       var bm;
@@ -1580,7 +1816,7 @@ th {
   }
 
   function extractNumbers(plainText) {
-    var matches = String(plainText || "").match(/(?:[$â‚¬Â£]\d[\d,]*(?:\.\d+)?|\b\d[\d,]*(?:\.\d+)?(?:\s*(?:%|x|ms|s|kg|lb|psi|kw|gb|mb|tb|hrs?|hours?|days?|weeks?|months?|years?|yrs?|minutes?|quarters?))?)/gi) || [];
+    var matches = String(plainText || "").match(/(?:[$€£]\d[\d,]*(?:\.\d+)?|\b\d[\d,]*(?:\.\d+)?(?:\s*(?:%|x|ms|s|kg|lb|psi|kw|gb|mb|tb|hrs?|hours?|days?|weeks?|months?|years?|yrs?|minutes?|quarters?))?)/gi) || [];
     var seen = new Set();
     var out = [];
     for (var i = 0; i < matches.length; i++) {
@@ -1800,11 +2036,10 @@ th {
     var low = String(plainText || "").toLowerCase();
     var counts = { procedural: 0, informational: 0, commercial: 0, transactional: 0 };
 
-    Object.keys(Lex.INTENT_SIGNALS).forEach(function (intent) {
-      var terms = Lex.INTENT_SIGNALS[intent];
-      for (var i = 0; i < terms.length; i++) {
-        var re = new RegExp("\\b" + terms[i].replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "g");
-        var m = low.match(re);
+    Object.keys(INTENT_REGEX_MAP).forEach(function (intent) {
+      var regexes = INTENT_REGEX_MAP[intent];
+      for (var i = 0; i < regexes.length; i++) {
+        var m = low.match(regexes[i]);
         if (m) counts[intent] += m.length;
       }
     });
@@ -2036,7 +2271,7 @@ th {
   function extractNumbersFromProse(text) {
     var lines = stripNonProseMarkup(text, true);
     var prose = lines.map(function (l) { return l.text; }).join(" ");
-    var matches = prose.match(/(?:[$â‚¬Â£]\d[\d,]*(?:\.\d+)?|\b\d[\d,]*(?:\.\d+)?(?:\s*(?:%|x|ms|s|kg|lb|psi|kw|gb|mb|tb|hrs?|hours?|days?|weeks?|months?|years?|yrs?|minutes?|quarters?))?)/gi) || [];
+    var matches = prose.match(/(?:[$€£]\d[\d,]*(?:\.\d+)?|\b\d[\d,]*(?:\.\d+)?(?:\s*(?:%|x|ms|s|kg|lb|psi|kw|gb|mb|tb|hrs?|hours?|days?|weeks?|months?|years?|yrs?|minutes?|quarters?))?)/gi) || [];
     var normSet = new Set();
     var rawList = [];
     for (var i = 0; i < matches.length; i++) {
@@ -2199,11 +2434,11 @@ th {
     var matchedNumbers = [];
     candNums.rawList.forEach(function (item) {
       // Allow bare number if source has the number with/without unit, e.g., source has "14 minutes" and candidate has "14 minutes" or "14"
-      var bareNorm = item.norm.replace(/[a-z%$â‚¬Â£]+$/i, "");
+      var bareNorm = item.norm.replace(/[a-z%$€£]+$/i, "");
       var found = fp.numbers.normSet.has(item.norm);
       if (!found && bareNorm) {
         fp.numbers.normSet.forEach(function (srcNorm) {
-          if (srcNorm === bareNorm || srcNorm.replace(/[a-z%$â‚¬Â£]+$/i, "") === item.norm) {
+          if (srcNorm === bareNorm || srcNorm.replace(/[a-z%$€£]+$/i, "") === item.norm) {
             found = true;
           }
         });
@@ -2830,7 +3065,7 @@ th {
       }
     }
     var articleHtml = "<article>\n" + bodyParts.join("\n") + "\n</article>";
-    var jsonLdScript = "<script type=\"application/ld+json\">\n" + JSON.stringify(jsonLdObj, null, 2) + "\n<\/script>";
+    var jsonLdScript = "<" + "script type=\"application/ld+json\">\n" + JSON.stringify(jsonLdObj, null, 2) + "\n<" + "/script>";
     var canonical = "https://example.com/" + slug;
 
     var headTags = [
@@ -2850,160 +3085,16 @@ th {
     var fullHtmlDocument = [
       "<!DOCTYPE html>",
       "<html lang=\"en\">",
-      "<head>",
+      "<" + "head>",
       "  <meta charset=\"utf-8\">",
       "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
       "  " + headTags.split("\n").join("\n  "),
-      "  <style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.65;max-width:780px;margin:2rem auto;padding:0 1.25rem;color:#0f172a}h1{font-size:2rem;line-height:1.2}h2{margin-top:1.75rem;font-size:1.35rem;border-bottom:1px solid #e2e8f0;padding-bottom:.3rem}h3{margin-top:1.25rem;font-size:1.1rem}ul,ol{padding-left:1.35rem}li{margin:.35rem 0}</style>",
-      "  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    window.__VERIRANK_CLOUD__ = {
-      defaultKey: "sb_publishable_iesn1BgrUZxn5uXaFK_EjQ_2DxuuZxM"
-    };
-  </script>
-</head>",
-      "<body>",
+      "  <style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.65;max-width:780px;margin:2rem auto;padding:0 1.25rem;color:#0f172a}h1{font-size:2rem;line-height:1.2}h2{margin-top:1.75rem;font-size:1.35rem;border-bottom:1px solid #e2e8f0;padding-bottom:.3rem}h3{margin-top:1.25rem;font-size:1.1rem}ul,ol{padding-left:1.35rem}li{margin:.35rem 0}<" + "/style>",
+      "<" + "/head>",
+      "<" + "body>",
       articleHtml,
-      "<script>
-(function() {
-  function getSupabaseConfig() {
-    var url = localStorage.getItem("verirank_supabase_url") || "";
-    var key = localStorage.getItem("verirank_supabase_key") || (window.__VERIRANK_CLOUD__ && window.__VERIRANK_CLOUD__.defaultKey) || "";
-    return { url: url, key: key };
-  }
-
-  function initSupabaseClient() {
-    var cfg = getSupabaseConfig();
-    if (cfg.url && cfg.key && window.supabase && window.supabase.createClient) {
-      try {
-        return window.supabase.createClient(cfg.url, cfg.key);
-      } catch(e) {
-        console.warn("Supabase init error:", e);
-      }
-    }
-    return null;
-  }
-
-  function loadRecentDocs() {
-    var sb = initSupabaseClient();
-    var tbody = document.getElementById("sbDocsTableBody");
-    if (!sb || !tbody) return;
-    tbody.innerHTML = "<tr><td colspan='6' class='muted'>Loading from Supabase...</td></tr>";
-    
-    sb.from("seo_documents").select("*").order("created_at", { ascending: false }).limit(20)
-      .then(function(res) {
-        if (res.error) {
-          tbody.innerHTML = "<tr><td colspan='6' style='color:#dc2626;'>Supabase Notice: Table <code>seo_documents</code> not found yet. Run the SQL schema in Supabase SQL editor.</td></tr>";
-          return;
-        }
-        var docs = res.data || [];
-        if (docs.length === 0) {
-          tbody.innerHTML = "<tr><td colspan='6' class='muted'>Connected to Supabase! No documents saved yet.</td></tr>";
-          return;
-        }
-        tbody.innerHTML = docs.map(function(d) {
-          var date = d.created_at ? new Date(d.created_at).toLocaleString() : "";
-          return "<tr>" +
-            "<td><strong>" + (d.title || "Untitled") + "</strong></td>" +
-            "<td><code>" + (d.primary_keyphrase || "-") + "</code></td>" +
-            "<td>" + (d.google_score || "-") + "/100</td>" +
-            "<td>" + (d.bing_score || "-") + "/100</td>" +
-            "<td><span class='badge ok'>" + (d.fact_lock_score || 100) + "% Verified</span></td>" +
-            "<td class='muted'>" + date + "</td>" +
-          "</tr>";
-        }).join("");
-      })
-      .catch(function(err) {
-        tbody.innerHTML = "<tr><td colspan='6' style='color:#dc2626;'>Error: " + err.message + "</td></tr>";
-      });
-  }
-
-  document.addEventListener("DOMContentLoaded", function() {
-    var cfg = getSupabaseConfig();
-    var urlInput = document.getElementById("sbUrlInput");
-    var keyInput = document.getElementById("sbKeyInput");
-    var statusMsg = document.getElementById("sbStatusMsg");
-
-    if (urlInput) urlInput.value = cfg.url;
-    if (keyInput) keyInput.value = cfg.key;
-
-    var saveConfigBtn = document.getElementById("saveSbConfigBtn");
-    if (saveConfigBtn) {
-      saveConfigBtn.addEventListener("click", function() {
-        var u = (urlInput.value || "").trim();
-        var k = (keyInput.value || "").trim();
-        localStorage.setItem("verirank_supabase_url", u);
-        localStorage.setItem("verirank_supabase_key", k);
-        statusMsg.style.color = "#059669";
-        statusMsg.textContent = "Supabase connection settings saved successfully!";
-        loadRecentDocs();
-      });
-    }
-
-    var saveDocBtn = document.getElementById("saveDocToSbBtn");
-    if (saveDocBtn) {
-      saveDocBtn.addEventListener("click", function() {
-        var sb = initSupabaseClient();
-        if (!sb) {
-          statusMsg.style.color = "#dc2626";
-          statusMsg.textContent = "Please enter your Supabase Project URL and click 'Save Connection Settings' first.";
-          return;
-        }
-        statusMsg.style.color = "#2563eb";
-        statusMsg.textContent = "Saving active document to Supabase...";
-
-        var src = (document.getElementById("sourceTextarea") && document.getElementById("sourceTextarea").value) || "";
-        var md = (document.getElementById("markdownOutputArea") && document.getElementById("markdownOutputArea").value) || "";
-        var title = (document.getElementById("serpGoogleTitle") && document.getElementById("serpGoogleTitle").textContent) || "Optimized SEO Document";
-        var kw = (document.getElementById("overrideKeywordInput") && document.getElementById("overrideKeywordInput").value) || "primary";
-
-        var gScore = parseInt((document.getElementById("scoreGoogleAfter") && document.getElementById("scoreGoogleAfter").textContent) || "95", 10) || 95;
-        var bScore = parseInt((document.getElementById("scoreBingAfter") && document.getElementById("scoreBingAfter").textContent) || "95", 10) || 95;
-        var hScore = parseInt((document.getElementById("scoreHarmony") && document.getElementById("scoreHarmony").textContent) || "95", 10) || 95;
-
-        var payload = {
-          title: title,
-          primary_keyphrase: kw,
-          source_text: src,
-          optimized_markdown: md,
-          google_score: gScore,
-          bing_score: bScore,
-          harmony_score: hScore,
-          fact_lock_score: 100,
-          created_at: new Date().toISOString()
-        };
-
-        sb.from("seo_documents").insert([payload])
-          .then(function(res) {
-            if (res.error) {
-              statusMsg.style.color = "#dc2626";
-              statusMsg.textContent = "Supabase Error: " + res.error.message;
-            } else {
-              statusMsg.style.color = "#059669";
-              statusMsg.textContent = "Document saved to Supabase (seo_documents table)!";
-              loadRecentDocs();
-            }
-          })
-          .catch(function(e) {
-            statusMsg.style.color = "#dc2626";
-            statusMsg.textContent = "Error saving: " + e.message;
-          });
-      });
-    }
-
-    var refreshBtn = document.getElementById("loadSbDocsBtn");
-    if (refreshBtn) {
-      refreshBtn.addEventListener("click", loadRecentDocs);
-    }
-
-    if (cfg.url && cfg.key) {
-      loadRecentDocs();
-    }
-  });
-})();
-</script>
-</body>",
-      "</html>"
+      "<" + "/body>",
+      "<" + "/html>"
     ].join("\n");
 
     return {
@@ -3014,6 +3105,7 @@ th {
   }
 
   function optimize(rawInput, options) {
+    var t0 = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
     var opts = options || {};
     var includeTakeaways = opts.includeTakeaways !== false;
     var includeFaq = opts.includeFaq !== false;
@@ -3389,6 +3481,9 @@ th {
     var afterAnalysis = VeriRank.Analyzer.analyze(optimizedMarkdown, { overrideKeyword: primary });
     var afterScores = VeriRank.Scorer.score(optimizedMarkdown, metadata, afterAnalysis, profile);
 
+    var t1 = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
+    var durationMs = Math.max(0.1, Math.round((t1 - t0) * 10) / 10);
+
     return {
       sourceText: rawInput,
       optimizedMarkdown: optimizedMarkdown,
@@ -3402,7 +3497,8 @@ th {
       afterScores: afterScores,
       factLock: factLock,
       warnings: warnings,
-      changesSummary: changesLog
+      changesSummary: changesLog,
+      durationMs: durationMs
     };
   }
 
@@ -3564,15 +3660,9 @@ th {
       : "<ul>" + fl.issues.map(function (is) { return "<li class='bad'><strong>" + esc(is.type) + "</strong>: " + esc(is.explanation) + "</li>"; }).join("") + "</ul>";
 
     return [
-      "<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><title>VeriRank Fact-Lock Audit - " + esc(title) + "</title>",
-      "<style>body{font-family:system-ui,Segoe UI,Roboto,sans-serif;max-width:920px;margin:2rem auto;padding:0 1rem;color:#0f172a}table{width:100%;border-collapse:collapse;margin-top:1rem}th,td{border:1px solid #cbd5e1;padding:8px;text-align:left;font-size:.9rem}th{background:#f1f5f9}.ok{color:#065f46;background:#d1fae5;padding:12px;border-radius:8px;font-weight:600}.bad{color:#991b1b;background:#fee2e2;padding:8px;border-radius:6px;margin:4px 0}</style>",
-      "  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    window.__VERIRANK_CLOUD__ = {
-      defaultKey: "sb_publishable_iesn1BgrUZxn5uXaFK_EjQ_2DxuuZxM"
-    };
-  </script>
-</head><body>",
+      "<!DOCTYPE html><html lang='en'><" + "head><meta charset='utf-8'><title>VeriRank Fact-Lock Audit - " + esc(title) + "</title>",
+      "<style>body{font-family:system-ui,Segoe UI,Roboto,sans-serif;max-width:920px;margin:2rem auto;padding:0 1rem;color:#0f172a}table{width:100%;border-collapse:collapse;margin-top:1rem}th,td{border:1px solid #cbd5e1;padding:8px;text-align:left;font-size:.9rem}th{background:#f1f5f9}.ok{color:#065f46;background:#d1fae5;padding:12px;border-radius:8px;font-weight:600}.bad{color:#991b1b;background:#fee2e2;padding:8px;border-radius:6px;margin:4px 0}<" + "/style>",
+      "<" + "/head><" + "body>",
       "<h1>VeriRank SEO &amp; Fact-Lock&trade; Compliance Audit</h1>",
       "<p><strong>Primary Subject:</strong> " + esc(result.analysis.subject.primaryKeyphrase) + " | <strong>Intent:</strong> " + esc(result.analysis.intent.primary) + "</p>",
       "<p><strong>Google Score:</strong> " + result.beforeScores.google.total + " &rarr; " + result.afterScores.google.total + "/100 | ",
@@ -3582,145 +3672,7 @@ th {
       issueHtml,
       "<h2>Sentence Provenance Traceability</h2>",
       "<table><thead><tr><th>Source IDs</th><th>Transformation</th><th>Output Sentence</th></tr></thead><tbody>" + rows + "</tbody></table>",
-      "<script>
-(function() {
-  function getSupabaseConfig() {
-    var url = localStorage.getItem("verirank_supabase_url") || "";
-    var key = localStorage.getItem("verirank_supabase_key") || (window.__VERIRANK_CLOUD__ && window.__VERIRANK_CLOUD__.defaultKey) || "";
-    return { url: url, key: key };
-  }
-
-  function initSupabaseClient() {
-    var cfg = getSupabaseConfig();
-    if (cfg.url && cfg.key && window.supabase && window.supabase.createClient) {
-      try {
-        return window.supabase.createClient(cfg.url, cfg.key);
-      } catch(e) {
-        console.warn("Supabase init error:", e);
-      }
-    }
-    return null;
-  }
-
-  function loadRecentDocs() {
-    var sb = initSupabaseClient();
-    var tbody = document.getElementById("sbDocsTableBody");
-    if (!sb || !tbody) return;
-    tbody.innerHTML = "<tr><td colspan='6' class='muted'>Loading from Supabase...</td></tr>";
-    
-    sb.from("seo_documents").select("*").order("created_at", { ascending: false }).limit(20)
-      .then(function(res) {
-        if (res.error) {
-          tbody.innerHTML = "<tr><td colspan='6' style='color:#dc2626;'>Supabase Notice: Table <code>seo_documents</code> not found yet. Run the SQL schema in Supabase SQL editor.</td></tr>";
-          return;
-        }
-        var docs = res.data || [];
-        if (docs.length === 0) {
-          tbody.innerHTML = "<tr><td colspan='6' class='muted'>Connected to Supabase! No documents saved yet.</td></tr>";
-          return;
-        }
-        tbody.innerHTML = docs.map(function(d) {
-          var date = d.created_at ? new Date(d.created_at).toLocaleString() : "";
-          return "<tr>" +
-            "<td><strong>" + (d.title || "Untitled") + "</strong></td>" +
-            "<td><code>" + (d.primary_keyphrase || "-") + "</code></td>" +
-            "<td>" + (d.google_score || "-") + "/100</td>" +
-            "<td>" + (d.bing_score || "-") + "/100</td>" +
-            "<td><span class='badge ok'>" + (d.fact_lock_score || 100) + "% Verified</span></td>" +
-            "<td class='muted'>" + date + "</td>" +
-          "</tr>";
-        }).join("");
-      })
-      .catch(function(err) {
-        tbody.innerHTML = "<tr><td colspan='6' style='color:#dc2626;'>Error: " + err.message + "</td></tr>";
-      });
-  }
-
-  document.addEventListener("DOMContentLoaded", function() {
-    var cfg = getSupabaseConfig();
-    var urlInput = document.getElementById("sbUrlInput");
-    var keyInput = document.getElementById("sbKeyInput");
-    var statusMsg = document.getElementById("sbStatusMsg");
-
-    if (urlInput) urlInput.value = cfg.url;
-    if (keyInput) keyInput.value = cfg.key;
-
-    var saveConfigBtn = document.getElementById("saveSbConfigBtn");
-    if (saveConfigBtn) {
-      saveConfigBtn.addEventListener("click", function() {
-        var u = (urlInput.value || "").trim();
-        var k = (keyInput.value || "").trim();
-        localStorage.setItem("verirank_supabase_url", u);
-        localStorage.setItem("verirank_supabase_key", k);
-        statusMsg.style.color = "#059669";
-        statusMsg.textContent = "Supabase connection settings saved successfully!";
-        loadRecentDocs();
-      });
-    }
-
-    var saveDocBtn = document.getElementById("saveDocToSbBtn");
-    if (saveDocBtn) {
-      saveDocBtn.addEventListener("click", function() {
-        var sb = initSupabaseClient();
-        if (!sb) {
-          statusMsg.style.color = "#dc2626";
-          statusMsg.textContent = "Please enter your Supabase Project URL and click 'Save Connection Settings' first.";
-          return;
-        }
-        statusMsg.style.color = "#2563eb";
-        statusMsg.textContent = "Saving active document to Supabase...";
-
-        var src = (document.getElementById("sourceTextarea") && document.getElementById("sourceTextarea").value) || "";
-        var md = (document.getElementById("markdownOutputArea") && document.getElementById("markdownOutputArea").value) || "";
-        var title = (document.getElementById("serpGoogleTitle") && document.getElementById("serpGoogleTitle").textContent) || "Optimized SEO Document";
-        var kw = (document.getElementById("overrideKeywordInput") && document.getElementById("overrideKeywordInput").value) || "primary";
-
-        var gScore = parseInt((document.getElementById("scoreGoogleAfter") && document.getElementById("scoreGoogleAfter").textContent) || "95", 10) || 95;
-        var bScore = parseInt((document.getElementById("scoreBingAfter") && document.getElementById("scoreBingAfter").textContent) || "95", 10) || 95;
-        var hScore = parseInt((document.getElementById("scoreHarmony") && document.getElementById("scoreHarmony").textContent) || "95", 10) || 95;
-
-        var payload = {
-          title: title,
-          primary_keyphrase: kw,
-          source_text: src,
-          optimized_markdown: md,
-          google_score: gScore,
-          bing_score: bScore,
-          harmony_score: hScore,
-          fact_lock_score: 100,
-          created_at: new Date().toISOString()
-        };
-
-        sb.from("seo_documents").insert([payload])
-          .then(function(res) {
-            if (res.error) {
-              statusMsg.style.color = "#dc2626";
-              statusMsg.textContent = "Supabase Error: " + res.error.message;
-            } else {
-              statusMsg.style.color = "#059669";
-              statusMsg.textContent = "Document saved to Supabase (seo_documents table)!";
-              loadRecentDocs();
-            }
-          })
-          .catch(function(e) {
-            statusMsg.style.color = "#dc2626";
-            statusMsg.textContent = "Error saving: " + e.message;
-          });
-      });
-    }
-
-    var refreshBtn = document.getElementById("loadSbDocsBtn");
-    if (refreshBtn) {
-      refreshBtn.addEventListener("click", loadRecentDocs);
-    }
-
-    if (cfg.url && cfg.key) {
-      loadRecentDocs();
-    }
-  });
-})();
-</script>
-</body></html>"
+      "<" + "/body><" + "/html>"
     ].join("\n");
   }
 
@@ -3837,6 +3789,193 @@ th {
   ];
 })(window);
 
+/* === cloud-sync.js === */
+(function (global) {
+  "use strict";
+  var VeriRank = (global.VeriRank = global.VeriRank || {});
+
+  var STORAGE_URL_KEY = "verirank_supabase_url";
+  var STORAGE_ANON_KEY = "verirank_supabase_key";
+
+  var SQL_SCHEMA = [
+    "create table if not exists public.seo_documents (",
+    "  id uuid default gen_random_uuid() primary key,",
+    "  title text not null,",
+    "  primary_keyphrase text,",
+    "  source_text text,",
+    "  optimized_markdown text,",
+    "  google_score integer,",
+    "  bing_score integer,",
+    "  harmony_score integer,",
+    "  fact_lock_score integer,",
+    "  created_at timestamp with time zone default timezone('utc'::text, now()) not null",
+    ");",
+    "",
+    "alter table public.seo_documents enable row level security;",
+    "",
+    "create policy \"Allow public read seo_documents\" on public.seo_documents for select using (true);",
+    "create policy \"Allow public insert seo_documents\" on public.seo_documents for insert with check (true);",
+    "create policy \"Allow public delete seo_documents\" on public.seo_documents for delete using (true);"
+  ].join("\n");
+
+  function normalizeSupabaseUrl(rawUrl) {
+    var val = String(rawUrl || "").trim();
+    if (!val) return "";
+
+    // Convert Supabase Dashboard URLs automatically: https://supabase.com/dashboard/project/<ref>/...
+    var dashMatch = val.match(/supabase\.com\/dashboard\/project\/([a-z0-9-]+)/i);
+    if (dashMatch && dashMatch[1]) {
+      return "https://" + dashMatch[1].toLowerCase() + ".supabase.co";
+    }
+
+    // Bare project reference ID
+    if (/^[a-z0-9]{15,32}$/i.test(val)) {
+      return "https://" + val.toLowerCase() + ".supabase.co";
+    }
+
+    // Domain without protocol
+    if (/^[a-z0-9-]+\.supabase\.co/i.test(val)) {
+      val = "https://" + val;
+    }
+
+    // Strip /rest/v1... or trailing slashes
+    val = val.replace(/\/rest\/v1.*$/i, "").replace(/\/+$/, "");
+    return val;
+  }
+
+  function getConfig() {
+    var url = "";
+    var key = "";
+    try {
+      if (global.localStorage) {
+        url = global.localStorage.getItem(STORAGE_URL_KEY) || "";
+        key = global.localStorage.getItem(STORAGE_ANON_KEY) || "";
+      }
+    } catch (e) {
+      // Ignore storage restrictions
+    }
+    if (!key && global.__VERIRANK_CLOUD__ && global.__VERIRANK_CLOUD__.defaultKey) {
+      key = global.__VERIRANK_CLOUD__.defaultKey;
+    }
+    return {
+      url: normalizeSupabaseUrl(url),
+      key: String(key || "").trim()
+    };
+  }
+
+  function saveConfig(rawUrl, rawKey) {
+    var cleanUrl = normalizeSupabaseUrl(rawUrl);
+    var cleanKey = String(rawKey || "").trim();
+    try {
+      if (global.localStorage) {
+        global.localStorage.setItem(STORAGE_URL_KEY, cleanUrl);
+        global.localStorage.setItem(STORAGE_ANON_KEY, cleanKey);
+      }
+    } catch (e) {
+      // Safe no-op
+    }
+    return { url: cleanUrl, key: cleanKey };
+  }
+
+  function buildHeaders(key, includePrefer) {
+    var headers = {
+      "apikey": key,
+      "Content-Type": "application/json"
+    };
+    if (key.indexOf("eyJ") === 0) {
+      headers["Authorization"] = "Bearer " + key;
+    }
+    if (includePrefer) {
+      headers["Prefer"] = "return=representation";
+    }
+    return headers;
+  }
+
+  function parseErrorBody(resp, fallbackText) {
+    return resp.text().then(function (txt) {
+      var msg = fallbackText || ("HTTP " + resp.status);
+      try {
+        var parsed = JSON.parse(txt);
+        if (parsed && (parsed.message || parsed.error_description || parsed.hint)) {
+          msg = parsed.message || parsed.error_description || parsed.hint;
+        }
+      } catch (e) {
+        if (txt) msg = txt.slice(0, 180);
+      }
+      throw new Error(msg);
+    });
+  }
+
+  function listDocuments() {
+    var cfg = getConfig();
+    if (!cfg.url || !cfg.key) {
+      return Promise.reject(new Error("Enter your Supabase Project URL and API Key first."));
+    }
+    var endpoint = cfg.url + "/rest/v1/seo_documents?select=*&order=created_at.desc&limit=25";
+    return fetch(endpoint, {
+      method: "GET",
+      headers: buildHeaders(cfg.key, false)
+    }).then(function (resp) {
+      if (!resp.ok) return parseErrorBody(resp, "Failed to query Supabase");
+      return resp.json();
+    });
+  }
+
+  function saveDocument(result) {
+    var cfg = getConfig();
+    if (!cfg.url || !cfg.key) {
+      return Promise.reject(new Error("Enter your Supabase Project URL and API Key in Cloud Sync first."));
+    }
+    if (!result) {
+      return Promise.reject(new Error("Optimize a document in the Studio before saving."));
+    }
+    var payload = {
+      title: result.metadata.title || "Optimized SEO Document",
+      primary_keyphrase: result.analysis.subject.primaryKeyphrase || "",
+      source_text: result.sourceText || "",
+      optimized_markdown: result.optimizedMarkdown || "",
+      google_score: result.afterScores.google.total,
+      bing_score: result.afterScores.bing.total,
+      harmony_score: result.afterScores.harmonyScore,
+      fact_lock_score: result.factLock.groundingScore
+    };
+    var endpoint = cfg.url + "/rest/v1/seo_documents";
+    return fetch(endpoint, {
+      method: "POST",
+      headers: buildHeaders(cfg.key, true),
+      body: JSON.stringify(payload)
+    }).then(function (resp) {
+      if (!resp.ok) return parseErrorBody(resp, "Failed to save document");
+      return resp.json();
+    });
+  }
+
+  function deleteDocument(id) {
+    var cfg = getConfig();
+    if (!cfg.url || !cfg.key) {
+      return Promise.reject(new Error("Supabase is not configured."));
+    }
+    var endpoint = cfg.url + "/rest/v1/seo_documents?id=eq." + encodeURIComponent(id);
+    return fetch(endpoint, {
+      method: "DELETE",
+      headers: buildHeaders(cfg.key, false)
+    }).then(function (resp) {
+      if (!resp.ok) return parseErrorBody(resp, "Failed to delete document");
+      return true;
+    });
+  }
+
+  VeriRank.Cloud = {
+    SQL_SCHEMA: SQL_SCHEMA,
+    normalizeSupabaseUrl: normalizeSupabaseUrl,
+    getConfig: getConfig,
+    saveConfig: saveConfig,
+    listDocuments: listDocuments,
+    saveDocument: saveDocument,
+    deleteDocument: deleteDocument
+  };
+})(window);
+
 /* === selftest.js === */
 (function (global) {
   "use strict";
@@ -3941,6 +4080,20 @@ th {
     var validZipSig = zipBytes.length > 200 && zipBytes[0] === 0x50 && zipBytes[1] === 0x4b && zipBytes[2] === 0x03 && zipBytes[3] === 0x04;
     assert("Pure-JS ZIP archive starts with valid PK\\x03\\x04 header", validZipSig, "Size: " + zipBytes.length + " bytes");
 
+    assert("Sub-50ms deterministic optimization performance",
+      typeof r1.durationMs === "number" && r1.durationMs < 50,
+      "Completed in " + r1.durationMs + " ms");
+
+    var normDash = VeriRank.Cloud && VeriRank.Cloud.normalizeSupabaseUrl("https://supabase.com/dashboard/project/abcdefghijklmnop/settings/api");
+    assert("Supabase Dashboard URL auto-normalizes to API endpoint",
+      normDash === "https://abcdefghijklmnop.supabase.co",
+      "Normalized: " + normDash);
+
+    var validHtmlDoc = r1.fullHtmlDocument.indexOf("<!DOCTYPE html>") === 0 && r1.fullHtmlDocument.indexOf("<" + "script type=\"application/ld+json\">") !== -1;
+    assert("Exported full HTML document contains valid doctype & JSON-LD",
+      validHtmlDoc,
+      "HTML length: " + r1.fullHtmlDocument.length + " chars");
+
     var passedCount = checks.filter(function (c) { return c.passed; }).length;
     var failedCount = checks.length - passedCount;
     var summary = {
@@ -3970,23 +4123,43 @@ th {
     activeProfile: VeriRank.Profiles.getActiveProfile(),
     selectedTitleIdx: 0,
     viewMode: "preview",
-    batchItems: []
+    batchItems: [],
+    cloudDocs: []
   };
 
   function $(id) {
     return document.getElementById(id);
   }
 
-  function isDesktopHost() {
-    return !!(global.__VERIRANK_HOST__ && global.__VERIRANK_HOST__.token);
+  function getRuntimeMode() {
+    if (global.__VERIRANK_HOST__ && global.__VERIRANK_HOST__.token) return "desktop";
+    if (global.location && /^https?:/i.test(global.location.protocol)) return "cloud";
+    return "portable";
+  }
+
+  function isApiAvailable() {
+    var mode = getRuntimeMode();
+    return mode === "desktop" || mode === "cloud";
   }
 
   function hostHeaders() {
     var headers = { "Content-Type": "application/json" };
-    if (isDesktopHost()) {
+    if (getRuntimeMode() === "desktop") {
       headers["X-VeriRank-Token"] = global.__VERIRANK_HOST__.token;
     }
     return headers;
+  }
+
+  function showToast(message, kind) {
+    var container = $("toastContainer");
+    if (!container) return;
+    var el = document.createElement("div");
+    el.className = "toast " + (kind || "");
+    el.textContent = message;
+    container.appendChild(el);
+    setTimeout(function () {
+      if (el.parentNode) el.parentNode.removeChild(el);
+    }, 3400);
   }
 
   function renderSimpleMarkdownToHtml(md) {
@@ -4050,10 +4223,35 @@ th {
     return "bad";
   }
 
+  function setScoreRing(ringId, scorePct, defaultCls) {
+    var ring = $(ringId);
+    if (!ring) return;
+    var circumference = 113.1;
+    var clamped = Math.max(0, Math.min(100, Number(scorePct) || 0));
+    var offset = circumference - (clamped / 100) * circumference;
+    ring.setAttribute("stroke-dashoffset", offset.toFixed(1));
+    ring.setAttribute("class", "score-ring-fg " + (defaultCls || scoreClass(clamped)));
+  }
+
+  function updateSourceTelemetry() {
+    var raw = $("sourceTextarea").value || "";
+    var parsed = VeriRank.Analyzer.parseDocument(raw);
+    var words = parsed.totalWords || 0;
+    var sentences = parsed.sentences.length || 0;
+    var mins = Math.max(1, Math.ceil(words / 220));
+    var fmtLabel = parsed.format === "html" ? "HTML" : (parsed.format === "markdown" ? "Markdown" : "Plain Text");
+    $("sourceStatsBar").innerHTML =
+      "<span>Words: <strong>" + words + "</strong></span>" +
+      "<span>Sentences: <strong>" + sentences + "</strong></span>" +
+      "<span>Format: <strong>" + fmtLabel + "</strong></span>" +
+      "<span>Read Time: <strong>" + (words > 0 ? mins + "m" : "0m") + "</strong></span>";
+  }
+
   function copyText(txt, statusMsg) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(txt).then(function () {
         $("studioActionStatus").textContent = statusMsg || "Copied to clipboard.";
+        showToast(statusMsg || "Copied to clipboard.", "ok");
       });
     } else {
       var ta = document.createElement("textarea");
@@ -4063,6 +4261,7 @@ th {
       document.execCommand("copy");
       document.body.removeChild(ta);
       $("studioActionStatus").textContent = statusMsg || "Copied to clipboard.";
+      showToast(statusMsg || "Copied to clipboard.", "ok");
     }
   }
 
@@ -4082,14 +4281,19 @@ th {
     var raw = $("sourceTextarea").value.trim();
     if (!raw) {
       $("studioActionStatus").textContent = "Please paste or load source text first.";
+      showToast("Paste or import a document to optimize.", "warn");
       return;
     }
     state.selectedTitleIdx = 0;
     var res = VeriRank.Optimizer.optimize(raw, getOptimizeOptionsFromUi());
     state.currentResult = res;
     renderResult(res);
+    updateSourceTelemetry();
     $("restoreVerifiedBtn").style.display = "none";
-    $("studioActionStatus").textContent = "Optimized deterministically (" + res.changesSummary.length + " structural & readability improvements, 0 hallucinations).";
+    if ($("engineSpeedBadge") && typeof res.durationMs === "number") {
+      $("engineSpeedBadge").textContent = res.durationMs + " ms";
+    }
+    $("studioActionStatus").textContent = "Optimized in " + res.durationMs + " ms (" + res.changesSummary.length + " improvements, 0 hallucinations).";
   }
 
   function renderBreakdown(containerId, breakdownObj, isBing) {
@@ -4175,12 +4379,10 @@ th {
   }
 
   function renderResult(res) {
-    // Warnings
     $("warningsContainer").innerHTML = (res.warnings || []).map(function (w) {
       return "<div class='alert-banner warn'><strong>Guardrail Notice:</strong> " + Lex.escapeHtml(w) + "</div>";
     }).join("");
 
-    // Scoreboard
     var gAfter = res.afterScores.google.total;
     var gBefore = res.beforeScores.google.total;
     var bAfter = res.afterScores.bing.total;
@@ -4189,20 +4391,23 @@ th {
     $("scoreGoogleAfter").textContent = gAfter + "/100";
     $("scoreGoogleAfter").className = "score-value " + scoreClass(gAfter);
     $("scoreGoogleDelta").textContent = "Before: " + gBefore + " (" + (gAfter - gBefore >= 0 ? "+" : "") + (gAfter - gBefore) + " pts)";
+    setScoreRing("ringGoogle", gAfter, scoreClass(gAfter));
 
     $("scoreBingAfter").textContent = bAfter + "/100";
     $("scoreBingAfter").className = "score-value " + scoreClass(bAfter);
     $("scoreBingDelta").textContent = "Before: " + bBefore + " (" + (bAfter - bBefore >= 0 ? "+" : "") + (bAfter - bBefore) + " pts)";
+    setScoreRing("ringBing", bAfter, "bing");
 
     $("scoreHarmony").textContent = res.afterScores.harmonyScore + "/100";
     $("scoreHarmony").className = "score-value " + scoreClass(res.afterScores.harmonyScore);
-    $("scoreDensityInfo").textContent = "Exact Density: " + res.afterScores.metrics.exactDensityPct + "% (" + res.afterScores.metrics.exactCount + "x in " + res.afterScores.metrics.wordCount + "w)";
+    $("scoreDensityInfo").textContent = "Density: " + res.afterScores.metrics.exactDensityPct + "% (" + res.afterScores.metrics.exactCount + "x / " + res.afterScores.metrics.wordCount + "w)";
+    setScoreRing("ringHarmony", res.afterScores.harmonyScore, scoreClass(res.afterScores.harmonyScore));
 
     $("scoreFactLock").textContent = res.factLock.passed ? "VERIFIED" : "BLOCKED";
     $("scoreFactLock").className = "score-value " + (res.factLock.passed ? "ok" : "bad");
     $("scoreFactLockDetail").textContent = res.factLock.groundingScore + "% Grounded (" + res.factLock.issues.length + " issues)";
+    setScoreRing("ringFactLock", res.factLock.passed ? res.factLock.groundingScore : 15, res.factLock.passed ? "ok" : "bad");
 
-    // Candidate keyphrase pills
     var primary = res.analysis.subject.primaryKeyphrase;
     $("candidatePills").innerHTML = res.analysis.subject.candidateKeyphrases.map(function (c) {
       var sel = c.phrase === primary ? "selected" : "";
@@ -4218,12 +4423,17 @@ th {
       });
     }
 
-    // Content Views
-    $("previewPane").innerHTML = renderSimpleMarkdownToHtml(res.optimizedMarkdown);
+    var rendered = renderSimpleMarkdownToHtml(res.optimizedMarkdown);
+    $("previewPane").innerHTML = rendered;
     $("markdownOutputArea").value = res.optimizedMarkdown;
     $("htmlOutputPre").textContent = res.optimizedHtml;
 
-    // Fact-Lock, Diagnostics, SERP
+    // Split Compare View
+    $("splitBeforeContent").textContent = res.sourceText;
+    $("splitBeforeBadge").textContent = "Google " + gBefore + " | Bing " + bBefore;
+    $("splitAfterContent").innerHTML = rendered;
+    $("splitAfterBadge").textContent = "Google " + gAfter + " | Bing " + bAfter;
+
     renderFactLockSection(res);
     renderBreakdown("googleBreakdown", res.afterScores.google.breakdown, false);
     renderBreakdown("bingBreakdown", res.afterScores.bing.breakdown, true);
@@ -4252,21 +4462,38 @@ th {
       btns[i].classList.toggle("primary", btns[i].getAttribute("data-mode") === mode);
     }
     $("previewPane").style.display = mode === "preview" ? "block" : "none";
+    $("splitComparePane").style.display = mode === "split" ? "grid" : "none";
     $("markdownOutputArea").style.display = mode === "markdown" ? "block" : "none";
     $("htmlOutputPre").style.display = mode === "html" ? "block" : "none";
   }
 
+  function activateSubtab(name) {
+    var subBtns = document.querySelectorAll(".subtab");
+    for (var a = 0; a < subBtns.length; a++) {
+      subBtns[a].classList.toggle("active", subBtns[a].getAttribute("data-subtab") === name);
+    }
+    var panels = document.querySelectorAll(".subpanel");
+    for (var b = 0; b < panels.length; b++) {
+      panels[b].classList.toggle("active", panels[b].id === "subtab-" + name);
+    }
+  }
+
   function runAutocompleteCheck() {
     if (!state.currentResult) runOptimization();
+    if (!state.currentResult) return;
     var primary = state.currentResult.analysis.subject.primaryKeyphrase;
     var box = $("autocompleteResultsBox");
 
-    if (!isDesktopHost()) {
-      box.innerHTML = "<div class='alert-banner warn'><strong>Cloud Vercel & Supabase Edition:</strong> Live Google/Bing autocomplete queries require running <code>VeriRankSEO.exe</code> (Desktop Host) to bypass browser CORS. All core optimization and scoring work 100% offline.</div>";
+    if (!isApiAvailable()) {
+      activateSubtab("diagnostics");
+      box.innerHTML = "<div class='alert-banner warn'><strong>Offline Portable Mode:</strong> Live Google/Bing autocomplete queries require either the Cloud Web Edition or <code>VeriRankSEO.exe</code>. Core optimization and scoring work 100% offline.</div>";
       return;
     }
 
-    box.textContent = "Querying Google & Bing Suggest APIs for '" + primary + "'...";
+    activateSubtab("diagnostics");
+    box.textContent = "Querying live Google & Bing Suggest APIs for '" + primary + "'...";
+    $("studioActionStatus").textContent = "Checking live Google & Bing search suggestions...";
+
     fetch("/api/suggest", {
       method: "POST",
       headers: hostHeaders(),
@@ -4274,37 +4501,57 @@ th {
     })
       .then(function (r) { return r.json(); })
       .then(function (data) {
-        if (data.offline || ((!data.google || !data.google.length) && (!data.bing || !data.bing.length))) {
-          box.innerHTML = "<div class='alert-banner warn'>Network offline or autocomplete unavailable. Continuing safely with offline deterministic NLP model.</div>";
+        var gList = (data && data.google) || [];
+        var bList = (data && data.bing) || [];
+        if (data.offline || (gList.length === 0 && bList.length === 0)) {
+          box.innerHTML = "<div class='alert-banner warn'>Autocomplete returned no live suggestions or network is offline. Continuing safely with offline deterministic NLP model.</div>";
+          $("studioActionStatus").textContent = "Autocomplete unavailable; deterministic NLP model remains active.";
           return;
         }
+
         var srcLower = state.currentResult.sourceText.toLowerCase();
         var combined = [];
-        var seen = new Set();
-        (data.google || []).concat(data.bing || []).forEach(function (q) {
+        var seen = {};
+        var addItem = function (q, engineLabel) {
           var low = String(q).toLowerCase();
-          if (!seen.has(low)) {
-            seen.add(low);
+          if (!seen[low]) {
             var tokens = low.split(/\s+/).filter(function (w) { return w.length > 3 && !Lex.STOPWORDS.has(w); });
             var hits = tokens.filter(function (t) { return srcLower.indexOf(Lex.stemWord(t)) !== -1; }).length;
             var grounded = tokens.length > 0 && hits / tokens.length >= 0.6;
-            combined.push({ query: q, grounded: grounded });
+            seen[low] = { query: q, grounded: grounded, engines: [engineLabel] };
+            combined.push(seen[low]);
+          } else if (seen[low].engines.indexOf(engineLabel) === -1) {
+            seen[low].engines.push(engineLabel);
           }
-        });
-        box.innerHTML = combined.slice(0, 10).map(function (item) {
-          return "<div style='margin-bottom:4px;'><span class='badge " + (item.grounded ? "ok" : "warn") + "'>" +
-            (item.grounded ? "Grounded in Text" : "Future Topic Gap") + "</span> " + Lex.escapeHtml(item.query) + "</div>";
+        };
+
+        gList.forEach(function (q) { addItem(q, "Google"); });
+        bList.forEach(function (q) { addItem(q, "Bing"); });
+
+        box.innerHTML = combined.slice(0, 12).map(function (item) {
+          return "<div style='margin-bottom:5px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;'>" +
+            "<span class='badge " + (item.grounded ? "ok" : "warn") + "'>" + (item.grounded ? "Grounded in Text" : "Future Topic Gap") + "</span>" +
+            "<span class='badge primary'>" + Lex.escapeHtml(item.engines.join(" + ")) + "</span>" +
+            "<span>" + Lex.escapeHtml(item.query) + "</span>" +
+            "</div>";
         }).join("");
+
+        $("studioActionStatus").textContent = "Loaded " + combined.length + " live Google & Bing suggestions.";
+        showToast("Loaded " + combined.length + " live search suggestions.", "ok");
       })
       .catch(function () {
         box.innerHTML = "<div class='alert-banner warn'>Live autocomplete unreachable; using deterministic offline engine.</div>";
+        $("studioActionStatus").textContent = "Live autocomplete unreachable.";
       });
   }
 
   function runGroundedAiPolish() {
     if (!state.currentResult) runOptimization();
-    if (!isDesktopHost()) {
-      $("studioActionStatus").textContent = "Optional Grounded AI Polish requires VeriRankSEO.exe Desktop Host (for local Ollama / CORS-safe API proxy).";
+    if (!state.currentResult) return;
+
+    if (!isApiAvailable()) {
+      $("studioActionStatus").textContent = "Optional Grounded AI Polish requires VeriRankSEO.exe or Cloud Web Edition.";
+      showToast("AI Polish requires Desktop or Cloud mode.", "warn");
       return;
     }
 
@@ -4313,8 +4560,15 @@ th {
     var endpoint = $("aiEndpointInput").value.trim();
     var apiKey = $("aiApiKeyInput").value.trim();
 
+    if (provider === "ollama" && getRuntimeMode() === "cloud") {
+      $("studioActionStatus").textContent = "Local Ollama (127.0.0.1) runs via VeriRankSEO.exe Desktop Edition. In Cloud mode, select OpenAI, Gemini, or Anthropic with your API key.";
+      showToast("Use OpenAI/Gemini/Anthropic in Cloud mode, or Ollama in Desktop exe.", "warn");
+      return;
+    }
+
     if (provider !== "ollama" && !apiKey) {
-      $("studioActionStatus").textContent = "Please enter an API key in 'Ranking Profiles & Grounded AI' (or select Local Ollama).";
+      $("studioActionStatus").textContent = "Please enter an API key in 'Ranking Profiles & AI' (or use Local Ollama on Desktop).";
+      showToast("Enter an API key in Ranking Profiles & AI first.", "warn");
       return;
     }
 
@@ -4337,6 +4591,7 @@ th {
       .then(function (data) {
         if (!data.ok || !data.text) {
           $("studioActionStatus").textContent = "AI provider error: " + (data.error || "No text returned. Deterministic output kept.");
+          showToast(data.error || "AI polish returned no text.", "warn");
           return;
         }
         var sanitized = VeriRank.FactLock.sanitizeAiCandidate(state.currentResult.sourceText, state.currentResult.optimizedMarkdown, data.text);
@@ -4344,9 +4599,11 @@ th {
         state.currentResult = updated;
         renderResult(updated);
         $("studioActionStatus").textContent = "Grounded AI Polish complete. Fact-Lock quarantined " + sanitized.quarantined.length + " ungrounded block(s).";
+        showToast("AI Polish verified (" + sanitized.quarantined.length + " block(s) quarantined).", "ok");
       })
       .catch(function (err) {
         $("studioActionStatus").textContent = "AI request failed (" + err.message + "). Verified deterministic output kept.";
+        showToast("AI polish request failed.", "bad");
       });
   }
 
@@ -4395,10 +4652,36 @@ th {
   }
 
   function runBatchOptimization() {
-    for (var i = 0; i < state.batchItems.length; i++) {
-      state.batchItems[i].result = VeriRank.Optimizer.optimize(state.batchItems[i].content, { profile: state.activeProfile });
+    var total = state.batchItems.length;
+    if (total === 0) return;
+
+    var wrap = $("batchProgressWrap");
+    var bar = $("batchProgressBar");
+    var lbl = $("batchProgressLabel");
+    var pctEl = $("batchProgressPct");
+    wrap.style.display = "block";
+
+    var idx = 0;
+    function step() {
+      if (idx < total) {
+        state.batchItems[idx].result = VeriRank.Optimizer.optimize(state.batchItems[idx].content, { profile: state.activeProfile });
+        idx++;
+        var pct = Math.round((idx / total) * 100);
+        bar.style.width = pct + "%";
+        pctEl.textContent = pct + "%";
+        lbl.textContent = "Optimized " + idx + " of " + total + " document(s)...";
+        if (typeof global.requestAnimationFrame === "function" && idx < total) {
+          global.requestAnimationFrame(step);
+        } else {
+          step();
+        }
+      } else {
+        lbl.textContent = "Completed batch optimization for " + total + " document(s).";
+        renderBatchTable();
+        showToast("Batch completed: " + total + " document(s) verified.", "ok");
+      }
     }
-    renderBatchTable();
+    step();
   }
 
   function loadFilesIntoBatch(fileList) {
@@ -4451,19 +4734,129 @@ th {
     }).join("");
   }
 
+  // Supabase Cloud UI
+  function refreshCloudDocs() {
+    if (!VeriRank.Cloud) return;
+    var cfg = VeriRank.Cloud.getConfig();
+    var badge = $("sbConnectionBadge");
+    var tbody = $("sbDocsTableBody");
+    var status = $("sbStatusMsg");
+
+    if (!cfg.url || !cfg.key) {
+      badge.textContent = "Not Configured";
+      badge.className = "badge primary";
+      tbody.innerHTML = "<tr><td colspan='7' class='muted'>Enter your Supabase Project URL and click 'Save & Test Connection'.</td></tr>";
+      return;
+    }
+
+    status.textContent = "Connecting to " + cfg.url + "...";
+    VeriRank.Cloud.listDocuments()
+      .then(function (docs) {
+        state.cloudDocs = docs || [];
+        badge.textContent = "Connected";
+        badge.className = "badge ok";
+        status.textContent = "Connected to Supabase (" + state.cloudDocs.length + " document(s) fetched).";
+
+        if (state.cloudDocs.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='7' class='muted'>Connected! Table <code>seo_documents</code> is ready and empty. Save a document from the Studio!</td></tr>";
+          return;
+        }
+
+        tbody.innerHTML = state.cloudDocs.map(function (d, idx) {
+          var dt = d.created_at ? new Date(d.created_at).toLocaleString() : "";
+          return "<tr>" +
+            "<td><strong>" + Lex.escapeHtml(d.title || "Untitled") + "</strong></td>" +
+            "<td><code>" + Lex.escapeHtml(d.primary_keyphrase || "-") + "</code></td>" +
+            "<td>" + (d.google_score || 0) + "/100</td>" +
+            "<td>" + (d.bing_score || 0) + "/100</td>" +
+            "<td><span class='badge ok'>" + (d.fact_lock_score || 100) + "%</span></td>" +
+            "<td class='muted'>" + Lex.escapeHtml(dt) + "</td>" +
+            "<td class='flex-row'>" +
+              "<button type='button' class='btn sm' data-sb-load='" + idx + "'>Load</button>" +
+              "<button type='button' class='btn sm danger' data-sb-del='" + Lex.escapeHtml(d.id) + "'>Delete</button>" +
+            "</td>" +
+            "</tr>";
+        }).join("");
+
+        var loadBtns = tbody.querySelectorAll("[data-sb-load]");
+        for (var i = 0; i < loadBtns.length; i++) {
+          loadBtns[i].addEventListener("click", function () {
+            var doc = state.cloudDocs[parseInt(this.getAttribute("data-sb-load"), 10)];
+            if (!doc) return;
+            $("sourceTextarea").value = doc.source_text || doc.optimized_markdown || "";
+            $("overrideKeywordInput").value = doc.primary_keyphrase || "";
+            runOptimization();
+            activateMainTab("studio");
+            showToast("Loaded cloud document into Studio.", "ok");
+          });
+        }
+
+        var delBtns = tbody.querySelectorAll("[data-sb-del]");
+        for (var j = 0; j < delBtns.length; j++) {
+          delBtns[j].addEventListener("click", function () {
+            var id = this.getAttribute("data-sb-del");
+            VeriRank.Cloud.deleteDocument(id)
+              .then(function () {
+                showToast("Deleted document from Supabase.", "ok");
+                refreshCloudDocs();
+              })
+              .catch(function (err) {
+                showToast("Delete failed: " + err.message, "bad");
+              });
+          });
+        }
+      })
+      .catch(function (err) {
+        badge.textContent = "Setup Required";
+        badge.className = "badge warn";
+        status.textContent = "Supabase notice: " + err.message;
+        tbody.innerHTML = "<tr><td colspan='7' class='muted'>Could not query <code>seo_documents</code> (" + Lex.escapeHtml(err.message) + "). Check your Project URL and ensure you ran the Setup SQL below.</td></tr>";
+      });
+  }
+
+  function saveCurrentDocToSupabase() {
+    if (!state.currentResult) runOptimization();
+    if (!state.currentResult || !VeriRank.Cloud) return;
+    var status = $("sbStatusMsg");
+    status.textContent = "Saving active document to Supabase...";
+    VeriRank.Cloud.saveDocument(state.currentResult)
+      .then(function () {
+        status.textContent = "Saved '" + state.currentResult.metadata.title + "' to Supabase!";
+        showToast("Saved document to Supabase Cloud!", "ok");
+        refreshCloudDocs();
+      })
+      .catch(function (err) {
+        status.textContent = "Save failed: " + err.message;
+        showToast(err.message, "bad");
+      });
+  }
+
   function init() {
-    // Host status badge
-    if (isDesktopHost()) {
+    var mode = getRuntimeMode();
+    if (mode === "desktop") {
       $("hostModeBadge").textContent = "Desktop Host Connected";
       $("hostModeBadge").className = "badge ok";
       $("desktopFolderExportBox").style.display = "block";
       $("desktopBatchFolderPanel").style.display = "block";
+    } else if (mode === "cloud") {
+      $("hostModeBadge").textContent = "Cloud Edition (Vercel + Supabase)";
+      $("hostModeBadge").className = "badge bing";
     }
 
-    // Theme toggle
+    // Restore persisted theme
+    try {
+      if (global.localStorage && global.localStorage.getItem("verirank_theme") === "dark") {
+        document.body.classList.add("dark");
+        $("themeToggleBtn").textContent = "Light Theme";
+      }
+    } catch (e) { }
+
     $("themeToggleBtn").addEventListener("click", function () {
       var dark = document.body.classList.toggle("dark");
       this.textContent = dark ? "Light Theme" : "Dark Theme";
+      try {
+        if (global.localStorage) global.localStorage.setItem("verirank_theme", dark ? "dark" : "light");
+      } catch (e) { }
     });
 
     // Main Navigation
@@ -4478,10 +4871,7 @@ th {
     var subBtns = document.querySelectorAll(".subtab");
     for (var j = 0; j < subBtns.length; j++) {
       subBtns[j].addEventListener("click", function () {
-        var name = this.getAttribute("data-subtab");
-        for (var a = 0; a < subBtns.length; a++) subBtns[a].classList.toggle("active", subBtns[a] === this);
-        var panels = document.querySelectorAll(".subpanel");
-        for (var b = 0; b < panels.length; b++) panels[b].classList.toggle("active", panels[b].id === "subtab-" + name);
+        activateSubtab(this.getAttribute("data-subtab"));
       });
     }
 
@@ -4507,7 +4897,19 @@ th {
       });
     }
 
-    // Single file import
+    // Live source telemetry debounced
+    var telTimer = null;
+    $("sourceTextarea").addEventListener("input", function () {
+      clearTimeout(telTimer);
+      telTimer = setTimeout(updateSourceTelemetry, 120);
+    });
+
+    $("clearSourceBtn").addEventListener("click", function () {
+      $("sourceTextarea").value = "";
+      $("overrideKeywordInput").value = "";
+      updateSourceTelemetry();
+    });
+
     $("singleFileInput").addEventListener("change", function (ev) {
       var file = ev.target.files && ev.target.files[0];
       if (!file) return;
@@ -4527,6 +4929,7 @@ th {
     });
     $("suggestBtn").addEventListener("click", runAutocompleteCheck);
     $("aiPolishBtn").addEventListener("click", runGroundedAiPolish);
+    $("quickCloudSaveBtn").addEventListener("click", saveCurrentDocToSupabase);
 
     $("rescoreEditsBtn").addEventListener("click", function () {
       if (!state.currentResult) return;
@@ -4549,10 +4952,9 @@ th {
       if (state.currentResult) copyText($("indexNowPreview").textContent, "Bing IndexNow JSON copied.");
     });
     $("copyHeadTagsBtn").addEventListener("click", function () {
-      if (state.currentResult) copyText($("headTagsPreview").textContent, "<head> SEO tags copied.");
+      if (state.currentResult) copyText($("headTagsPreview").textContent, "HTML head SEO tags copied.");
     });
 
-    // Simulate Hallucination Attack
     $("simulateHallucinationBtn").addEventListener("click", function () {
       if (!state.currentResult) return;
       var injected = state.currentResult.optimizedMarkdown + "\n\nIndependent testing by Gartner Research shows a 94% cost reduction within 3 days.";
@@ -4560,10 +4962,12 @@ th {
       renderResult(fakeAudit);
       $("restoreVerifiedBtn").style.display = "inline-flex";
       $("studioActionStatus").textContent = "Simulated hallucination injected ('Gartner', '94%', '3 days') -> Fact-Lock BLOCKED it!";
+      showToast("Fact-Lock blocked 5 injected hallucination issues!", "bad");
     });
 
     $("restoreVerifiedBtn").addEventListener("click", function () {
       runOptimization();
+      showToast("Restored 100% verified output.", "ok");
     });
 
     // Export Buttons
@@ -4588,7 +4992,7 @@ th {
     });
 
     $("writeSingleToDiskBtn").addEventListener("click", function () {
-      if (!state.currentResult || !isDesktopHost()) return;
+      if (!state.currentResult || getRuntimeMode() !== "desktop") return;
       var folder = $("singleExportFolderInput").value.trim();
       if (!folder) {
         $("singleDiskExportStatus").textContent = "Enter an output folder path first.";
@@ -4637,7 +5041,7 @@ th {
 
     $("loadFolderBtn").addEventListener("click", function () {
       var folder = $("batchInputFolderPath").value.trim();
-      if (!folder || !isDesktopHost()) return;
+      if (!folder || getRuntimeMode() !== "desktop") return;
       fetch("/api/fs/read-folder", {
         method: "POST",
         headers: hostHeaders(),
@@ -4659,7 +5063,7 @@ th {
 
     $("saveBatchFolderBtn").addEventListener("click", function () {
       var folder = $("batchOutputFolderPath").value.trim();
-      if (!folder || !isDesktopHost()) return;
+      if (!folder || getRuntimeMode() !== "desktop") return;
       var files = VeriRank.Exporter.buildBatchPackageFiles(state.batchItems).map(function (f) {
         return { relativePath: f.path, content: f.content };
       });
@@ -4674,6 +5078,32 @@ th {
         });
     });
 
+    // Supabase Cloud Setup
+    if (VeriRank.Cloud) {
+      var sbCfg = VeriRank.Cloud.getConfig();
+      $("sbUrlInput").value = sbCfg.url;
+      $("sbKeyInput").value = sbCfg.key;
+      $("sbSqlPre").textContent = VeriRank.Cloud.SQL_SCHEMA;
+
+      $("copySbSqlBtn").addEventListener("click", function () {
+        copyText(VeriRank.Cloud.SQL_SCHEMA, "Supabase SQL schema copied.");
+      });
+
+      $("saveSbConfigBtn").addEventListener("click", function () {
+        var saved = VeriRank.Cloud.saveConfig($("sbUrlInput").value, $("sbKeyInput").value);
+        $("sbUrlInput").value = saved.url;
+        $("sbKeyInput").value = saved.key;
+        showToast("Supabase settings saved.", "ok");
+        refreshCloudDocs();
+      });
+
+      $("saveDocToSbBtn").addEventListener("click", saveCurrentDocToSupabase);
+      $("loadSbDocsBtn").addEventListener("click", refreshCloudDocs);
+      if (sbCfg.url && sbCfg.key) {
+        refreshCloudDocs();
+      }
+    }
+
     // Profiles & Grounded AI
     renderProfileForm();
     $("saveProfileBtn").addEventListener("click", function () {
@@ -4685,12 +5115,14 @@ th {
       state.activeProfile = VeriRank.Profiles.saveCustomProfile(p);
       $("profileStatus").textContent = "Profile saved.";
       if ($("sourceTextarea").value.trim()) runOptimization();
+      showToast("Ranking profile saved.", "ok");
     });
     $("resetProfileBtn").addEventListener("click", function () {
       state.activeProfile = VeriRank.Profiles.resetProfile();
       renderProfileForm();
       $("profileStatus").textContent = "Reset to factory defaults.";
       if ($("sourceTextarea").value.trim()) runOptimization();
+      showToast("Ranking profile reset to defaults.", "ok");
     });
 
     $("aiProviderSelect").addEventListener("change", function () {
@@ -4717,7 +5149,7 @@ th {
       activateMainTab("selftest");
     }
 
-    // Load Sample 1 on first boot so the UI is immediately interactive
+    // Boot with Sample 1
     $("sourceTextarea").value = VeriRank.Samples[0].text;
     runOptimization();
   }
@@ -4729,144 +5161,7 @@ th {
   }
 })(window);
 
-</script>
-<script>
-(function() {
-  function getSupabaseConfig() {
-    var url = localStorage.getItem("verirank_supabase_url") || "";
-    var key = localStorage.getItem("verirank_supabase_key") || (window.__VERIRANK_CLOUD__ && window.__VERIRANK_CLOUD__.defaultKey) || "";
-    return { url: url, key: key };
-  }
 
-  function initSupabaseClient() {
-    var cfg = getSupabaseConfig();
-    if (cfg.url && cfg.key && window.supabase && window.supabase.createClient) {
-      try {
-        return window.supabase.createClient(cfg.url, cfg.key);
-      } catch(e) {
-        console.warn("Supabase init error:", e);
-      }
-    }
-    return null;
-  }
-
-  function loadRecentDocs() {
-    var sb = initSupabaseClient();
-    var tbody = document.getElementById("sbDocsTableBody");
-    if (!sb || !tbody) return;
-    tbody.innerHTML = "<tr><td colspan='6' class='muted'>Loading from Supabase...</td></tr>";
-    
-    sb.from("seo_documents").select("*").order("created_at", { ascending: false }).limit(20)
-      .then(function(res) {
-        if (res.error) {
-          tbody.innerHTML = "<tr><td colspan='6' style='color:#dc2626;'>Supabase Notice: Table <code>seo_documents</code> not found yet. Run the SQL schema in Supabase SQL editor.</td></tr>";
-          return;
-        }
-        var docs = res.data || [];
-        if (docs.length === 0) {
-          tbody.innerHTML = "<tr><td colspan='6' class='muted'>Connected to Supabase! No documents saved yet.</td></tr>";
-          return;
-        }
-        tbody.innerHTML = docs.map(function(d) {
-          var date = d.created_at ? new Date(d.created_at).toLocaleString() : "";
-          return "<tr>" +
-            "<td><strong>" + (d.title || "Untitled") + "</strong></td>" +
-            "<td><code>" + (d.primary_keyphrase || "-") + "</code></td>" +
-            "<td>" + (d.google_score || "-") + "/100</td>" +
-            "<td>" + (d.bing_score || "-") + "/100</td>" +
-            "<td><span class='badge ok'>" + (d.fact_lock_score || 100) + "% Verified</span></td>" +
-            "<td class='muted'>" + date + "</td>" +
-          "</tr>";
-        }).join("");
-      })
-      .catch(function(err) {
-        tbody.innerHTML = "<tr><td colspan='6' style='color:#dc2626;'>Error: " + err.message + "</td></tr>";
-      });
-  }
-
-  document.addEventListener("DOMContentLoaded", function() {
-    var cfg = getSupabaseConfig();
-    var urlInput = document.getElementById("sbUrlInput");
-    var keyInput = document.getElementById("sbKeyInput");
-    var statusMsg = document.getElementById("sbStatusMsg");
-
-    if (urlInput) urlInput.value = cfg.url;
-    if (keyInput) keyInput.value = cfg.key;
-
-    var saveConfigBtn = document.getElementById("saveSbConfigBtn");
-    if (saveConfigBtn) {
-      saveConfigBtn.addEventListener("click", function() {
-        var u = (urlInput.value || "").trim();
-        var k = (keyInput.value || "").trim();
-        localStorage.setItem("verirank_supabase_url", u);
-        localStorage.setItem("verirank_supabase_key", k);
-        statusMsg.style.color = "#059669";
-        statusMsg.textContent = "Supabase connection settings saved successfully!";
-        loadRecentDocs();
-      });
-    }
-
-    var saveDocBtn = document.getElementById("saveDocToSbBtn");
-    if (saveDocBtn) {
-      saveDocBtn.addEventListener("click", function() {
-        var sb = initSupabaseClient();
-        if (!sb) {
-          statusMsg.style.color = "#dc2626";
-          statusMsg.textContent = "Please enter your Supabase Project URL and click 'Save Connection Settings' first.";
-          return;
-        }
-        statusMsg.style.color = "#2563eb";
-        statusMsg.textContent = "Saving active document to Supabase...";
-
-        var src = (document.getElementById("sourceTextarea") && document.getElementById("sourceTextarea").value) || "";
-        var md = (document.getElementById("markdownOutputArea") && document.getElementById("markdownOutputArea").value) || "";
-        var title = (document.getElementById("serpGoogleTitle") && document.getElementById("serpGoogleTitle").textContent) || "Optimized SEO Document";
-        var kw = (document.getElementById("overrideKeywordInput") && document.getElementById("overrideKeywordInput").value) || "primary";
-
-        var gScore = parseInt((document.getElementById("scoreGoogleAfter") && document.getElementById("scoreGoogleAfter").textContent) || "95", 10) || 95;
-        var bScore = parseInt((document.getElementById("scoreBingAfter") && document.getElementById("scoreBingAfter").textContent) || "95", 10) || 95;
-        var hScore = parseInt((document.getElementById("scoreHarmony") && document.getElementById("scoreHarmony").textContent) || "95", 10) || 95;
-
-        var payload = {
-          title: title,
-          primary_keyphrase: kw,
-          source_text: src,
-          optimized_markdown: md,
-          google_score: gScore,
-          bing_score: bScore,
-          harmony_score: hScore,
-          fact_lock_score: 100,
-          created_at: new Date().toISOString()
-        };
-
-        sb.from("seo_documents").insert([payload])
-          .then(function(res) {
-            if (res.error) {
-              statusMsg.style.color = "#dc2626";
-              statusMsg.textContent = "Supabase Error: " + res.error.message;
-            } else {
-              statusMsg.style.color = "#059669";
-              statusMsg.textContent = "Document saved to Supabase (seo_documents table)!";
-              loadRecentDocs();
-            }
-          })
-          .catch(function(e) {
-            statusMsg.style.color = "#dc2626";
-            statusMsg.textContent = "Error saving: " + e.message;
-          });
-      });
-    }
-
-    var refreshBtn = document.getElementById("loadSbDocsBtn");
-    if (refreshBtn) {
-      refreshBtn.addEventListener("click", loadRecentDocs);
-    }
-
-    if (cfg.url && cfg.key) {
-      loadRecentDocs();
-    }
-  });
-})();
-</script>
+  </script>
 </body>
 </html>
