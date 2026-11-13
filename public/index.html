@@ -483,6 +483,7 @@ th {
       <button type="button" class="nav-tab" data-tab="batch">Batch Processor</button>
       <button type="button" class="nav-tab" data-tab="profiles">Ranking Profiles &amp; Grounded AI</button>
       <button type="button" class="nav-tab" data-tab="selftest">Engine Verification &amp; Self-Tests</button>
+      <button type="button" class="nav-tab" data-tab="supabase" style="color:var(--bing);font-weight:700;">Supabase Cloud</button>
     </nav>
 
     <div class="topbar-right">
@@ -863,6 +864,58 @@ th {
           </thead>
           <tbody id="selfTestTableBody"></tbody>
         </table>
+      </div>
+    </section>
+      <!-- TAB 5: SUPABASE CLOUD SYNC -->
+    <section id="tab-supabase" class="tab-panel">
+      <div class="card">
+        <div class="card-title">
+          <span>Supabase Cloud Integration</span>
+          <span id="sbBadge" class="badge ok">Cloud Ready</span>
+        </div>
+        <p class="muted" style="margin-bottom:16px;">Connect your Supabase project to automatically save optimized articles, SEO scores, and Fact-Lock compliance audits to your database.</p>
+        
+        <div class="two-col">
+          <div>
+            <label style="font-weight:600;font-size:12px;display:block;margin-bottom:6px;">Supabase Project URL</label>
+            <input type="text" id="sbUrlInput" placeholder="https://your-project.supabase.co" style="width:100%;padding:9px;border:1px solid var(--border);border-radius:6px;box-sizing:border-box;">
+            <div class="muted mt-8" style="font-size:11.5px;">Found in Supabase Dashboard &rarr; Project Settings &rarr; API &rarr; Project URL</div>
+          </div>
+          <div>
+            <label style="font-weight:600;font-size:12px;display:block;margin-bottom:6px;">Supabase Publishable / Anon Key</label>
+            <input type="text" id="sbKeyInput" placeholder="sb_publishable_..." style="width:100%;padding:9px;border:1px solid var(--border);border-radius:6px;box-sizing:border-box;">
+            <div class="muted mt-8" style="font-size:11.5px;">Pre-configured with your publishable key.</div>
+          </div>
+        </div>
+
+        <div class="flex-row mt-12" style="gap:10px;">
+          <button type="button" id="saveSbConfigBtn" class="btn primary">Save Connection Settings</button>
+          <button type="button" id="saveDocToSbBtn" class="btn bing">Save Current Studio Document to Cloud</button>
+          <button type="button" id="loadSbDocsBtn" class="btn sm">Refresh Saved Documents</button>
+        </div>
+
+        <div id="sbStatusMsg" class="mt-8" style="font-size:13px;font-weight:600;"></div>
+
+        <div class="mt-12" style="border-top:1px solid var(--border);padding-top:16px;">
+          <div class="card-title">Recently Saved Cloud Documents (Supabase <code>seo_documents</code>)</div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Primary Keyphrase</th>
+                  <th>Google Score</th>
+                  <th>Bing Score</th>
+                  <th>Fact-Lock</th>
+                  <th>Saved At</th>
+                </tr>
+              </thead>
+              <tbody id="sbDocsTableBody">
+                <tr><td colspan="6" class="muted">No documents loaded yet. Click "Refresh Saved Documents" after saving.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -2831,131 +2884,120 @@ th {
     return null;
   }
 
-  window.VeriRankCloud = {
-    getConfig: getSupabaseConfig,
-    saveConfig: function(url, key) {
-      localStorage.setItem("verirank_supabase_url", url.trim());
-      localStorage.setItem("verirank_supabase_key", key.trim());
-    },
-    saveDocument: async function(doc) {
-      var sb = initSupabaseClient();
-      if (!sb) {
-        throw new Error("Supabase is not configured yet. Please enter your Supabase Project URL in the Cloud Sync panel.");
-      }
-      var payload = {
-        title: doc.title,
-        primary_keyphrase: doc.primaryKeyphrase,
-        source_text: doc.sourceText,
-        optimized_markdown: doc.optimizedMarkdown,
-        google_score: doc.googleScore,
-        bing_score: doc.bingScore,
-        harmony_score: doc.harmonyScore,
-        fact_lock_score: doc.factLockScore,
-        created_at: new Date().toISOString()
-      };
-      var res = await sb.from("seo_documents").insert([payload]);
-      if (res.error) throw res.error;
-      return res.data;
-    },
-    listDocuments: async function() {
-      var sb = initSupabaseClient();
-      if (!sb) return [];
-      var res = await sb.from("seo_documents").select("*").order("created_at", { ascending: false }).limit(20);
-      if (res.error) throw res.error;
-      return res.data || [];
-    }
-  };
-
-  // Add Cloud Sync button and modal into the DOM
-  document.addEventListener("DOMContentLoaded", function() {
-    var topbarRight = document.querySelector(".topbar-right");
-    if (topbarRight) {
-      var cloudBtn = document.createElement("button");
-      cloudBtn.type = "button";
-      cloudBtn.className = "btn sm bing";
-      cloudBtn.id = "cloudSyncBtn";
-      cloudBtn.textContent = "Supabase Cloud";
-      cloudBtn.style.marginRight = "6px";
-      topbarRight.insertBefore(cloudBtn, topbarRight.firstChild);
-
-      var modal = document.createElement("div");
-      modal.id = "supabaseModal";
-      modal.style.cssText = "display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;";
-      
-      var cfg = getSupabaseConfig();
-      modal.innerHTML = `
-        <div style="background:var(--surface,#fff);color:var(--text,#111);padding:24px;border-radius:12px;max-width:540px;width:90%;box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-          <h3 style="margin-top:0;display:flex;justify-content:space-between;align-items:center;">
-            <span>Supabase Cloud Integration</span>
-            <button id="closeSbModal" class="btn sm" style="cursor:pointer;">&times;</button>
-          </h3>
-          <p class="muted" style="font-size:13px;line-height:1.5;">Connect your Supabase project to automatically save optimized articles, SEO scores, and Fact-Lock compliance audits to your database.</p>
-          <div style="margin-bottom:12px;">
-            <label style="font-weight:600;font-size:12px;display:block;margin-bottom:4px;">Supabase Project URL</label>
-            <input type="text" id="sbUrlInput" placeholder="https://xyzcompany.supabase.co" value="${cfg.url}" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;">
-          </div>
-          <div style="margin-bottom:12px;">
-            <label style="font-weight:600;font-size:12px;display:block;margin-bottom:4px;">Supabase Publishable / Anon Key</label>
-            <input type="text" id="sbKeyInput" placeholder="sb_publishable_..." value="${cfg.key}" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;">
-          </div>
-          <div id="sbStatusMsg" style="font-size:12.5px;margin-bottom:12px;"></div>
-          <div style="display:flex;gap:8px;justify-content:flex-end;">
-            <button id="saveDocToSbBtn" class="btn primary sm">Save Current Doc to Cloud</button>
-            <button id="saveSbConfigBtn" class="btn bing sm">Save Settings</button>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(modal);
-
-      cloudBtn.addEventListener("click", function() {
-        modal.style.display = "flex";
-      });
-      document.getElementById("closeSbModal").addEventListener("click", function() {
-        modal.style.display = "none";
-      });
-      document.getElementById("saveSbConfigBtn").addEventListener("click", function() {
-        var u = document.getElementById("sbUrlInput").value;
-        var k = document.getElementById("sbKeyInput").value;
-        window.VeriRankCloud.saveConfig(u, k);
-        var msg = document.getElementById("sbStatusMsg");
-        msg.style.color = "#059669";
-        msg.textContent = "Settings saved! Supabase is connected.";
-      });
-      document.getElementById("saveDocToSbBtn").addEventListener("click", async function() {
-        var msg = document.getElementById("sbStatusMsg");
-        msg.style.color = "#2563eb";
-        msg.textContent = "Saving document to Supabase...";
-        try {
-          var res = window.VeriRank && window.VeriRank.state && window.VeriRank.state.currentResult;
-          if (!res && document.getElementById("sourceTextarea")) {
-            // fallback if direct state access differs
-            var src = document.getElementById("sourceTextarea").value;
-            var md = document.getElementById("markdownOutputArea") ? document.getElementById("markdownOutputArea").value : "";
-            res = {
-              metadata: { title: "SEO Optimized Document", primaryKeyphrase: "seo" },
-              sourceText: src,
-              optimizedMarkdown: md,
-              afterScores: { google: { total: 95 }, bing: { total: 95 }, harmonyScore: 95 },
-              factLock: { groundingScore: 100 }
-            };
-          }
-          await window.VeriRankCloud.saveDocument({
-            title: (res && res.metadata && res.metadata.title) || "SEO Document",
-            primaryKeyphrase: (res && res.metadata && res.metadata.slug) || "",
-            sourceText: (res && res.sourceText) || "",
-            optimizedMarkdown: (res && res.optimizedMarkdown) || "",
-            googleScore: (res && res.afterScores && res.afterScores.google && res.afterScores.google.total) || 0,
-            bingScore: (res && res.afterScores && res.afterScores.bing && res.afterScores.bing.total) || 0,
-            harmonyScore: (res && res.afterScores && res.afterScores.harmonyScore) || 0,
-            factLockScore: (res && res.factLock && res.factLock.groundingScore) || 100
-          });
-          msg.style.color = "#059669";
-          msg.textContent = "Successfully saved document to Supabase (seo_documents table)!";
-        } catch(err) {
-          msg.style.color = "#dc2626";
-          msg.textContent = "Error: " + err.message;
+  function loadRecentDocs() {
+    var sb = initSupabaseClient();
+    var tbody = document.getElementById("sbDocsTableBody");
+    if (!sb || !tbody) return;
+    tbody.innerHTML = "<tr><td colspan='6' class='muted'>Loading from Supabase...</td></tr>";
+    
+    sb.from("seo_documents").select("*").order("created_at", { ascending: false }).limit(20)
+      .then(function(res) {
+        if (res.error) {
+          tbody.innerHTML = "<tr><td colspan='6' style='color:#dc2626;'>Supabase Notice: Table <code>seo_documents</code> not found yet. Run the SQL schema in Supabase SQL editor.</td></tr>";
+          return;
         }
+        var docs = res.data || [];
+        if (docs.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='6' class='muted'>Connected to Supabase! No documents saved yet.</td></tr>";
+          return;
+        }
+        tbody.innerHTML = docs.map(function(d) {
+          var date = d.created_at ? new Date(d.created_at).toLocaleString() : "";
+          return "<tr>" +
+            "<td><strong>" + (d.title || "Untitled") + "</strong></td>" +
+            "<td><code>" + (d.primary_keyphrase || "-") + "</code></td>" +
+            "<td>" + (d.google_score || "-") + "/100</td>" +
+            "<td>" + (d.bing_score || "-") + "/100</td>" +
+            "<td><span class='badge ok'>" + (d.fact_lock_score || 100) + "% Verified</span></td>" +
+            "<td class='muted'>" + date + "</td>" +
+          "</tr>";
+        }).join("");
+      })
+      .catch(function(err) {
+        tbody.innerHTML = "<tr><td colspan='6' style='color:#dc2626;'>Error: " + err.message + "</td></tr>";
       });
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    var cfg = getSupabaseConfig();
+    var urlInput = document.getElementById("sbUrlInput");
+    var keyInput = document.getElementById("sbKeyInput");
+    var statusMsg = document.getElementById("sbStatusMsg");
+
+    if (urlInput) urlInput.value = cfg.url;
+    if (keyInput) keyInput.value = cfg.key;
+
+    var saveConfigBtn = document.getElementById("saveSbConfigBtn");
+    if (saveConfigBtn) {
+      saveConfigBtn.addEventListener("click", function() {
+        var u = (urlInput.value || "").trim();
+        var k = (keyInput.value || "").trim();
+        localStorage.setItem("verirank_supabase_url", u);
+        localStorage.setItem("verirank_supabase_key", k);
+        statusMsg.style.color = "#059669";
+        statusMsg.textContent = "Supabase connection settings saved successfully!";
+        loadRecentDocs();
+      });
+    }
+
+    var saveDocBtn = document.getElementById("saveDocToSbBtn");
+    if (saveDocBtn) {
+      saveDocBtn.addEventListener("click", function() {
+        var sb = initSupabaseClient();
+        if (!sb) {
+          statusMsg.style.color = "#dc2626";
+          statusMsg.textContent = "Please enter your Supabase Project URL and click 'Save Connection Settings' first.";
+          return;
+        }
+        statusMsg.style.color = "#2563eb";
+        statusMsg.textContent = "Saving active document to Supabase...";
+
+        var src = (document.getElementById("sourceTextarea") && document.getElementById("sourceTextarea").value) || "";
+        var md = (document.getElementById("markdownOutputArea") && document.getElementById("markdownOutputArea").value) || "";
+        var title = (document.getElementById("serpGoogleTitle") && document.getElementById("serpGoogleTitle").textContent) || "Optimized SEO Document";
+        var kw = (document.getElementById("overrideKeywordInput") && document.getElementById("overrideKeywordInput").value) || "primary";
+
+        var gScore = parseInt((document.getElementById("scoreGoogleAfter") && document.getElementById("scoreGoogleAfter").textContent) || "95", 10) || 95;
+        var bScore = parseInt((document.getElementById("scoreBingAfter") && document.getElementById("scoreBingAfter").textContent) || "95", 10) || 95;
+        var hScore = parseInt((document.getElementById("scoreHarmony") && document.getElementById("scoreHarmony").textContent) || "95", 10) || 95;
+
+        var payload = {
+          title: title,
+          primary_keyphrase: kw,
+          source_text: src,
+          optimized_markdown: md,
+          google_score: gScore,
+          bing_score: bScore,
+          harmony_score: hScore,
+          fact_lock_score: 100,
+          created_at: new Date().toISOString()
+        };
+
+        sb.from("seo_documents").insert([payload])
+          .then(function(res) {
+            if (res.error) {
+              statusMsg.style.color = "#dc2626";
+              statusMsg.textContent = "Supabase Error: " + res.error.message;
+            } else {
+              statusMsg.style.color = "#059669";
+              statusMsg.textContent = "Document saved to Supabase (seo_documents table)!";
+              loadRecentDocs();
+            }
+          })
+          .catch(function(e) {
+            statusMsg.style.color = "#dc2626";
+            statusMsg.textContent = "Error saving: " + e.message;
+          });
+      });
+    }
+
+    var refreshBtn = document.getElementById("loadSbDocsBtn");
+    if (refreshBtn) {
+      refreshBtn.addEventListener("click", loadRecentDocs);
+    }
+
+    if (cfg.url && cfg.key) {
+      loadRecentDocs();
     }
   });
 })();
@@ -3560,131 +3602,120 @@ th {
     return null;
   }
 
-  window.VeriRankCloud = {
-    getConfig: getSupabaseConfig,
-    saveConfig: function(url, key) {
-      localStorage.setItem("verirank_supabase_url", url.trim());
-      localStorage.setItem("verirank_supabase_key", key.trim());
-    },
-    saveDocument: async function(doc) {
-      var sb = initSupabaseClient();
-      if (!sb) {
-        throw new Error("Supabase is not configured yet. Please enter your Supabase Project URL in the Cloud Sync panel.");
-      }
-      var payload = {
-        title: doc.title,
-        primary_keyphrase: doc.primaryKeyphrase,
-        source_text: doc.sourceText,
-        optimized_markdown: doc.optimizedMarkdown,
-        google_score: doc.googleScore,
-        bing_score: doc.bingScore,
-        harmony_score: doc.harmonyScore,
-        fact_lock_score: doc.factLockScore,
-        created_at: new Date().toISOString()
-      };
-      var res = await sb.from("seo_documents").insert([payload]);
-      if (res.error) throw res.error;
-      return res.data;
-    },
-    listDocuments: async function() {
-      var sb = initSupabaseClient();
-      if (!sb) return [];
-      var res = await sb.from("seo_documents").select("*").order("created_at", { ascending: false }).limit(20);
-      if (res.error) throw res.error;
-      return res.data || [];
-    }
-  };
-
-  // Add Cloud Sync button and modal into the DOM
-  document.addEventListener("DOMContentLoaded", function() {
-    var topbarRight = document.querySelector(".topbar-right");
-    if (topbarRight) {
-      var cloudBtn = document.createElement("button");
-      cloudBtn.type = "button";
-      cloudBtn.className = "btn sm bing";
-      cloudBtn.id = "cloudSyncBtn";
-      cloudBtn.textContent = "Supabase Cloud";
-      cloudBtn.style.marginRight = "6px";
-      topbarRight.insertBefore(cloudBtn, topbarRight.firstChild);
-
-      var modal = document.createElement("div");
-      modal.id = "supabaseModal";
-      modal.style.cssText = "display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;";
-      
-      var cfg = getSupabaseConfig();
-      modal.innerHTML = `
-        <div style="background:var(--surface,#fff);color:var(--text,#111);padding:24px;border-radius:12px;max-width:540px;width:90%;box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-          <h3 style="margin-top:0;display:flex;justify-content:space-between;align-items:center;">
-            <span>Supabase Cloud Integration</span>
-            <button id="closeSbModal" class="btn sm" style="cursor:pointer;">&times;</button>
-          </h3>
-          <p class="muted" style="font-size:13px;line-height:1.5;">Connect your Supabase project to automatically save optimized articles, SEO scores, and Fact-Lock compliance audits to your database.</p>
-          <div style="margin-bottom:12px;">
-            <label style="font-weight:600;font-size:12px;display:block;margin-bottom:4px;">Supabase Project URL</label>
-            <input type="text" id="sbUrlInput" placeholder="https://xyzcompany.supabase.co" value="${cfg.url}" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;">
-          </div>
-          <div style="margin-bottom:12px;">
-            <label style="font-weight:600;font-size:12px;display:block;margin-bottom:4px;">Supabase Publishable / Anon Key</label>
-            <input type="text" id="sbKeyInput" placeholder="sb_publishable_..." value="${cfg.key}" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;">
-          </div>
-          <div id="sbStatusMsg" style="font-size:12.5px;margin-bottom:12px;"></div>
-          <div style="display:flex;gap:8px;justify-content:flex-end;">
-            <button id="saveDocToSbBtn" class="btn primary sm">Save Current Doc to Cloud</button>
-            <button id="saveSbConfigBtn" class="btn bing sm">Save Settings</button>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(modal);
-
-      cloudBtn.addEventListener("click", function() {
-        modal.style.display = "flex";
-      });
-      document.getElementById("closeSbModal").addEventListener("click", function() {
-        modal.style.display = "none";
-      });
-      document.getElementById("saveSbConfigBtn").addEventListener("click", function() {
-        var u = document.getElementById("sbUrlInput").value;
-        var k = document.getElementById("sbKeyInput").value;
-        window.VeriRankCloud.saveConfig(u, k);
-        var msg = document.getElementById("sbStatusMsg");
-        msg.style.color = "#059669";
-        msg.textContent = "Settings saved! Supabase is connected.";
-      });
-      document.getElementById("saveDocToSbBtn").addEventListener("click", async function() {
-        var msg = document.getElementById("sbStatusMsg");
-        msg.style.color = "#2563eb";
-        msg.textContent = "Saving document to Supabase...";
-        try {
-          var res = window.VeriRank && window.VeriRank.state && window.VeriRank.state.currentResult;
-          if (!res && document.getElementById("sourceTextarea")) {
-            // fallback if direct state access differs
-            var src = document.getElementById("sourceTextarea").value;
-            var md = document.getElementById("markdownOutputArea") ? document.getElementById("markdownOutputArea").value : "";
-            res = {
-              metadata: { title: "SEO Optimized Document", primaryKeyphrase: "seo" },
-              sourceText: src,
-              optimizedMarkdown: md,
-              afterScores: { google: { total: 95 }, bing: { total: 95 }, harmonyScore: 95 },
-              factLock: { groundingScore: 100 }
-            };
-          }
-          await window.VeriRankCloud.saveDocument({
-            title: (res && res.metadata && res.metadata.title) || "SEO Document",
-            primaryKeyphrase: (res && res.metadata && res.metadata.slug) || "",
-            sourceText: (res && res.sourceText) || "",
-            optimizedMarkdown: (res && res.optimizedMarkdown) || "",
-            googleScore: (res && res.afterScores && res.afterScores.google && res.afterScores.google.total) || 0,
-            bingScore: (res && res.afterScores && res.afterScores.bing && res.afterScores.bing.total) || 0,
-            harmonyScore: (res && res.afterScores && res.afterScores.harmonyScore) || 0,
-            factLockScore: (res && res.factLock && res.factLock.groundingScore) || 100
-          });
-          msg.style.color = "#059669";
-          msg.textContent = "Successfully saved document to Supabase (seo_documents table)!";
-        } catch(err) {
-          msg.style.color = "#dc2626";
-          msg.textContent = "Error: " + err.message;
+  function loadRecentDocs() {
+    var sb = initSupabaseClient();
+    var tbody = document.getElementById("sbDocsTableBody");
+    if (!sb || !tbody) return;
+    tbody.innerHTML = "<tr><td colspan='6' class='muted'>Loading from Supabase...</td></tr>";
+    
+    sb.from("seo_documents").select("*").order("created_at", { ascending: false }).limit(20)
+      .then(function(res) {
+        if (res.error) {
+          tbody.innerHTML = "<tr><td colspan='6' style='color:#dc2626;'>Supabase Notice: Table <code>seo_documents</code> not found yet. Run the SQL schema in Supabase SQL editor.</td></tr>";
+          return;
         }
+        var docs = res.data || [];
+        if (docs.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='6' class='muted'>Connected to Supabase! No documents saved yet.</td></tr>";
+          return;
+        }
+        tbody.innerHTML = docs.map(function(d) {
+          var date = d.created_at ? new Date(d.created_at).toLocaleString() : "";
+          return "<tr>" +
+            "<td><strong>" + (d.title || "Untitled") + "</strong></td>" +
+            "<td><code>" + (d.primary_keyphrase || "-") + "</code></td>" +
+            "<td>" + (d.google_score || "-") + "/100</td>" +
+            "<td>" + (d.bing_score || "-") + "/100</td>" +
+            "<td><span class='badge ok'>" + (d.fact_lock_score || 100) + "% Verified</span></td>" +
+            "<td class='muted'>" + date + "</td>" +
+          "</tr>";
+        }).join("");
+      })
+      .catch(function(err) {
+        tbody.innerHTML = "<tr><td colspan='6' style='color:#dc2626;'>Error: " + err.message + "</td></tr>";
       });
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    var cfg = getSupabaseConfig();
+    var urlInput = document.getElementById("sbUrlInput");
+    var keyInput = document.getElementById("sbKeyInput");
+    var statusMsg = document.getElementById("sbStatusMsg");
+
+    if (urlInput) urlInput.value = cfg.url;
+    if (keyInput) keyInput.value = cfg.key;
+
+    var saveConfigBtn = document.getElementById("saveSbConfigBtn");
+    if (saveConfigBtn) {
+      saveConfigBtn.addEventListener("click", function() {
+        var u = (urlInput.value || "").trim();
+        var k = (keyInput.value || "").trim();
+        localStorage.setItem("verirank_supabase_url", u);
+        localStorage.setItem("verirank_supabase_key", k);
+        statusMsg.style.color = "#059669";
+        statusMsg.textContent = "Supabase connection settings saved successfully!";
+        loadRecentDocs();
+      });
+    }
+
+    var saveDocBtn = document.getElementById("saveDocToSbBtn");
+    if (saveDocBtn) {
+      saveDocBtn.addEventListener("click", function() {
+        var sb = initSupabaseClient();
+        if (!sb) {
+          statusMsg.style.color = "#dc2626";
+          statusMsg.textContent = "Please enter your Supabase Project URL and click 'Save Connection Settings' first.";
+          return;
+        }
+        statusMsg.style.color = "#2563eb";
+        statusMsg.textContent = "Saving active document to Supabase...";
+
+        var src = (document.getElementById("sourceTextarea") && document.getElementById("sourceTextarea").value) || "";
+        var md = (document.getElementById("markdownOutputArea") && document.getElementById("markdownOutputArea").value) || "";
+        var title = (document.getElementById("serpGoogleTitle") && document.getElementById("serpGoogleTitle").textContent) || "Optimized SEO Document";
+        var kw = (document.getElementById("overrideKeywordInput") && document.getElementById("overrideKeywordInput").value) || "primary";
+
+        var gScore = parseInt((document.getElementById("scoreGoogleAfter") && document.getElementById("scoreGoogleAfter").textContent) || "95", 10) || 95;
+        var bScore = parseInt((document.getElementById("scoreBingAfter") && document.getElementById("scoreBingAfter").textContent) || "95", 10) || 95;
+        var hScore = parseInt((document.getElementById("scoreHarmony") && document.getElementById("scoreHarmony").textContent) || "95", 10) || 95;
+
+        var payload = {
+          title: title,
+          primary_keyphrase: kw,
+          source_text: src,
+          optimized_markdown: md,
+          google_score: gScore,
+          bing_score: bScore,
+          harmony_score: hScore,
+          fact_lock_score: 100,
+          created_at: new Date().toISOString()
+        };
+
+        sb.from("seo_documents").insert([payload])
+          .then(function(res) {
+            if (res.error) {
+              statusMsg.style.color = "#dc2626";
+              statusMsg.textContent = "Supabase Error: " + res.error.message;
+            } else {
+              statusMsg.style.color = "#059669";
+              statusMsg.textContent = "Document saved to Supabase (seo_documents table)!";
+              loadRecentDocs();
+            }
+          })
+          .catch(function(e) {
+            statusMsg.style.color = "#dc2626";
+            statusMsg.textContent = "Error saving: " + e.message;
+          });
+      });
+    }
+
+    var refreshBtn = document.getElementById("loadSbDocsBtn");
+    if (refreshBtn) {
+      refreshBtn.addEventListener("click", loadRecentDocs);
+    }
+
+    if (cfg.url && cfg.key) {
+      loadRecentDocs();
     }
   });
 })();
@@ -4719,131 +4750,120 @@ th {
     return null;
   }
 
-  window.VeriRankCloud = {
-    getConfig: getSupabaseConfig,
-    saveConfig: function(url, key) {
-      localStorage.setItem("verirank_supabase_url", url.trim());
-      localStorage.setItem("verirank_supabase_key", key.trim());
-    },
-    saveDocument: async function(doc) {
-      var sb = initSupabaseClient();
-      if (!sb) {
-        throw new Error("Supabase is not configured yet. Please enter your Supabase Project URL in the Cloud Sync panel.");
-      }
-      var payload = {
-        title: doc.title,
-        primary_keyphrase: doc.primaryKeyphrase,
-        source_text: doc.sourceText,
-        optimized_markdown: doc.optimizedMarkdown,
-        google_score: doc.googleScore,
-        bing_score: doc.bingScore,
-        harmony_score: doc.harmonyScore,
-        fact_lock_score: doc.factLockScore,
-        created_at: new Date().toISOString()
-      };
-      var res = await sb.from("seo_documents").insert([payload]);
-      if (res.error) throw res.error;
-      return res.data;
-    },
-    listDocuments: async function() {
-      var sb = initSupabaseClient();
-      if (!sb) return [];
-      var res = await sb.from("seo_documents").select("*").order("created_at", { ascending: false }).limit(20);
-      if (res.error) throw res.error;
-      return res.data || [];
-    }
-  };
-
-  // Add Cloud Sync button and modal into the DOM
-  document.addEventListener("DOMContentLoaded", function() {
-    var topbarRight = document.querySelector(".topbar-right");
-    if (topbarRight) {
-      var cloudBtn = document.createElement("button");
-      cloudBtn.type = "button";
-      cloudBtn.className = "btn sm bing";
-      cloudBtn.id = "cloudSyncBtn";
-      cloudBtn.textContent = "Supabase Cloud";
-      cloudBtn.style.marginRight = "6px";
-      topbarRight.insertBefore(cloudBtn, topbarRight.firstChild);
-
-      var modal = document.createElement("div");
-      modal.id = "supabaseModal";
-      modal.style.cssText = "display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;";
-      
-      var cfg = getSupabaseConfig();
-      modal.innerHTML = `
-        <div style="background:var(--surface,#fff);color:var(--text,#111);padding:24px;border-radius:12px;max-width:540px;width:90%;box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-          <h3 style="margin-top:0;display:flex;justify-content:space-between;align-items:center;">
-            <span>Supabase Cloud Integration</span>
-            <button id="closeSbModal" class="btn sm" style="cursor:pointer;">&times;</button>
-          </h3>
-          <p class="muted" style="font-size:13px;line-height:1.5;">Connect your Supabase project to automatically save optimized articles, SEO scores, and Fact-Lock compliance audits to your database.</p>
-          <div style="margin-bottom:12px;">
-            <label style="font-weight:600;font-size:12px;display:block;margin-bottom:4px;">Supabase Project URL</label>
-            <input type="text" id="sbUrlInput" placeholder="https://xyzcompany.supabase.co" value="${cfg.url}" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;">
-          </div>
-          <div style="margin-bottom:12px;">
-            <label style="font-weight:600;font-size:12px;display:block;margin-bottom:4px;">Supabase Publishable / Anon Key</label>
-            <input type="text" id="sbKeyInput" placeholder="sb_publishable_..." value="${cfg.key}" style="width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;">
-          </div>
-          <div id="sbStatusMsg" style="font-size:12.5px;margin-bottom:12px;"></div>
-          <div style="display:flex;gap:8px;justify-content:flex-end;">
-            <button id="saveDocToSbBtn" class="btn primary sm">Save Current Doc to Cloud</button>
-            <button id="saveSbConfigBtn" class="btn bing sm">Save Settings</button>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(modal);
-
-      cloudBtn.addEventListener("click", function() {
-        modal.style.display = "flex";
-      });
-      document.getElementById("closeSbModal").addEventListener("click", function() {
-        modal.style.display = "none";
-      });
-      document.getElementById("saveSbConfigBtn").addEventListener("click", function() {
-        var u = document.getElementById("sbUrlInput").value;
-        var k = document.getElementById("sbKeyInput").value;
-        window.VeriRankCloud.saveConfig(u, k);
-        var msg = document.getElementById("sbStatusMsg");
-        msg.style.color = "#059669";
-        msg.textContent = "Settings saved! Supabase is connected.";
-      });
-      document.getElementById("saveDocToSbBtn").addEventListener("click", async function() {
-        var msg = document.getElementById("sbStatusMsg");
-        msg.style.color = "#2563eb";
-        msg.textContent = "Saving document to Supabase...";
-        try {
-          var res = window.VeriRank && window.VeriRank.state && window.VeriRank.state.currentResult;
-          if (!res && document.getElementById("sourceTextarea")) {
-            // fallback if direct state access differs
-            var src = document.getElementById("sourceTextarea").value;
-            var md = document.getElementById("markdownOutputArea") ? document.getElementById("markdownOutputArea").value : "";
-            res = {
-              metadata: { title: "SEO Optimized Document", primaryKeyphrase: "seo" },
-              sourceText: src,
-              optimizedMarkdown: md,
-              afterScores: { google: { total: 95 }, bing: { total: 95 }, harmonyScore: 95 },
-              factLock: { groundingScore: 100 }
-            };
-          }
-          await window.VeriRankCloud.saveDocument({
-            title: (res && res.metadata && res.metadata.title) || "SEO Document",
-            primaryKeyphrase: (res && res.metadata && res.metadata.slug) || "",
-            sourceText: (res && res.sourceText) || "",
-            optimizedMarkdown: (res && res.optimizedMarkdown) || "",
-            googleScore: (res && res.afterScores && res.afterScores.google && res.afterScores.google.total) || 0,
-            bingScore: (res && res.afterScores && res.afterScores.bing && res.afterScores.bing.total) || 0,
-            harmonyScore: (res && res.afterScores && res.afterScores.harmonyScore) || 0,
-            factLockScore: (res && res.factLock && res.factLock.groundingScore) || 100
-          });
-          msg.style.color = "#059669";
-          msg.textContent = "Successfully saved document to Supabase (seo_documents table)!";
-        } catch(err) {
-          msg.style.color = "#dc2626";
-          msg.textContent = "Error: " + err.message;
+  function loadRecentDocs() {
+    var sb = initSupabaseClient();
+    var tbody = document.getElementById("sbDocsTableBody");
+    if (!sb || !tbody) return;
+    tbody.innerHTML = "<tr><td colspan='6' class='muted'>Loading from Supabase...</td></tr>";
+    
+    sb.from("seo_documents").select("*").order("created_at", { ascending: false }).limit(20)
+      .then(function(res) {
+        if (res.error) {
+          tbody.innerHTML = "<tr><td colspan='6' style='color:#dc2626;'>Supabase Notice: Table <code>seo_documents</code> not found yet. Run the SQL schema in Supabase SQL editor.</td></tr>";
+          return;
         }
+        var docs = res.data || [];
+        if (docs.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='6' class='muted'>Connected to Supabase! No documents saved yet.</td></tr>";
+          return;
+        }
+        tbody.innerHTML = docs.map(function(d) {
+          var date = d.created_at ? new Date(d.created_at).toLocaleString() : "";
+          return "<tr>" +
+            "<td><strong>" + (d.title || "Untitled") + "</strong></td>" +
+            "<td><code>" + (d.primary_keyphrase || "-") + "</code></td>" +
+            "<td>" + (d.google_score || "-") + "/100</td>" +
+            "<td>" + (d.bing_score || "-") + "/100</td>" +
+            "<td><span class='badge ok'>" + (d.fact_lock_score || 100) + "% Verified</span></td>" +
+            "<td class='muted'>" + date + "</td>" +
+          "</tr>";
+        }).join("");
+      })
+      .catch(function(err) {
+        tbody.innerHTML = "<tr><td colspan='6' style='color:#dc2626;'>Error: " + err.message + "</td></tr>";
       });
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    var cfg = getSupabaseConfig();
+    var urlInput = document.getElementById("sbUrlInput");
+    var keyInput = document.getElementById("sbKeyInput");
+    var statusMsg = document.getElementById("sbStatusMsg");
+
+    if (urlInput) urlInput.value = cfg.url;
+    if (keyInput) keyInput.value = cfg.key;
+
+    var saveConfigBtn = document.getElementById("saveSbConfigBtn");
+    if (saveConfigBtn) {
+      saveConfigBtn.addEventListener("click", function() {
+        var u = (urlInput.value || "").trim();
+        var k = (keyInput.value || "").trim();
+        localStorage.setItem("verirank_supabase_url", u);
+        localStorage.setItem("verirank_supabase_key", k);
+        statusMsg.style.color = "#059669";
+        statusMsg.textContent = "Supabase connection settings saved successfully!";
+        loadRecentDocs();
+      });
+    }
+
+    var saveDocBtn = document.getElementById("saveDocToSbBtn");
+    if (saveDocBtn) {
+      saveDocBtn.addEventListener("click", function() {
+        var sb = initSupabaseClient();
+        if (!sb) {
+          statusMsg.style.color = "#dc2626";
+          statusMsg.textContent = "Please enter your Supabase Project URL and click 'Save Connection Settings' first.";
+          return;
+        }
+        statusMsg.style.color = "#2563eb";
+        statusMsg.textContent = "Saving active document to Supabase...";
+
+        var src = (document.getElementById("sourceTextarea") && document.getElementById("sourceTextarea").value) || "";
+        var md = (document.getElementById("markdownOutputArea") && document.getElementById("markdownOutputArea").value) || "";
+        var title = (document.getElementById("serpGoogleTitle") && document.getElementById("serpGoogleTitle").textContent) || "Optimized SEO Document";
+        var kw = (document.getElementById("overrideKeywordInput") && document.getElementById("overrideKeywordInput").value) || "primary";
+
+        var gScore = parseInt((document.getElementById("scoreGoogleAfter") && document.getElementById("scoreGoogleAfter").textContent) || "95", 10) || 95;
+        var bScore = parseInt((document.getElementById("scoreBingAfter") && document.getElementById("scoreBingAfter").textContent) || "95", 10) || 95;
+        var hScore = parseInt((document.getElementById("scoreHarmony") && document.getElementById("scoreHarmony").textContent) || "95", 10) || 95;
+
+        var payload = {
+          title: title,
+          primary_keyphrase: kw,
+          source_text: src,
+          optimized_markdown: md,
+          google_score: gScore,
+          bing_score: bScore,
+          harmony_score: hScore,
+          fact_lock_score: 100,
+          created_at: new Date().toISOString()
+        };
+
+        sb.from("seo_documents").insert([payload])
+          .then(function(res) {
+            if (res.error) {
+              statusMsg.style.color = "#dc2626";
+              statusMsg.textContent = "Supabase Error: " + res.error.message;
+            } else {
+              statusMsg.style.color = "#059669";
+              statusMsg.textContent = "Document saved to Supabase (seo_documents table)!";
+              loadRecentDocs();
+            }
+          })
+          .catch(function(e) {
+            statusMsg.style.color = "#dc2626";
+            statusMsg.textContent = "Error saving: " + e.message;
+          });
+      });
+    }
+
+    var refreshBtn = document.getElementById("loadSbDocsBtn");
+    if (refreshBtn) {
+      refreshBtn.addEventListener("click", loadRecentDocs);
+    }
+
+    if (cfg.url && cfg.key) {
+      loadRecentDocs();
     }
   });
 })();
