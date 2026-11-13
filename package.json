@@ -1,0 +1,9 @@
+{
+  "name": "verirank-seo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "VeriRank SEO Studio — Dual-Engine Google & Bing SEO with Fact-Lock Zero-Hallucination Core",
+  "scripts": {
+    "start": "npx serve public"
+  }
+}
