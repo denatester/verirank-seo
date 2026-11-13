@@ -316,19 +316,170 @@ textarea.code-input {
   font-weight: 600;
 }
 
-.options-grid {
+.step-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 13px 0 6px;
+}
+
+.preset-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 7px 12px;
-  margin: 12px 0 14px;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.preset-card {
+  border: 1px solid var(--border-strong);
+  background: var(--surface-alt);
+  border-radius: 9px;
+  padding: 8px 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.14s ease;
+  user-select: none;
+}
+
+.preset-card:hover {
+  border-color: var(--primary);
+  background: var(--surface);
+}
+
+.preset-card.active {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.preset-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.preset-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.preset-card.active .preset-title {
+  color: var(--primary);
+}
+
+.preset-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  margin: 6px 0 14px;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-alt);
   font-size: 12.5px;
 }
 
-.options-grid label {
+.option-item label {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   cursor: pointer;
+  flex: 1;
+  font-weight: 500;
+}
+
+.btn-with-help {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.flex-1-wrap {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: 1;
+}
+
+.help-tip {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  flex-shrink: 0;
+  transition: all 0.14s ease;
+}
+
+.help-tip:hover,
+.help-tip:focus-visible {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  outline: none;
+}
+
+.help-popover {
+  position: fixed;
+  z-index: 1200;
+  max-width: 295px;
+  background: #0f172a;
+  color: #f8fafc;
+  border: 1px solid #334155;
+  border-radius: 9px;
+  padding: 10px 12px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.14s ease, transform 0.14s ease;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.help-popover.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.help-popover-title {
+  font-weight: 700;
+  font-size: 12px;
+  color: #93c5fd;
+  margin-bottom: 3px;
+}
+
+.help-popover-body {
+  color: #f1f5f9;
+  font-weight: 400;
 }
 
 .scoreboard {
@@ -359,6 +510,7 @@ textarea.code-input {
 .score-tile.tile-harmony { border-top-color: #6366f1; }
 .score-tile.tile-factlock { border-top-color: var(--ok); }
 
+.score-label-row { display: flex; align-items: center; gap: 5px; }
 .score-label { font-size: 11.5px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
 .score-value { font-size: 22px; font-weight: 800; margin-top: 2px; font-variant-numeric: tabular-nums; }
 .score-delta { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
@@ -616,103 +768,149 @@ details.sql-details summary {
       <div class="brand-mark">VR</div>
       <div>
         <div class="brand-title">VeriRank SEO Studio</div>
-        <div class="brand-sub">Dual-Engine (Google + Bing/Copilot) &bull; Fact-Lock&trade; Zero-Hallucination Core</div>
+        <div class="brand-sub">Google &amp; Bing SEO Optimizer &bull; 100% Fact-Checked (Zero Hallucinations)</div>
       </div>
     </div>
 
     <nav class="nav-tabs" aria-label="Primary Views">
       <button type="button" class="nav-tab active" data-tab="studio">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        Interactive SEO Studio
+        SEO Content Editor
       </button>
       <button type="button" class="nav-tab" data-tab="batch">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Batch Processor
+        Bulk File Optimizer
       </button>
       <button type="button" class="nav-tab" data-tab="supabase">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-        Cloud Sync (Supabase)
+        Saved Cloud Projects
       </button>
       <button type="button" class="nav-tab" data-tab="profiles">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        Ranking Profiles &amp; AI
+        SEO Rules &amp; AI
       </button>
       <button type="button" class="nav-tab" data-tab="selftest">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        Verification Suite
+        System Health Check
       </button>
     </nav>
 
     <div class="topbar-right">
-      <span id="engineSpeedBadge" class="badge ok" title="Deterministic optimization latency">-- ms</span>
+      <span id="engineSpeedBadge" class="badge ok" title="Optimization speed in milliseconds">-- ms</span>
       <span id="hostModeBadge" class="badge primary">Offline Portable Mode</span>
+      <button type="button" class="help-tip" aria-label="Explain runtime mode and speed" data-tip-title="Runtime Mode &amp; Speed" data-tip="Shows how fast your last optimization ran and where VeriRank is running (Cloud Web Edition, Windows Desktop App, or Offline File). Your drafts stay private in browser memory until you choose to save or export.">?</button>
       <button type="button" id="themeToggleBtn" class="btn sm">Dark Theme</button>
     </div>
   </header>
 
   <main class="container">
-    <!-- TAB 1: INTERACTIVE SEO STUDIO -->
+    <!-- TAB 1: SEO CONTENT EDITOR -->
     <section id="tab-studio" class="tab-panel active">
       <div class="studio-grid">
-        <!-- Left Column: Source Input & Controls -->
+        <!-- Left Column: Guided 4-Step Setup -->
         <div class="card">
           <div class="card-title">
-            <span>1. Source Document &amp; Subject Controls</span>
+            <span>1. What Type of Content Are You Optimizing?</span>
+            <button type="button" class="help-tip" aria-label="Explain content type presets" data-tip-title="1-Click Content Type Presets" data-tip="Pick the style of writing you pasted below. Each button automatically switches the formatting rules, heading style, Google Schema type (Article, Product, or Book), and intro pacing so creative writing stays poetic while business pages get full SEO structure.">?</button>
+          </div>
+          <div id="presetGrid" class="preset-grid"></div>
+
+          <div class="card-title mt-12">
+            <span>2. Paste or Upload Your Text</span>
             <div class="flex-row">
               <button type="button" id="clearSourceBtn" class="btn sm">Clear</button>
               <label class="btn sm" style="cursor:pointer;">
-                Import File
+                Upload File
                 <input type="file" id="singleFileInput" accept=".txt,.md,.html,.htm" style="display:none;">
               </label>
             </div>
           </div>
 
+          <div class="muted" style="font-size:11.5px;margin-bottom:5px;">Try an example (click any button to test):</div>
           <div class="sample-row" id="sampleButtons"></div>
 
-          <textarea id="sourceTextarea" class="code-input" rows="13" placeholder="Paste any Plain Text, Markdown, or HTML article, product page, compliance note, or knowledge-base draft..."></textarea>
+          <textarea id="sourceTextarea" class="code-input" rows="11" placeholder="Paste any website copy, blog post, product description, or fiction book blurb here..."></textarea>
           <div id="sourceStatsBar" class="telemetry-bar">
             <span>Words: <strong>0</strong></span>
             <span>Sentences: <strong>0</strong></span>
-            <span>Format: <strong>Plain</strong></span>
+            <span>Format: <strong>Plain Text</strong></span>
             <span>Read Time: <strong>0m</strong></span>
           </div>
 
-          <div class="mt-12">
-            <div class="muted" style="font-weight:600;margin-bottom:4px;">Detected Subject &amp; Target Keyphrase (Click to Switch or Leave Auto):</div>
-            <div id="candidatePills" class="pill-list"></div>
-            <div class="flex-row mt-8">
-              <input type="text" id="overrideKeywordInput" placeholder="Optional custom target keyphrase (must exist in text for Fact-Lock)" style="flex:1;">
-              <button type="button" id="clearKeywordBtn" class="btn sm">Auto</button>
-            </div>
+          <div class="step-label">
+            <span>3. Focus Keyword (Main Search Topic)</span>
+            <button type="button" class="help-tip" aria-label="Explain Focus Keyword" data-tip-title="Focus Keyword (Primary Topic)" data-tip="This is the main phrase you want Google and Bing to rank your page for. VeriRank automatically finds the strongest topics in your text. Click any pill below to switch focus, or type your own phrase from your text.">?</button>
+          </div>
+          <div id="candidatePills" class="pill-list"></div>
+          <div class="flex-row mt-8">
+            <input type="text" id="overrideKeywordInput" placeholder="Or type a focus keyword that exists in your text..." style="flex:1;">
+            <span class="btn-with-help">
+              <button type="button" id="clearKeywordBtn" class="btn sm">Auto-Detect</button>
+              <button type="button" class="help-tip" aria-label="Explain Auto-Detect keyword" data-tip-title="Auto-Detect Focus Keyword" data-tip="Clears any manual keyword you typed and lets VeriRank automatically pick the strongest factual topic from your text. To prevent keyword spam, custom keywords only apply if they actually appear in your writing.">?</button>
+            </span>
           </div>
 
+          <div class="step-label">
+            <span class="btn-with-help">
+              <span>4. Page Formatting Settings</span>
+              <button type="button" class="help-tip" aria-label="Explain formatting settings" data-tip-title="Page Formatting Settings" data-tip="Your Content Type preset sets these automatically, or you can toggle individual checkboxes anytime to customize how your output is structured.">?</button>
+            </span>
+            <span id="activePresetBadge" class="badge primary">Business / Website</span>
+          </div>
           <div class="options-grid">
-            <label><input type="checkbox" id="optStructureHeadings" checked> Semantic H1/H2 Hierarchy</label>
-            <label><input type="checkbox" id="optTakeaways" checked> Extractive Key Takeaways</label>
-            <label><input type="checkbox" id="optFaq" checked> Grounded FAQ + Schema</label>
-            <label><input type="checkbox" id="optTighten" checked> Tighten Filler &amp; Run-Ons</label>
-            <label><input type="checkbox" id="optLists" checked> Convert Inline Steps to Lists</label>
+            <div class="option-item">
+              <label><input type="checkbox" id="optStructureHeadings" checked> Add Page Title &amp; Section Headings (H1/H2)</label>
+              <button type="button" class="help-tip" aria-label="Explain H1 H2 Headings" data-tip-title="Page Title &amp; Section Headings (H1/H2)" data-tip="Adds a clear main title (H1) and scannable section subheadings (H2) so Google, Bing, and readers can skim topics quickly. Turn OFF for short fiction blurbs or pure prose.">?</button>
+            </div>
+            <div class="option-item">
+              <label><input type="checkbox" id="optTakeaways" checked> Add &ldquo;Key Takeaways&rdquo; Bullet Summary</label>
+              <button type="button" class="help-tip" aria-label="Explain Key Takeaways" data-tip-title="Key Takeaways Summary" data-tip="Creates 2-3 short summary bullets pulled strictly from your own facts. Helps win Google Featured Snippets and Microsoft Copilot citations. Turn OFF for stories or fiction blurbs.">?</button>
+            </div>
+            <div class="option-item">
+              <label><input type="checkbox" id="optFaq" checked> Add FAQ Section &amp; Google Rich Snippet</label>
+              <button type="button" class="help-tip" aria-label="Explain FAQ Section" data-tip-title="FAQ Section &amp; Rich Snippet" data-tip="Turns questions already answered in your draft into a Q&amp;A section with FAQ Schema so search engines can show expandable answers. Turn OFF for creative writing or blurbs.">?</button>
+            </div>
+            <div class="option-item">
+              <label><input type="checkbox" id="optTighten" checked> Polish Readability &amp; Trim Wordiness</label>
+              <button type="button" class="help-tip" aria-label="Explain Polish Readability" data-tip-title="Polish Readability &amp; Trim Wordiness" data-tip="Shortens wordy business filler (like 'in order to' &rarr; 'to') and splits 32+ word run-on sentences for easier reading. Turn OFF if you want every word of your creative voice untouched.">?</button>
+            </div>
+            <div class="option-item">
+              <label><input type="checkbox" id="optLists" checked> Format Step-by-Step Sentences as Lists</label>
+              <button type="button" class="help-tip" aria-label="Explain Format Step-by-Step Lists" data-tip-title="Step-by-Step Lists" data-tip="Detects 'First, ... Second, ... Third, ...' instructions and formats them as clean numbered lists that Google loves to highlight. Turn OFF for narrative storytelling.">?</button>
+            </div>
           </div>
 
           <div class="flex-row">
             <button type="button" id="optimizeBtn" class="btn primary" style="flex:1;">Optimize for Google &amp; Bing</button>
-            <button type="button" id="suggestBtn" class="btn bing">Live Autocomplete</button>
+            <span class="btn-with-help">
+              <button type="button" id="suggestBtn" class="btn bing">Keyword Ideas</button>
+              <button type="button" class="help-tip" aria-label="Explain Keyword Ideas" data-tip-title="Live Keyword Ideas (Autocomplete)" data-tip="Queries real Google &amp; Bing search suggestions for your Focus Keyword to show what real people search for, flagging which ideas your text already covers vs. future topics.">?</button>
+            </span>
           </div>
           <div class="flex-row mt-8">
-            <button type="button" id="aiPolishBtn" class="btn" style="flex:1;">Optional Grounded AI Polish (Fact-Locked)</button>
-            <button type="button" id="quickCloudSaveBtn" class="btn sm bing" title="Save current result to Supabase Cloud">Save to Cloud</button>
+            <span class="flex-1-wrap">
+              <button type="button" id="aiPolishBtn" class="btn" style="flex:1;">Optional AI Smooth-Rewrite</button>
+              <button type="button" class="help-tip" aria-label="Explain Optional AI Smooth-Rewrite" data-tip-title="Optional AI Smooth-Rewrite (Fact-Checked)" data-tip="Optional add-on: sends your optimized draft to your own AI key (configured under SEO Rules &amp; AI). Every AI paragraph is checked by Fact-Lock&trade; and any invented fact is automatically removed.">?</button>
+            </span>
+            <span class="btn-with-help">
+              <button type="button" id="quickCloudSaveBtn" class="btn sm bing" title="Save current result to Cloud Projects">Save to Cloud</button>
+              <button type="button" class="help-tip" aria-label="Explain Save to Cloud" data-tip-title="Save to Cloud Projects" data-tip="Archives your draft, SEO scores, and Fact-Check status to your team's Supabase database (configured in Saved Cloud Projects) so coworkers can load and review it.">?</button>
+            </span>
           </div>
           <div id="studioActionStatus" class="muted mt-8"></div>
         </div>
 
-        <!-- Right Column: Scoreboard & Workspace -->
+        <!-- Right Column: Scoreboard & Results -->
         <div>
           <div id="warningsContainer"></div>
 
           <div class="scoreboard">
             <div class="score-tile">
               <div>
-                <div class="score-label">Google Search</div>
+                <div class="score-label-row">
+                  <span class="score-label">Google SEO Score</span>
+                  <button type="button" class="help-tip" aria-label="Explain Google SEO Score" data-tip-title="Google SEO Score (0-100)" data-tip="Measures how well your page matches Google ranking best practices: topic depth, readable structure, opening hook/snippet, Title &amp; Meta description sizing, credibility signals, and Schema markup.">?</button>
+                </div>
                 <div id="scoreGoogleAfter" class="score-value">--</div>
                 <div id="scoreGoogleDelta" class="score-delta">Before: --</div>
               </div>
@@ -723,7 +921,10 @@ details.sql-details summary {
             </div>
             <div class="score-tile tile-bing">
               <div>
-                <div class="score-label">Bing &amp; Copilot</div>
+                <div class="score-label-row">
+                  <span class="score-label">Bing &amp; AI Search</span>
+                  <button type="button" class="help-tip" aria-label="Explain Bing and AI Search score" data-tip-title="Bing &amp; AI Search Score (0-100)" data-tip="Measures exact keyword placement in your Title, intro window, and URL slug, plus clean social share tags (OpenGraph), AI Copilot clarity, and Bing IndexNow readiness.">?</button>
+                </div>
                 <div id="scoreBingAfter" class="score-value">--</div>
                 <div id="scoreBingDelta" class="score-delta">Before: --</div>
               </div>
@@ -734,9 +935,12 @@ details.sql-details summary {
             </div>
             <div class="score-tile tile-harmony">
               <div>
-                <div class="score-label">Dual Harmony</div>
+                <div class="score-label-row">
+                  <span class="score-label">Keyword Balance</span>
+                  <button type="button" class="help-tip" aria-label="Explain Keyword Balance" data-tip-title="Keyword Balance &amp; Density" data-tip="Shows how well Google and Bing scores work together while keeping Focus Keyword density natural (under 2.2%-2.4%) so search engines never flag your text as keyword stuffing.">?</button>
+                </div>
                 <div id="scoreHarmony" class="score-value">--</div>
-                <div id="scoreDensityInfo" class="score-delta">Density: --</div>
+                <div id="scoreDensityInfo" class="score-delta">Keyword Density: --</div>
               </div>
               <svg class="score-ring" viewBox="0 0 44 44">
                 <circle class="score-ring-bg" cx="22" cy="22" r="18"></circle>
@@ -745,7 +949,10 @@ details.sql-details summary {
             </div>
             <div class="score-tile tile-factlock">
               <div>
-                <div class="score-label">Fact-Lock&trade;</div>
+                <div class="score-label-row">
+                  <span class="score-label">Fact-Check Guard</span>
+                  <button type="button" class="help-tip" aria-label="Explain Fact-Check Guard" data-tip-title="Fact-Lock&trade; Zero-Hallucination Guard" data-tip="Verifies that 100% of numbers, prices, brands, names, and true/false statements in the output match your original text. Blocks any invented facts or altered meanings.">?</button>
+                </div>
                 <div id="scoreFactLock" class="score-value">--</div>
                 <div id="scoreFactLockDetail" class="score-delta">0 issues</div>
               </div>
@@ -759,38 +966,47 @@ details.sql-details summary {
           <div class="card">
             <div class="subtabs">
               <button type="button" class="subtab active" data-subtab="content">Optimized Content</button>
-              <button type="button" class="subtab" data-subtab="factlock">Fact-Lock&trade; Audit &amp; Diff</button>
-              <button type="button" class="subtab" data-subtab="diagnostics">Google &amp; Bing Diagnostics</button>
-              <button type="button" class="subtab" data-subtab="serp">SERP Previews, Meta &amp; Schema</button>
-              <button type="button" class="subtab" data-subtab="export">Export Package</button>
+              <button type="button" class="subtab" data-subtab="factlock">Fact-Check Report</button>
+              <button type="button" class="subtab" data-subtab="diagnostics">SEO Checklist</button>
+              <button type="button" class="subtab" data-subtab="serp">Search Preview &amp; Meta Tags</button>
+              <button type="button" class="subtab" data-subtab="export">Download &amp; Export</button>
             </div>
 
             <!-- Subtab 1: Optimized Content -->
             <div id="subtab-content" class="subpanel active">
               <div class="flex-row" style="justify-content:space-between;margin-bottom:10px;">
                 <div class="flex-row">
-                  <button type="button" class="btn sm primary view-mode-btn" data-mode="preview">Rendered Preview</button>
+                  <button type="button" class="btn sm primary view-mode-btn" data-mode="preview">Formatted Preview</button>
                   <button type="button" class="btn sm view-mode-btn" data-mode="split">Before vs. After Split</button>
-                  <button type="button" class="btn sm view-mode-btn" data-mode="markdown">Edit Markdown</button>
-                  <button type="button" class="btn sm view-mode-btn" data-mode="html">HTML Article</button>
+                  <span class="btn-with-help">
+                    <button type="button" class="btn sm view-mode-btn" data-mode="markdown">Edit Text</button>
+                    <button type="button" class="help-tip" aria-label="Explain Edit Text" data-tip-title="Edit Text (Markdown)" data-tip="Lets you tweak the optimized text directly. Uses simple Markdown (# for H1, ## for H2). After editing, click 'Re-Score Edits' to verify your changes.">?</button>
+                  </span>
+                  <span class="btn-with-help">
+                    <button type="button" class="btn sm view-mode-btn" data-mode="html">HTML Code</button>
+                    <button type="button" class="help-tip" aria-label="Explain HTML Code" data-tip-title="Web-Ready HTML Code" data-tip="Clean HTML &lt;article&gt; markup you can paste straight into WordPress, Shopify, Webflow, or any website CMS.">?</button>
+                  </span>
                 </div>
                 <div class="flex-row">
-                  <button type="button" id="rescoreEditsBtn" class="btn sm">Re-Score &amp; Re-Verify Edits</button>
-                  <button type="button" id="copyOptimizedBtn" class="btn sm">Copy Markdown</button>
+                  <span class="btn-with-help">
+                    <button type="button" id="rescoreEditsBtn" class="btn sm">Re-Score Edits</button>
+                    <button type="button" class="help-tip" aria-label="Explain Re-Score Edits" data-tip-title="Re-Score &amp; Fact-Check Edits" data-tip="Runs the Google, Bing, and Fact-Check Guard audit on manual changes you made inside 'Edit Text' so you can see updated SEO scores immediately.">?</button>
+                  </span>
+                  <button type="button" id="copyOptimizedBtn" class="btn sm">Copy Text</button>
                 </div>
               </div>
               <div id="previewPane" class="rendered-preview"></div>
               <div id="splitComparePane" class="split-compare-grid" style="display:none;">
                 <div class="split-pane">
                   <div class="split-pane-head">
-                    <span>Original Unstructured Draft</span>
+                    <span>Your Original Text</span>
                     <span id="splitBeforeBadge" class="badge warn">Before</span>
                   </div>
                   <div id="splitBeforeContent" style="white-space:pre-wrap;font-size:13px;line-height:1.6;"></div>
                 </div>
                 <div class="split-pane">
                   <div class="split-pane-head">
-                    <span>Optimized Google + Bing Output</span>
+                    <span>SEO-Optimized Version</span>
                     <span id="splitAfterBadge" class="badge ok">After</span>
                   </div>
                   <div id="splitAfterContent" class="rendered-preview" style="border:none;padding:0;max-height:none;background:transparent;"></div>
@@ -800,37 +1016,46 @@ details.sql-details summary {
               <pre id="htmlOutputPre" class="code-block" style="display:none;max-height:540px;"></pre>
             </div>
 
-            <!-- Subtab 2: Fact-Lock Audit -->
+            <!-- Subtab 2: Fact-Check Report -->
             <div id="subtab-factlock" class="subpanel">
               <div class="flex-row" style="justify-content:space-between;margin-bottom:10px;">
                 <div>
-                  <strong>Fact-Lock&trade; Zero-Hallucination Guard</strong>
-                  <span class="muted"> — Deterministic verification of numbers, acronyms, entities, polarity, and claim provenance.</span>
+                  <strong>Fact-Lock&trade; Zero-Hallucination Audit</strong>
+                  <span class="muted"> &mdash; Proves every number, name, and claim came straight from your original text.</span>
                 </div>
                 <div class="flex-row">
-                  <button type="button" id="simulateHallucinationBtn" class="btn sm danger">Simulate Hallucination Attack</button>
-                  <button type="button" id="restoreVerifiedBtn" class="btn sm" style="display:none;">Restore Verified Output</button>
+                  <span class="btn-with-help">
+                    <button type="button" id="simulateHallucinationBtn" class="btn sm danger">Test Fake-Fact Blocker</button>
+                    <button type="button" class="help-tip" aria-label="Explain Test Fake-Fact Blocker" data-tip-title="Test the Hallucination Blocker" data-tip="Demo button: intentionally injects a fake statistic ('94% in 3 days') and unverified brand ('Gartner Research') to show how VeriRank catches and blocks made-up claims.">?</button>
+                  </span>
+                  <button type="button" id="restoreVerifiedBtn" class="btn sm" style="display:none;">Restore Clean Output</button>
                 </div>
               </div>
               <div id="factLockBanner"></div>
               <div class="two-col">
                 <div class="card" style="box-shadow:none;background:var(--surface-alt);">
-                  <div class="card-title">Source Fingerprint Anchors</div>
+                  <div class="card-title">
+                    <span>Facts Protected from Your Text</span>
+                    <button type="button" class="help-tip" aria-label="Explain Protected Facts" data-tip-title="Source Fingerprint Anchors" data-tip="VeriRank fingerprints every number, price, brand, proper name, and negative rule ('does not', 'never') in your original draft so nothing can be exaggerated or invented.">?</button>
+                  </div>
                   <div id="fingerprintNumbers" class="muted"></div>
                   <div id="fingerprintEntities" class="muted mt-8"></div>
                   <div id="fingerprintPolarity" class="muted mt-8"></div>
                 </div>
                 <div class="card" style="box-shadow:none;background:var(--surface-alt);">
-                  <div class="card-title">Detected Grounding Issues</div>
+                  <div class="card-title">Unverified Claims Found</div>
                   <div id="factLockIssuesList"></div>
                 </div>
               </div>
               <div class="mt-12">
-                <div class="card-title">Sentence Provenance Traceability</div>
+                <div class="card-title">
+                  <span>Sentence-by-Sentence Source Check</span>
+                  <button type="button" class="help-tip" aria-label="Explain Sentence Provenance" data-tip-title="Sentence Provenance Trail" data-tip="Shows exactly which original sentence (S1, S2, ...) each output sentence came from and what cleanup edit was made, giving editors and compliance teams 100% traceability.">?</button>
+                </div>
                 <div style="max-height:300px;overflow-y:auto;">
                   <table>
                     <thead>
-                      <tr><th style="width:85px;">Source ID</th><th style="width:180px;">Transformation</th><th>Verified Output Sentence</th></tr>
+                      <tr><th style="width:85px;">Original #</th><th style="width:180px;">Edit Made</th><th>Verified Output Sentence</th></tr>
                     </thead>
                     <tbody id="provenanceTableBody"></tbody>
                   </table>
@@ -838,46 +1063,52 @@ details.sql-details summary {
               </div>
             </div>
 
-            <!-- Subtab 3: Diagnostics -->
+            <!-- Subtab 3: SEO Checklist -->
             <div id="subtab-diagnostics" class="subpanel">
               <div class="two-col">
                 <div>
-                  <div class="card-title">Google Search Factors (100 pts)</div>
+                  <div class="card-title">Google Ranking Factors (100 pts)</div>
                   <div id="googleBreakdown"></div>
                 </div>
                 <div>
-                  <div class="card-title">Bing &amp; Copilot Factors (100 pts)</div>
+                  <div class="card-title">Bing &amp; AI Search Factors (100 pts)</div>
                   <div id="bingBreakdown"></div>
                 </div>
               </div>
               <div class="two-col mt-12">
                 <div class="card" style="box-shadow:none;background:var(--surface-alt);">
-                  <div class="card-title">Subject Matter &amp; Intent Analysis</div>
+                  <div class="card-title">
+                    <span>Detected Topic, Search Intent &amp; Readability</span>
+                    <button type="button" class="help-tip" aria-label="Explain Search Intent and Readability" data-tip-title="Search Intent &amp; Flesch Reading Ease" data-tip="Search Intent is why someone searches (Informational vs. How-To/Procedural vs. Commercial). Flesch Reading Ease scores 0-100 where higher numbers (50-70+) mean easier reading.">?</button>
+                  </div>
                   <div id="subjectSummaryBox"></div>
                 </div>
                 <div class="card" style="box-shadow:none;background:var(--surface-alt);">
-                  <div class="card-title">Live Autocomplete Grounding Check</div>
-                  <div id="autocompleteResultsBox" class="muted">Click "Live Autocomplete" to query Google &amp; Bing search suggestions and classify grounded phrasings vs future topic gaps.</div>
+                  <div class="card-title">
+                    <span>Related Search Phrases (Keyword Ideas)</span>
+                    <button type="button" class="help-tip" aria-label="Explain Related Search Phrases" data-tip-title="Google &amp; Bing Autocomplete Ideas" data-tip="Shows real search phrases typed into Google and Bing, marking whether each idea is already covered in your text or represents a future topic opportunity.">?</button>
+                  </div>
+                  <div id="autocompleteResultsBox" class="muted">Click &ldquo;Keyword Ideas&rdquo; on the left to see real Google &amp; Bing search suggestions related to your topic.</div>
                 </div>
               </div>
               <div class="mt-12">
-                <div class="card-title">Actionable Dual-Engine Checklist</div>
+                <div class="card-title">Detailed Google &amp; Bing SEO Checklist</div>
                 <div id="diagnosticsChecklist"></div>
               </div>
             </div>
 
-            <!-- Subtab 4: SERP Previews, Meta & Schema -->
+            <!-- Subtab 4: Search Preview & Meta Tags -->
             <div id="subtab-serp" class="subpanel">
               <div class="serp-grid">
                 <div class="serp-card">
-                  <div style="font-size:11px;font-weight:700;color:#6b7280;margin-bottom:4px;">GOOGLE SERP PREVIEW</div>
+                  <div style="font-size:11px;font-weight:700;color:#6b7280;margin-bottom:4px;">GOOGLE SEARCH RESULT PREVIEW</div>
                   <div class="serp-url" id="serpGoogleUrl">https://example.com/...</div>
                   <div class="serp-title-google" id="serpGoogleTitle">--</div>
                   <div class="serp-desc" id="serpGoogleDesc">--</div>
                   <div style="font-size:11px;color:#4b5563;margin-top:6px;" id="serpGoogleMeter"></div>
                 </div>
                 <div class="serp-card">
-                  <div style="font-size:11px;font-weight:700;color:#0d9488;margin-bottom:4px;">BING + COPILOT SERP PREVIEW</div>
+                  <div style="font-size:11px;font-weight:700;color:#0d9488;margin-bottom:4px;">BING + COPILOT SEARCH PREVIEW</div>
                   <div class="serp-url" id="serpBingUrl">https://example.com/...</div>
                   <div class="serp-title-bing" id="serpBingTitle">--</div>
                   <div class="serp-desc" id="serpBingDesc">--</div>
@@ -885,20 +1116,31 @@ details.sql-details summary {
                 </div>
               </div>
 
-              <div class="card-title">Title Variants (Pixel-Width Verified)</div>
+              <div class="card-title">
+                <span class="btn-with-help">
+                  <span>SEO Title Options (Sized So Google Won&rsquo;t Cut Them Off)</span>
+                  <button type="button" class="help-tip" aria-label="Explain SEO Title Options" data-tip-title="Pixel-Width Verified Title Tags" data-tip="Google cuts off titles wider than ~580 pixels (~60 characters). Click any option below to preview how it looks in Google and Bing search results.">?</button>
+                </span>
+              </div>
               <div id="titleVariantsList" class="pill-list"></div>
 
               <div class="two-col mt-12">
                 <div>
                   <div class="card-title">
-                    <span>Schema.org JSON-LD</span>
-                    <button type="button" class="btn sm" id="copyJsonLdBtn">Copy JSON-LD</button>
+                    <span class="btn-with-help">
+                      <span>Schema Markup (JSON-LD Rich Results)</span>
+                      <button type="button" class="help-tip" aria-label="Explain Schema Markup JSON-LD" data-tip-title="Schema.org Structured Data (JSON-LD)" data-tip="Hidden behind-the-scenes code telling Google and Bing whether your page is an Article, Product, FAQ, or Book so they can display rich search previews. Auto-adapts to your Content Type.">?</button>
+                    </span>
+                    <button type="button" class="btn sm" id="copyJsonLdBtn">Copy Schema</button>
                   </div>
                   <pre id="jsonLdPreview" class="code-block"></pre>
                 </div>
                 <div>
                   <div class="card-title">
-                    <span>Bing IndexNow Payload &amp; Internal Links</span>
+                    <span class="btn-with-help">
+                      <span>Bing Instant Indexing (IndexNow) &amp; Internal Links</span>
+                      <button type="button" class="help-tip" aria-label="Explain IndexNow and Internal Links" data-tip-title="Bing IndexNow &amp; Internal Links" data-tip="IndexNow lets websites notify Bing the instant a page is published or updated instead of waiting weeks for a crawl. Internal links suggest clickable phrases to link to other pages on your site.">?</button>
+                    </span>
                     <button type="button" class="btn sm" id="copyIndexNowBtn">Copy IndexNow</button>
                   </div>
                   <pre id="indexNowPreview" class="code-block"></pre>
@@ -907,26 +1149,41 @@ details.sql-details summary {
               </div>
               <div class="mt-12">
                 <div class="card-title">
-                  <span>Ready-to-Paste &lt;head&gt; SEO + OpenGraph + Schema Tags</span>
+                  <span class="btn-with-help">
+                    <span>All-in-One Website &lt;head&gt; Meta Tags (Title, Description, Social Preview &amp; Schema)</span>
+                    <button type="button" class="help-tip" aria-label="Explain Head Meta Tags" data-tip-title="Website &lt;head&gt; SEO Meta Tags" data-tip="Copy and paste this block inside the &lt;head&gt; section of your webpage template to set your SEO Title, Meta Description, Canonical URL, Social Share cards (OpenGraph), and Schema all at once.">?</button>
+                  </span>
                   <button type="button" class="btn sm" id="copyHeadTagsBtn">Copy Head Tags</button>
                 </div>
                 <pre id="headTagsPreview" class="code-block"></pre>
               </div>
             </div>
 
-            <!-- Subtab 5: Export Package -->
+            <!-- Subtab 5: Download & Export -->
             <div id="subtab-export" class="subpanel">
               <div class="alert-banner ok">
-                <strong>Self-Contained Publishing Bundle:</strong> Export clean Markdown, complete SEO HTML5 page, JSON-LD, Bing IndexNow payload, and printable Fact-Lock&trade; Audit Certificate in a single standard <code>.zip</code> archive.
+                <strong>Ready-to-Publish Files:</strong> Download everything in one <code>.zip</code> bundle, or grab individual files for your website team or compliance archive.
               </div>
               <div class="flex-row">
-                <button type="button" id="downloadZipBtn" class="btn primary">Download Complete .zip Package</button>
-                <button type="button" id="downloadMdBtn" class="btn">Download Optimized .md</button>
-                <button type="button" id="downloadHtmlBtn" class="btn">Download Full SEO .html</button>
-                <button type="button" id="downloadAuditBtn" class="btn">Download Fact-Lock Audit .html</button>
+                <span class="btn-with-help">
+                  <button type="button" id="downloadZipBtn" class="btn primary">Download Complete .zip Package</button>
+                  <button type="button" class="help-tip" aria-label="Explain Complete Zip Package" data-tip-title="Complete .zip Publishing Bundle" data-tip="Downloads a single .zip containing your optimized text (.md), ready-to-publish HTML5 webpage, Schema JSON-LD, Bing IndexNow file, and printable Fact-Check Audit Report.">?</button>
+                </span>
+                <span class="btn-with-help">
+                  <button type="button" id="downloadMdBtn" class="btn">Download Text (.md)</button>
+                  <button type="button" class="help-tip" aria-label="Explain Markdown download" data-tip-title="Optimized Text (.md)" data-tip="Plain text formatted with simple Markdown headings (# / ##) and lists, ideal for pasting into Notion, Ghost, GitHub, or modern CMS editors.">?</button>
+                </span>
+                <span class="btn-with-help">
+                  <button type="button" id="downloadHtmlBtn" class="btn">Download Webpage (.html)</button>
+                  <button type="button" class="help-tip" aria-label="Explain HTML Webpage download" data-tip-title="Complete SEO Webpage (.html)" data-tip="A complete HTML5 webpage with your SEO Title, Meta Description, Social Share tags, Schema markup, and clean responsive styling baked right in.">?</button>
+                </span>
+                <span class="btn-with-help">
+                  <button type="button" id="downloadAuditBtn" class="btn">Download Fact-Check Certificate (.html)</button>
+                  <button type="button" class="help-tip" aria-label="Explain Fact-Check Certificate" data-tip-title="Fact-Lock&trade; Audit Certificate" data-tip="A printable compliance report showing SEO scores Before vs. After and proving zero hallucinations or altered facts were introduced.">?</button>
+                </span>
               </div>
               <div id="desktopFolderExportBox" class="card mt-12" style="display:none;background:var(--surface-alt);box-shadow:none;">
-                <div class="card-title">Desktop Host Direct Disk Export</div>
+                <div class="card-title">Desktop App: Save Directly to a Folder</div>
                 <div class="flex-row">
                   <input type="text" id="singleExportFolderInput" placeholder="C:\path\to\output-folder" style="flex:1;">
                   <button type="button" id="writeSingleToDiskBtn" class="btn bing">Save Package to Folder</button>
@@ -939,21 +1196,30 @@ details.sql-details summary {
       </div>
     </section>
 
-    <!-- TAB 2: BATCH PROCESSOR -->
+    <!-- TAB 2: BULK FILE OPTIMIZER -->
     <section id="tab-batch" class="tab-panel">
       <div class="card">
         <div class="card-title">
-          <span>Bulk Document SEO &amp; Fact-Lock&trade; Batch Processor</span>
+          <span class="btn-with-help">
+            <span>Bulk Document SEO &amp; Fact-Check Optimizer</span>
+            <button type="button" class="help-tip" aria-label="Explain Bulk File Optimizer" data-tip-title="Bulk File Optimizer" data-tip="Upload dozens of website drafts at once (.txt, .md, or .html) to optimize, score, and fact-check all of them simultaneously using your currently selected Content Type preset.">?</button>
+          </span>
           <div class="flex-row">
-            <button type="button" id="loadDemoBatchBtn" class="btn sm primary">Load 3 Corporate Demo Files</button>
+            <span class="btn-with-help">
+              <button type="button" id="loadDemoBatchBtn" class="btn sm primary">Load 3 Sample Articles</button>
+              <button type="button" class="help-tip" aria-label="Explain Load 3 Sample Articles" data-tip-title="Test Bulk Optimization" data-tip="Loads 3 built-in sample documents (Cloud Security, HVAC, Healthcare) and optimizes them in parallel so you can preview bulk reporting without uploading your own files.">?</button>
+            </span>
             <button type="button" id="runBatchBtn" class="btn sm bing">Optimize All Queued Files</button>
-            <button type="button" id="downloadBatchZipBtn" class="btn sm" disabled>Download Full Batch (.zip)</button>
+            <span class="btn-with-help">
+              <button type="button" id="downloadBatchZipBtn" class="btn sm" disabled>Download All (.zip)</button>
+              <button type="button" class="help-tip" aria-label="Explain Download All Zip" data-tip-title="Download Full Batch (.zip)" data-tip="Packages every optimized file, its HTML meta tags, and a combined score summary CSV/report into one downloadable .zip archive.">?</button>
+            </span>
           </div>
         </div>
 
         <div id="batchDropzone" class="dropzone">
-          <div><strong>Drop .txt, .md, or .html files here</strong> or click to select multiple corporate documents</div>
-          <div class="muted mt-8">100% deterministic local processing — zero network leakage of proprietary drafts.</div>
+          <div><strong>Drag &amp; drop .txt, .md, or .html files here</strong> or click to browse multiple documents</div>
+          <div class="muted mt-8">Runs locally in your browser &mdash; fast, private, and 100% fact-checked.</div>
           <input type="file" id="batchFileInput" multiple accept=".txt,.md,.html,.htm" style="display:none;">
         </div>
 
@@ -966,7 +1232,7 @@ details.sql-details summary {
         </div>
 
         <div id="desktopBatchFolderPanel" class="mt-12" style="display:none;">
-          <div class="card-title">Desktop Host Local Folder Batch Import &amp; Export</div>
+          <div class="card-title">Desktop App: Import &amp; Export Entire Computer Folders</div>
           <div class="two-col">
             <div class="flex-row">
               <input type="text" id="batchInputFolderPath" placeholder="Input folder path (e.g. C:\docs\drafts)" style="flex:1;">
@@ -974,7 +1240,7 @@ details.sql-details summary {
             </div>
             <div class="flex-row">
               <input type="text" id="batchOutputFolderPath" placeholder="Output folder path (e.g. C:\docs\optimized)" style="flex:1;">
-              <button type="button" id="saveBatchFolderBtn" class="btn sm bing" disabled>Write Batch to Output Folder</button>
+              <button type="button" id="saveBatchFolderBtn" class="btn sm bing" disabled>Save All to Folder</button>
             </div>
           </div>
           <div id="batchFolderStatus" class="muted mt-8"></div>
@@ -985,53 +1251,65 @@ details.sql-details summary {
             <thead>
               <tr>
                 <th>File Name</th>
-                <th>Detected Primary Subject</th>
+                <th>Detected Focus Keyword</th>
                 <th>Google (Before &rarr; After)</th>
                 <th>Bing (Before &rarr; After)</th>
-                <th>Harmony</th>
-                <th>Fact-Lock&trade; Status</th>
+                <th>Keyword Balance</th>
+                <th>Fact-Check Status</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody id="batchTableBody">
-              <tr><td colspan="7" class="muted">No files queued yet. Drop files above or click "Load 3 Corporate Demo Files".</td></tr>
+              <tr><td colspan="7" class="muted">No files queued yet. Drop files above or click &ldquo;Load 3 Sample Articles&rdquo;.</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- TAB 3: CLOUD SYNC (SUPABASE) -->
+    <!-- TAB 3: SAVED CLOUD PROJECTS (SUPABASE) -->
     <section id="tab-supabase" class="tab-panel">
       <div class="card">
         <div class="card-title">
-          <span>Supabase Cloud Sync &amp; Team Document Repository</span>
+          <span class="btn-with-help">
+            <span>Saved Cloud Projects (Supabase Team Library)</span>
+            <button type="button" class="help-tip" aria-label="Explain Supabase Cloud Library" data-tip-title="Optional Team Cloud Storage" data-tip="Connect a free Supabase database so your team can save optimized pages, revisit older drafts, and track Google/Bing SEO score improvements in one shared table. Not required to use the optimizer.">?</button>
+          </span>
           <span id="sbConnectionBadge" class="badge primary">Not Configured</span>
         </div>
-        <p class="muted">Optionally connect your company Supabase project to archive optimized documents, SEO score improvements, and Fact-Lock&trade; compliance audits. Accepts either your API URL (<code>https://ref.supabase.co</code>) or your Supabase Dashboard URL (auto-converted).</p>
+        <p class="muted">Optional: Connect your Supabase project to save and share optimized documents across your team. You can paste either your API endpoint (<code>https://your-ref.supabase.co</code>) or your regular Supabase Dashboard web link &mdash; VeriRank converts it automatically.</p>
 
         <div class="two-col">
           <div>
-            <label class="muted" style="font-weight:600;display:block;margin-bottom:4px;">Supabase Project URL (or Dashboard URL)</label>
+            <label class="muted" style="font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <span>Supabase Project URL (or Dashboard Web Link)</span>
+              <button type="button" class="help-tip" aria-label="Explain Supabase Project URL" data-tip-title="Finding Your Supabase URL" data-tip="Copy the URL from your browser address bar while viewing your project in supabase.com, or copy Project URL from Project Settings &rarr; Data API.">?</button>
+            </label>
             <input type="text" id="sbUrlInput" placeholder="https://your-project-ref.supabase.co">
           </div>
           <div>
-            <label class="muted" style="font-weight:600;display:block;margin-bottom:4px;">Supabase Publishable / Anon Key</label>
+            <label class="muted" style="font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <span>Supabase Publishable / Public Key</span>
+              <button type="button" class="help-tip" aria-label="Explain Supabase Key" data-tip-title="Supabase Publishable (Anon) Key" data-tip="Safe public API key found in your Supabase Dashboard under Project Settings &rarr; API Keys. Never use your secret service_role key here.">?</button>
+            </label>
             <input type="text" id="sbKeyInput" placeholder="sb_publishable_... or eyJ...">
           </div>
         </div>
 
         <div class="flex-row mt-12">
-          <button type="button" id="saveSbConfigBtn" class="btn primary">Save &amp; Test Connection</button>
-          <button type="button" id="saveDocToSbBtn" class="btn bing">Save Active Studio Document to Cloud</button>
-          <button type="button" id="loadSbDocsBtn" class="btn sm">Refresh Saved Documents</button>
+          <span class="btn-with-help">
+            <button type="button" id="saveSbConfigBtn" class="btn primary">Save &amp; Test Connection</button>
+            <button type="button" class="help-tip" aria-label="Explain Save and Test Connection" data-tip-title="Test &amp; Connect" data-tip="Saves your URL and key in this browser, automatically converts Dashboard links into API URLs, and fetches your saved documents to verify the table is ready.">?</button>
+          </span>
+          <button type="button" id="saveDocToSbBtn" class="btn bing">Save Current Editor Document</button>
+          <button type="button" id="loadSbDocsBtn" class="btn sm">Refresh List</button>
         </div>
         <div id="sbStatusMsg" class="mt-8 muted" style="font-weight:600;"></div>
 
         <details class="sql-details mt-12">
-          <summary>First-Time Setup: View &amp; Copy Supabase SQL Schema (<code>seo_documents</code> table)</summary>
+          <summary>First-Time Setup: View &amp; Copy Database Table SQL (<code>seo_documents</code>)</summary>
           <div class="flex-row mt-8" style="justify-content:space-between;">
-            <span class="muted">Run this once in your Supabase Dashboard &rarr; SQL Editor:</span>
+            <span class="muted">Run this one-time setup script in your Supabase Dashboard &rarr; SQL Editor:</span>
             <button type="button" id="copySbSqlBtn" class="btn sm">Copy SQL</button>
           </div>
           <pre id="sbSqlPre" class="code-block mt-8"></pre>
@@ -1044,16 +1322,16 @@ details.sql-details summary {
               <thead>
                 <tr>
                   <th>Title</th>
-                  <th>Subject</th>
+                  <th>Focus Keyword</th>
                   <th>Google</th>
                   <th>Bing</th>
-                  <th>Fact-Lock&trade;</th>
+                  <th>Fact-Check</th>
                   <th>Saved At</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="sbDocsTableBody">
-                <tr><td colspan="7" class="muted">Enter your Supabase Project URL and click "Save &amp; Test Connection" to view saved documents.</td></tr>
+                <tr><td colspan="7" class="muted">Enter your Supabase Project URL and click &ldquo;Save &amp; Test Connection&rdquo; to view saved documents.</td></tr>
               </tbody>
             </table>
           </div>
@@ -1061,83 +1339,107 @@ details.sql-details summary {
       </div>
     </section>
 
-    <!-- TAB 4: RANKING PROFILES & GROUNDED AI -->
+    <!-- TAB 4: SEO RULES & AI -->
     <section id="tab-profiles" class="tab-panel">
       <div class="two-col">
         <div class="card">
           <div class="card-title">
-            <span>Durable Google &amp; Bing Scoring Profile</span>
-            <button type="button" id="resetProfileBtn" class="btn sm">Reset Factory Defaults</button>
+            <span>Google &amp; Bing Scoring Rules (Advanced)</span>
+            <span class="btn-with-help">
+              <button type="button" id="resetProfileBtn" class="btn sm">Reset Defaults</button>
+              <button type="button" class="help-tip" aria-label="Explain Reset Defaults" data-tip-title="Reset Factory SEO Standards" data-tip="Restores Google and Bing scoring targets back to recommended industry defaults if you ever want a fresh start.">?</button>
+            </span>
           </div>
-          <p class="muted">These durable thresholds govern Google semantic/passage optimization and Bing exact-lead/Copilot rules without external APIs.</p>
+          <p class="muted">Most users never need to change these &mdash; selecting a Content Type on the Editor tab adjusts them automatically. Advanced users can fine-tune search engine limits below:</p>
           <div class="two-col">
             <div>
-              <label class="muted">Google Max Title Pixels</label>
+              <label class="muted" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                <span>Max Google Title Width (Pixels)</span>
+                <button type="button" class="help-tip" aria-label="Explain Max Title Pixels" data-tip-title="Max Google Title Width (Default: 580px)" data-tip="Google cuts off search titles wider than ~580 pixels with '...' (roughly 55-60 characters). Lower this slightly for shorter punchy headlines.">?</button>
+              </label>
               <input type="number" id="profGoogleMaxPx">
             </div>
             <div>
-              <label class="muted">Google Max Exact Density (%)</label>
+              <label class="muted" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                <span>Max Google Keyword Density (%)</span>
+                <button type="button" class="help-tip" aria-label="Explain Google Keyword Density" data-tip-title="Max Google Keyword Density (Default: 2.4%)" data-tip="How often your Focus Keyword can appear per 100 words. Staying under 2.4% keeps your text natural and protects you from Google spam filters.">?</button>
+              </label>
               <input type="number" step="0.1" id="profGoogleMaxDensity">
             </div>
             <div>
-              <label class="muted">Bing Lead Window (Words)</label>
+              <label class="muted" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                <span>Bing Intro Keyword Window (Words)</span>
+                <button type="button" class="help-tip" aria-label="Explain Bing Intro Window" data-tip-title="Bing Intro Keyword Window (Default: 100w)" data-tip="How early your Focus Keyword should appear for Bing (100 words for business pages, 150-200 words for stories or fiction blurbs that build suspense first).">?</button>
+              </label>
               <input type="number" id="profBingLeadWindow">
             </div>
             <div>
-              <label class="muted">Bing Max Exact Density (%)</label>
+              <label class="muted" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                <span>Max Bing Keyword Density (%)</span>
+                <button type="button" class="help-tip" aria-label="Explain Bing Keyword Density" data-tip-title="Max Bing Keyword Density (Default: 2.2%)" data-tip="Upper limit on Focus Keyword repetitions for Bing &amp; Copilot citations. Lowering this rewards subtler keyword usage.">?</button>
+              </label>
               <input type="number" step="0.1" id="profBingMaxDensity">
             </div>
           </div>
           <div class="flex-row mt-12">
-            <button type="button" id="saveProfileBtn" class="btn primary">Save Profile &amp; Re-Score</button>
+            <button type="button" id="saveProfileBtn" class="btn primary">Save Rules &amp; Re-Score</button>
             <span id="profileStatus" class="muted"></span>
           </div>
         </div>
 
         <div class="card">
           <div class="card-title">
-            <span>Optional Grounded AI Co-Writer (Fact-Lock Protected)</span>
+            <span class="btn-with-help">
+              <span>Optional AI Writing Assistant (Fact-Checked)</span>
+              <button type="button" class="help-tip" aria-label="Explain Optional AI Assistant" data-tip-title="Optional AI Smooth-Rewrite" data-tip="VeriRank works 100% on its own with zero AI keys needed. If you connect an AI model here and click 'Optional AI Smooth-Rewrite' on the Editor tab, Fact-Lock&trade; blocks any fake stats or invented names automatically.">?</button>
+            </span>
             <span class="badge ok">Disabled by Default</span>
           </div>
-          <p class="muted">VeriRank runs deterministically with zero AI keys required. If a buyer optionally connects Local Ollama (Desktop app) or an OpenAI/Gemini/Anthropic endpoint, every returned paragraph is verified by <strong>Fact-Lock&trade;</strong> and any hallucinated claim is automatically quarantined and replaced with the deterministic version.</p>
+          <p class="muted">VeriRank already optimizes your pages without needing any AI subscription. If you optionally add an OpenAI, Gemini, Anthropic, or Local Ollama key below, <strong>Fact-Lock&trade;</strong> verifies every sentence and removes any made-up facts.</p>
           <div class="two-col">
             <div>
-              <label class="muted">Provider</label>
+              <label class="muted" style="display:block;margin-bottom:4px;">AI Service Provider</label>
               <select id="aiProviderSelect">
-                <option value="ollama">Local Ollama (127.0.0.1:11434 — Desktop Only)</option>
-                <option value="openai">OpenAI-Compatible API</option>
+                <option value="ollama">Local Ollama (127.0.0.1:11434 — Desktop App Only)</option>
+                <option value="openai">OpenAI (ChatGPT API)</option>
                 <option value="gemini">Google Gemini API</option>
                 <option value="anthropic">Anthropic Claude API</option>
               </select>
             </div>
             <div>
-              <label class="muted">Model Name</label>
+              <label class="muted" style="display:block;margin-bottom:4px;">Model Name</label>
               <input type="text" id="aiModelInput" value="llama3.1">
             </div>
           </div>
           <div class="mt-8">
-            <label class="muted">Endpoint URL (for Ollama / Custom OpenAI)</label>
+            <label class="muted" style="display:block;margin-bottom:4px;">API Endpoint URL</label>
             <input type="text" id="aiEndpointInput" value="http://127.0.0.1:11434/api/generate">
           </div>
           <div class="mt-8">
-            <label class="muted">API Key (optional; blank for Local Ollama)</label>
-            <input type="password" id="aiApiKeyInput" placeholder="Leave blank for Local Ollama">
+            <label class="muted" style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <span>API Key (Optional; leave blank for Local Ollama)</span>
+              <button type="button" class="help-tip" aria-label="Explain API Key privacy" data-tip-title="Private API Key Handling" data-tip="Your API key stays in your active browser session only and is never stored in our database or shared.">?</button>
+            </label>
+            <input type="password" id="aiApiKeyInput" placeholder="Leave blank unless using OpenAI, Gemini, or Claude">
           </div>
         </div>
       </div>
     </section>
 
-    <!-- TAB 5: ENGINE VERIFICATION & SELF-TESTS -->
+    <!-- TAB 5: SYSTEM HEALTH CHECK -->
     <section id="tab-selftest" class="tab-panel">
       <div class="card">
         <div class="card-title">
-          <span>Deterministic SEO &amp; Anti-Hallucination Engine Verification</span>
-          <button type="button" id="runSelfTestsBtn" class="btn primary sm">Re-Run All Verification Checks</button>
+          <span class="btn-with-help">
+            <span>Automated SEO Engine &amp; Hallucination Guard Tests</span>
+            <button type="button" class="help-tip" aria-label="Explain System Health Check" data-tip-title="Built-In Quality Verification" data-tip="Runs 22 automated checks inside your browser to prove keyword extraction, Google/Bing scoring, Fiction vs. Business presets, ZIP exports, and hallucination traps are working accurately.">?</button>
+          </span>
+          <button type="button" id="runSelfTestsBtn" class="btn primary sm">Re-Run All Health Checks</button>
         </div>
         <div id="selfTestSummaryBanner"></div>
         <table>
           <thead>
-            <tr><th style="width:90px;">Result</th><th>Verification Test</th><th>Observed Evidence</th></tr>
+            <tr><th style="width:90px;">Status</th><th>Check Name</th><th>Observed Result</th></tr>
           </thead>
           <tbody id="selfTestTableBody"></tbody>
         </table>
@@ -1146,6 +1448,7 @@ details.sql-details summary {
   </main>
 
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+  <div id="helpTooltipPopup" class="help-popover" role="tooltip" aria-hidden="true"></div>
 
   <script>
 window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_iesn1BgrUZxn5uXaFK_EjQ_2DxuuZxM" };
@@ -1429,6 +1732,83 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     return JSON.parse(JSON.stringify(obj));
   }
 
+  var CONTENT_PRESETS = {
+    corporate: {
+      id: "corporate",
+      label: "Business / Website",
+      subtitle: "Service pages, B2B & guides",
+      tip: "Full on-page SEO structure: adds H1/H2 headings, a Key Takeaways summary box, an FAQ section with Google Rich Results schema, and tightens wordy corporate sentences.",
+      options: {
+        structureHeadings: true,
+        includeTakeaways: true,
+        includeFaq: true,
+        tightenReadability: true,
+        convertLists: true
+      },
+      leadWindowWords: 100,
+      minExactDensityPct: 0.5,
+      maxExactDensityPct: 2.2
+    },
+    blog: {
+      id: "blog",
+      label: "Blog / Article",
+      subtitle: "Posts, tutorials & news",
+      tip: "Ideal for blog posts and articles: organizes H1/H2 subheadings, summary bullets, and FAQs while keeping your intro paragraph in its natural order.",
+      options: {
+        structureHeadings: true,
+        includeTakeaways: true,
+        includeFaq: true,
+        tightenReadability: true,
+        convertLists: true
+      },
+      leadWindowWords: 130,
+      minExactDensityPct: 0.4,
+      maxExactDensityPct: 2.2
+    },
+    product: {
+      id: "product",
+      label: "Product / Store",
+      subtitle: "E-commerce & landing pages",
+      tip: "Built for store listings and landing pages: highlights key specs/takeaways, formats feature lists, adds buyer Q&As, and generates Product schema markup.",
+      options: {
+        structureHeadings: true,
+        includeTakeaways: true,
+        includeFaq: true,
+        tightenReadability: true,
+        convertLists: true
+      },
+      leadWindowWords: 100,
+      minExactDensityPct: 0.5,
+      maxExactDensityPct: 2.3
+    },
+    creative: {
+      id: "creative",
+      label: "Fiction / Creative",
+      subtitle: "Book blurbs, stories & prose",
+      tip: "Protects your exact author voice and story order: skips corporate headings, bullet summaries, and FAQs while generating an SEO Title, Synopsis Meta Description, and Book/CreativeWork schema.",
+      options: {
+        structureHeadings: false,
+        includeTakeaways: false,
+        includeFaq: false,
+        tightenReadability: false,
+        convertLists: false
+      },
+      leadWindowWords: 200,
+      minExactDensityPct: 0.3,
+      maxExactDensityPct: 2.2
+    }
+  };
+
+  function buildProfileForPreset(baseProfile, presetId) {
+    var preset = CONTENT_PRESETS[presetId] || CONTENT_PRESETS.corporate;
+    var clone = deepClone(baseProfile || FACTORY_PROFILE);
+    clone.contentMode = preset.id;
+    clone.bing.leadWindowWords = preset.leadWindowWords;
+    clone.bing.minExactDensityPct = preset.minExactDensityPct;
+    clone.bing.maxExactDensityPct = preset.maxExactDensityPct;
+    return clone;
+  }
+
   function getActiveProfile() {
     try {
       if (global.localStorage) {
@@ -1471,6 +1851,8 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
 
   VeriRank.Profiles = {
     FACTORY_PROFILE: FACTORY_PROFILE,
+    CONTENT_PRESETS: CONTENT_PRESETS,
+    buildProfileForPreset: buildProfileForPreset,
     getActiveProfile: getActiveProfile,
     saveCustomProfile: saveCustomProfile,
     resetProfile: resetProfile,
@@ -2213,7 +2595,8 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     "practic", "practical", "essenti", "essential", "core", "standard",
     "detail", "perform", "performance", "benefit", "process", "action",
     "implement", "use", "using", "organiz", "organization", "team", "work",
-    "explain", "highlight", "note", "focus", "section", "best", "practic", "inspect"
+    "explain", "highlight", "note", "focus", "section", "best", "practic", "inspect",
+    "feature", "featur", "specific", "specification", "insight", "synopsis", "complete"
   ]);
 
   var ALLOWED_STRUCTURAL_ACRONYMS = new Set(["FAQ", "SEO", "HTML", "JSON", "URL", "API", "AI"]);
@@ -2225,7 +2608,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     "What", "When", "Where", "Which", "Does", "Organizations", "Apply", "Govern",
     "Factors", "Details", "Standards", "And", "For", "With", "The", "This", "These",
     "First", "Second", "Third", "Finally", "However", "Therefore", "Because",
-    "Inspection", "Procedure"
+    "Inspection", "Procedure", "Features", "Specifications", "Highlights", "Insights", "Synopsis", "Complete"
   ]);
 
   function normalizeNumberToken(tok) {
@@ -2636,6 +3019,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
 
   function score(rawText, metadata, analysis, profileInput) {
     var profile = profileInput || VeriRank.Profiles.getActiveProfile();
+    var isCreative = !!(profile && profile.contentMode === "creative");
     var parsed = analysis ? analysis.parsed : VeriRank.Analyzer.parseDocument(rawText);
     var subject = analysis ? analysis.subject : VeriRank.Analyzer.analyze(rawText).subject;
     var readability = analysis ? analysis.readability : VeriRank.Analyzer.analyze(rawText).readability;
@@ -2676,22 +3060,38 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var topicalRatio = (primary && exactCount >= 1 ? 0.35 : 0) + secRatio * 0.35 + (entities.length >= 2 ? 0.15 : 0.05) + (densityOkGoogle ? 0.15 : 0);
     var gTopical = Math.round(gWeights.topicalDepth * Math.min(1, topicalRatio));
 
-    // 1b. Passage & Featured Snippet Readiness
+    // 1b. Passage & Featured Snippet Readiness (or Opening Hook for Creative/Fiction)
     var hasConcisePassage = parsed.paragraphs.some(function (p) {
       return p.wordCount >= profile.google.snippetWordsMin && p.wordCount <= profile.google.snippetWordsMax;
     });
+    var hasHookPassage = parsed.paragraphs.some(function (p) {
+      return p.wordCount >= 22 && p.wordCount <= 95;
+    });
+    var goodParaSplit = parsed.paragraphs.length >= 2 || totalWords < 120;
     var hasList = parsed.lists.length >= 1;
     var hasQuestionHeading = parsed.headings.some(function (h) { return /\?$/.test(h.text.trim()) || /^(what|how|why|when|key takeaways)/i.test(h.text.trim()); });
-    var passageRatio = (hasConcisePassage ? 0.45 : 0.15) + (hasList ? 0.3 : 0) + (hasQuestionHeading ? 0.25 : 0);
+    var passageRatio = isCreative
+      ? ((hasHookPassage ? 0.65 : 0.3) + (goodParaSplit ? 0.35 : 0.15))
+      : ((hasConcisePassage ? 0.45 : 0.15) + (hasList ? 0.3 : 0) + (hasQuestionHeading ? 0.25 : 0));
     var gPassage = Math.round(gWeights.passageSnippet * Math.min(1, passageRatio));
 
-    diagnostics.push({
-      engine: "Google",
-      status: hasConcisePassage && hasList ? "pass" : (hasConcisePassage || hasList ? "warn" : "fail"),
-      label: "Featured Snippet & Passage Readiness",
-      detail: (hasConcisePassage ? "40-60 word answer passage present. " : "No 38-62 word direct summary passage detected. ") +
-        (hasList ? parsed.lists.length + " scannable list(s) found." : "Add a bulleted or numbered list for extraction.")
-    });
+    if (isCreative) {
+      diagnostics.push({
+        engine: "Google",
+        status: hasHookPassage && goodParaSplit ? "pass" : "warn",
+        label: "Opening Hook & Search Excerpt",
+        detail: (hasHookPassage ? "Engaging opening hook paragraph sized cleanly for search excerpts. " : "Break opening prose into a concise 25-95 word hook paragraph. ") +
+          (goodParaSplit ? "Natural paragraph pacing preserved." : "Consider splitting long blurbs into 2 readable paragraphs.")
+      });
+    } else {
+      diagnostics.push({
+        engine: "Google",
+        status: hasConcisePassage && hasList ? "pass" : (hasConcisePassage || hasList ? "warn" : "fail"),
+        label: "Featured Snippet & Summary Readiness",
+        detail: (hasConcisePassage ? "40-60 word answer passage present. " : "No 38-62 word direct summary passage detected. ") +
+          (hasList ? parsed.lists.length + " scannable list(s) found." : "Add a bulleted or numbered list for extraction.")
+      });
+    }
 
     // 1c. Title & Meta Optimization (Google pixel check)
     var titleChars = title.length;
@@ -2715,21 +3115,34 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var hasH1 = parsed.headings.some(function (h) { return h.level === 1; });
     var noWallOfText = readability.longParagraphCount === 0;
     var goodSentLen = readability.avgSentenceWords <= 24;
-    var structRatio = (hasH1 ? 0.25 : 0) + (h2Count >= 2 || totalWords < 130 ? 0.3 : (h2Count === 1 ? 0.15 : 0)) + (noWallOfText ? 0.25 : 0) + (goodSentLen ? 0.2 : 0.08);
+    var structRatio = isCreative
+      ? (((hasH1 || !!title) ? 0.35 : 0) + (parsed.paragraphs.every(function (p) { return p.wordCount <= 130; }) ? 0.4 : 0.1) + (readability.avgSentenceWords <= 28 ? 0.25 : 0.12))
+      : ((hasH1 ? 0.25 : 0) + (h2Count >= 2 || totalWords < 130 ? 0.3 : (h2Count === 1 ? 0.15 : 0)) + (noWallOfText ? 0.25 : 0) + (goodSentLen ? 0.2 : 0.08));
     var gStruct = Math.round(gWeights.structureReadability * Math.min(1, structRatio));
 
-    diagnostics.push({
-      engine: "Both",
-      status: hasH1 && h2Count >= 2 && noWallOfText ? "pass" : (hasH1 || noWallOfText ? "warn" : "fail"),
-      label: "Heading Architecture & Paragraph Scannability",
-      detail: (hasH1 ? "1 H1" : "Missing H1") + ", " + h2Count + " H2 subheading(s), " + readability.longParagraphCount + " oversized paragraph(s) (>110w), avg sentence " + readability.avgSentenceWords + " words."
-    });
+    if (isCreative) {
+      diagnostics.push({
+        engine: "Both",
+        status: (hasH1 || !!title) && noWallOfText ? "pass" : "warn",
+        label: "Prose Pacing & Sentence Readability",
+        detail: "Narrative voice preserved (" + parsed.paragraphs.length + " paragraph(s), avg sentence " + readability.avgSentenceWords + " words)."
+      });
+    } else {
+      diagnostics.push({
+        engine: "Both",
+        status: hasH1 && h2Count >= 2 && noWallOfText ? "pass" : (hasH1 || noWallOfText ? "warn" : "fail"),
+        label: "Headings & Paragraph Readability",
+        detail: (hasH1 ? "1 H1" : "Missing H1") + ", " + h2Count + " H2 subheading(s), " + readability.longParagraphCount + " oversized paragraph(s) (>110w), avg sentence " + readability.avgSentenceWords + " words."
+      });
+    }
 
-    // 1e. E-E-A-T Specificity & Zero-Fluff
+    // 1e. E-E-A-T Specificity & Zero-Fluff (or Story Detail)
     var hasNumbers = numbers.length >= 2;
     var hasEntities = entities.length >= 2;
     var lowFiller = readability.fillerCount === 0;
-    var eeatRatio = (hasNumbers ? 0.4 : (numbers.length === 1 ? 0.2 : 0.05)) + (hasEntities ? 0.35 : 0.1) + (lowFiller ? 0.25 : 0.05);
+    var eeatRatio = isCreative
+      ? ((entities.length >= 2 ? 0.65 : (entities.length === 1 ? 0.4 : 0.15)) + (numbers.length >= 1 || readability.fillerCount <= 1 ? 0.35 : 0.15))
+      : ((hasNumbers ? 0.4 : (numbers.length === 1 ? 0.2 : 0.05)) + (hasEntities ? 0.35 : 0.1) + (lowFiller ? 0.25 : 0.05));
     var gEeat = Math.round(gWeights.eeatSpecificity * Math.min(1, eeatRatio));
 
     // 1f. Schema.org JSON-LD
@@ -2746,41 +3159,65 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     // 2. BING + COPILOT SCORING (5 Categories totaling 100)
     var bWeights = profile.bing.weights;
 
-    // 2a. Exact Keyphrase & First-100-Word Lead Placement
+    // 2a. Exact Keyphrase & Lead Placement
     var inTitleExact = primary && title.toLowerCase().indexOf(primary) !== -1;
     var h1Text = (parsed.headings.find(function (h) { return h.level === 1; }) || { text: "" }).text.toLowerCase();
     var inH1Exact = primary && h1Text.indexOf(primary) !== -1;
     var inLead100 = primary && first100Text.toLowerCase().indexOf(primary) !== -1;
     var inH2Exact = primary && parsed.headings.some(function (h) { return h.level === 2 && h.text.toLowerCase().indexOf(primary) !== -1; });
     var inSlug = primary && slug && slug.indexOf(Lex.slugify(primary)) !== -1;
-    var exactPlacementRatio = (inTitleExact ? 0.25 : 0) + (inH1Exact ? 0.2 : 0) + (inLead100 ? 0.25 : 0) + (inH2Exact ? 0.15 : 0) + (inSlug ? 0.15 : 0);
+    var exactPlacementRatio = isCreative
+      ? ((inTitleExact ? 0.4 : (titleHasConcept ? 0.2 : 0)) + (inLead100 ? 0.35 : (exactCount >= 1 ? 0.2 : 0)) + (inSlug ? 0.25 : 0))
+      : ((inTitleExact ? 0.25 : 0) + (inH1Exact ? 0.2 : 0) + (inLead100 ? 0.25 : 0) + (inH2Exact ? 0.15 : 0) + (inSlug ? 0.15 : 0));
     var bLead = Math.round(bWeights.exactLeadPlacement * Math.min(1, exactPlacementRatio));
 
-    diagnostics.push({
-      engine: "Bing",
-      status: inTitleExact && inH1Exact && inLead100 ? "pass" : (inLead100 ? "warn" : "fail"),
-      label: "Bing Exact-Phrase & 100-Word Lead Alignment",
-      detail: "Title: " + (inTitleExact ? "Yes" : "No") + " | H1: " + (inH1Exact ? "Yes" : "No") + " | First 100w: " + (inLead100 ? "Yes" : "No") + " | Slug: " + (inSlug ? "Yes" : "No")
-    });
+    if (isCreative) {
+      diagnostics.push({
+        engine: "Bing",
+        status: (inTitleExact || titleHasConcept) && (inLead100 || exactCount >= 1) ? "pass" : "warn",
+        label: "Focus Keyword in Title, Opening & Slug",
+        detail: "SEO Title: " + (inTitleExact ? "Yes" : "No") + " | Opening Hook: " + (inLead100 ? "Yes" : "No") + " | URL Slug: " + (inSlug ? "Yes" : "No")
+      });
+    } else {
+      diagnostics.push({
+        engine: "Bing",
+        status: inTitleExact && inH1Exact && inLead100 ? "pass" : (inLead100 ? "warn" : "fail"),
+        label: "Focus Keyword in Title, H1 & Intro",
+        detail: "Title: " + (inTitleExact ? "Yes" : "No") + " | H1: " + (inH1Exact ? "Yes" : "No") + " | Intro Window: " + (inLead100 ? "Yes" : "No") + " | Slug: " + (inSlug ? "Yes" : "No")
+      });
+    }
 
     // 2b. Clean Hierarchy, Meta & OpenGraph
     var cleanHier = hasValidHeadingHierarchy(parsed.headings);
+    var creativeHierOk = parsed.headings.length === 0 || cleanHier;
     var metaGoodBing = metaDesc.length >= profile.bing.metaMinChars && metaDesc.length <= profile.bing.metaMaxChars;
-    var bHierRatio = (cleanHier ? 0.45 : 0.1) + (metaGoodBing ? 0.3 : (metaDesc ? 0.15 : 0)) + (hasOpenGraph ? 0.25 : 0);
+    var bHierRatio = ((isCreative ? creativeHierOk : cleanHier) ? 0.45 : 0.1) + (metaGoodBing ? 0.3 : (metaDesc ? 0.15 : 0)) + (hasOpenGraph ? 0.25 : 0);
     var bHier = Math.round(bWeights.cleanHierarchyMeta * Math.min(1, bHierRatio));
 
-    // 2c. Copilot Q&A & Scannable Clarity
+    // 2c. Copilot Q&A & Scannable Clarity (or AI Discovery & Synopsis Clarity)
     var hasFaq = parsed.headings.some(function (h) { return /frequently asked questions|\?/i.test(h.text); });
-    var bCopilotRatio = (hasFaq ? 0.45 : 0) + (hasList ? 0.3 : 0) + (hasConcisePassage ? 0.25 : 0.1);
+    var bCopilotRatio = isCreative
+      ? ((metaGoodBing ? 0.45 : (metaDesc ? 0.25 : 0)) + (hasHookPassage ? 0.35 : 0.15) + (hasJsonLd ? 0.2 : 0))
+      : ((hasFaq ? 0.45 : 0) + (hasList ? 0.3 : 0) + (hasConcisePassage ? 0.25 : 0.1));
     var bCopilot = Math.round(bWeights.copilotQaClarity * Math.min(1, bCopilotRatio));
 
-    diagnostics.push({
-      engine: "Bing",
-      status: hasFaq && hasList ? "pass" : (hasList || hasFaq ? "warn" : "fail"),
-      label: "Microsoft Copilot Q&A & Citation Clarity",
-      detail: (hasFaq ? "Structured FAQ Q&A block ready for Copilot extraction. " : "No explicit Q&A section found. ") +
-        (hasOpenGraph ? "OpenGraph tags attached." : "OpenGraph tags missing.")
-    });
+    if (isCreative) {
+      diagnostics.push({
+        engine: "Bing",
+        status: metaGoodBing && hasOpenGraph ? "pass" : "warn",
+        label: "AI Discovery & Synopsis Clarity",
+        detail: (metaGoodBing ? "Meta synopsis formatted for search & AI previews. " : "Adjust meta synopsis length. ") +
+          (hasOpenGraph ? "Social preview tags attached." : "Social preview tags missing.")
+      });
+    } else {
+      diagnostics.push({
+        engine: "Bing",
+        status: hasFaq && hasList ? "pass" : (hasList || hasFaq ? "warn" : "fail"),
+        label: "AI Search & FAQ Citation Readiness",
+        detail: (hasFaq ? "Structured FAQ Q&A block ready for Bing & Copilot answers. " : "No explicit Q&A section found. ") +
+          (hasOpenGraph ? "Social preview (OpenGraph) tags attached." : "OpenGraph tags missing.")
+      });
+    }
 
     // 2d. Keyword Discipline (no over-stuffing)
     var bingDensityOk = exactDensityPct >= profile.bing.minExactDensityPct && exactDensityPct <= profile.bing.maxExactDensityPct;
@@ -2818,22 +3255,22 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       google: {
         total: googleTotal,
         breakdown: {
-          topicalDepth: { score: gTopical, max: gWeights.topicalDepth, label: "Topical Depth & Semantic Coverage" },
-          passageSnippet: { score: gPassage, max: gWeights.passageSnippet, label: "Passage & Featured Snippet Readiness" },
-          titleMeta: { score: gTitleMeta, max: gWeights.titleMeta, label: "Title (Pixel) & Meta Optimization" },
-          structureReadability: { score: gStruct, max: gWeights.structureReadability, label: "Heading Structure & Readability" },
-          eeatSpecificity: { score: gEeat, max: gWeights.eeatSpecificity, label: "E-E-A-T Specificity & Zero-Fluff" },
-          schemaJsonLd: { score: gSchema, max: gWeights.schemaJsonLd, label: "Schema.org JSON-LD" }
+          topicalDepth: { score: gTopical, max: gWeights.topicalDepth, label: "Topic Coverage & Related Keywords" },
+          passageSnippet: { score: gPassage, max: gWeights.passageSnippet, label: isCreative ? "Opening Hook & Excerpt Readiness" : "Featured Snippet & Summary Readiness" },
+          titleMeta: { score: gTitleMeta, max: gWeights.titleMeta, label: "SEO Title & Meta Description" },
+          structureReadability: { score: gStruct, max: gWeights.structureReadability, label: isCreative ? "Prose Flow & Reading Ease" : "Headings & Reading Ease" },
+          eeatSpecificity: { score: gEeat, max: gWeights.eeatSpecificity, label: isCreative ? "Distinctive Names & Story Detail" : "Facts & Credibility Signals (E-E-A-T)" },
+          schemaJsonLd: { score: gSchema, max: gWeights.schemaJsonLd, label: "Schema Markup (JSON-LD)" }
         }
       },
       bing: {
         total: bingTotal,
         breakdown: {
-          exactLeadPlacement: { score: bLead, max: bWeights.exactLeadPlacement, label: "Exact Keyphrase & 100-Word Lead" },
-          cleanHierarchyMeta: { score: bHier, max: bWeights.cleanHierarchyMeta, label: "Clean Hierarchy, Meta & OpenGraph" },
-          copilotQaClarity: { score: bCopilot, max: bWeights.copilotQaClarity, label: "Copilot Q&A & Citation Clarity" },
-          keywordDiscipline: { score: bKw, max: bWeights.keywordDiscipline, label: "Density & Secondary Discipline" },
-          mediaLinksIndexNow: { score: bIndex, max: bWeights.mediaLinksIndexNow, label: "IndexNow & Internal Link Anchors" }
+          exactLeadPlacement: { score: bLead, max: bWeights.exactLeadPlacement, label: "Focus Keyword in Title & Intro" },
+          cleanHierarchyMeta: { score: bHier, max: bWeights.cleanHierarchyMeta, label: "Heading Order & Social Share Tags" },
+          copilotQaClarity: { score: bCopilot, max: bWeights.copilotQaClarity, label: isCreative ? "AI Search & Synopsis Clarity" : "AI Search & FAQ Readiness" },
+          keywordDiscipline: { score: bKw, max: bWeights.keywordDiscipline, label: "Natural Keyword Density" },
+          mediaLinksIndexNow: { score: bIndex, max: bWeights.mediaLinksIndexNow, label: "Bing IndexNow & Internal Links" }
         }
       },
       harmonyScore: harmonyScore,
@@ -2937,19 +3374,37 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     return words.slice(0, maxWords).join(" ").replace(/[,;:\s]+$/, "") + ".";
   }
 
-  function buildConstrainedTitle(primaryTitle, secondaryTitle, intentPrimary, maxChars, maxPixels) {
+  function buildConstrainedTitle(primaryTitle, secondaryTitle, intentPrimary, maxChars, maxPixels, contentMode) {
     var candidates = [];
-    if (secondaryTitle) {
-      if (intentPrimary === "procedural") {
-        candidates.push(primaryTitle + ": " + secondaryTitle + " Checklist");
-        candidates.push(primaryTitle + ": " + secondaryTitle + " Guide");
-      } else {
-        candidates.push(primaryTitle + ": " + secondaryTitle + " Overview");
+    if (contentMode === "creative") {
+      if (secondaryTitle) {
+        candidates.push(primaryTitle + " — " + secondaryTitle + " Synopsis");
+        candidates.push(primaryTitle + ": " + secondaryTitle + " Story & Preview");
+        candidates.push(primaryTitle + " — " + secondaryTitle);
+      }
+      candidates.push(primaryTitle + " — Official Synopsis & Preview");
+      candidates.push(primaryTitle);
+    } else if (contentMode === "product") {
+      if (secondaryTitle) {
+        candidates.push(primaryTitle + ": " + secondaryTitle + " Features & Specs");
+        candidates.push(primaryTitle + " — Specifications & Overview");
         candidates.push(primaryTitle + " & " + secondaryTitle);
       }
+      candidates.push(primaryTitle + " Features & Specifications");
+      candidates.push(primaryTitle);
+    } else {
+      if (secondaryTitle) {
+        if (intentPrimary === "procedural") {
+          candidates.push(primaryTitle + ": " + secondaryTitle + " Checklist");
+          candidates.push(primaryTitle + ": " + secondaryTitle + " Guide");
+        } else {
+          candidates.push(primaryTitle + ": " + secondaryTitle + " Overview");
+          candidates.push(primaryTitle + " & " + secondaryTitle);
+        }
+      }
+      candidates.push(primaryTitle + " Guide & Best Practices");
+      candidates.push(primaryTitle);
     }
-    candidates.push(primaryTitle + " Guide & Best Practices");
-    candidates.push(primaryTitle);
 
     for (var i = 0; i < candidates.length; i++) {
       var cand = candidates[i].replace(/\s+/g, " ").trim();
@@ -2970,7 +3425,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     return built || primaryTitle.slice(0, maxChars);
   }
 
-  function buildTitleVariants(analysis, profile) {
+  function buildTitleVariants(analysis, profile, contentMode) {
     var primary = analysis.subject.primaryKeyphrase;
     var primaryTitle = Lex.toTitleCase(primary);
     var sec1 = analysis.subject.secondaryKeyphrases[0] ? Lex.toTitleCase(analysis.subject.secondaryKeyphrases[0].phrase) : "";
@@ -2979,16 +3434,20 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var maxC = profile.google.titleMaxChars || 60;
     var maxP = profile.google.titleMaxPixels || 580;
 
-    var v1 = buildConstrainedTitle(primaryTitle, sec1, analysis.intent.primary, maxC, maxP);
-    var v2 = buildConstrainedTitle(primaryTitle, sec2 || ent1 || sec1, "informational", maxC, maxP);
-    var v3 = buildConstrainedTitle(primaryTitle, ent1 || sec1, "procedural", maxC, maxP);
+    var v1 = buildConstrainedTitle(primaryTitle, sec1, analysis.intent.primary, maxC, maxP, contentMode);
+    var v2 = buildConstrainedTitle(primaryTitle, sec2 || ent1 || sec1, "informational", maxC, maxP, contentMode);
+    var v3 = buildConstrainedTitle(primaryTitle, ent1 || sec1, "procedural", maxC, maxP, contentMode);
+
+    var labels = contentMode === "creative"
+      ? ["Balanced Book/Story Title (Recommended)", "Reader Discovery Title", "Exact Topic Match"]
+      : ["Dual-Engine Balanced (Recommended)", "Google Semantic Intent", "Bing Exact-Lead Focus"];
 
     var unique = [];
     var seen = new Set();
     [
-      { label: "Dual-Engine Balanced (Recommended)", text: v1 },
-      { label: "Google Semantic Intent", text: v2 },
-      { label: "Bing Exact-Lead Focus", text: v3 }
+      { label: labels[0], text: v1 },
+      { label: labels[1], text: v2 },
+      { label: labels[2], text: v3 }
     ].forEach(function (item) {
       if (!seen.has(item.text)) {
         seen.add(item.text);
@@ -3045,8 +3504,9 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     return chunks;
   }
 
-  function renderHtmlFromBlocks(blocks, title, metaDescription, slug, jsonLdObj) {
+  function renderHtmlFromBlocks(blocks, title, metaDescription, slug, jsonLdObj, ogTypeInput) {
     var esc = Lex.escapeHtml;
+    var ogType = ogTypeInput || "article";
     var bodyParts = [];
     for (var i = 0; i < blocks.length; i++) {
       var b = blocks[i];
@@ -3072,7 +3532,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       "<title>" + esc(title) + "</title>",
       "<meta name=\"description\" content=\"" + esc(metaDescription) + "\">",
       "<link rel=\"canonical\" href=\"" + esc(canonical) + "\">",
-      "<meta property=\"og:type\" content=\"article\">",
+      "<meta property=\"og:type\" content=\"" + esc(ogType) + "\">",
       "<meta property=\"og:title\" content=\"" + esc(title) + "\">",
       "<meta property=\"og:description\" content=\"" + esc(metaDescription) + "\">",
       "<meta property=\"og:url\" content=\"" + esc(canonical) + "\">",
@@ -3113,6 +3573,8 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var convertLists = opts.convertLists !== false;
     var structureHeadings = opts.structureHeadings !== false;
     var profile = opts.profile || VeriRank.Profiles.getActiveProfile();
+    var contentMode = opts.contentMode || (profile && profile.contentMode) || "corporate";
+    var maxParaWords = contentMode === "creative" ? 115 : 85;
 
     var analysis = VeriRank.Analyzer.analyze(rawInput, { overrideKeyword: opts.overrideKeyword });
     var beforeScores = VeriRank.Scorer.score(rawInput, null, analysis, profile);
@@ -3157,7 +3619,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
         if (stepMatch) {
           // Flush any accumulated sentences before starting list
           if (paraSentencesOut.length > 0) {
-            var preChunks = splitParagraphIntoBalancedChunks(paraSentencesOut, 85);
+            var preChunks = splitParagraphIntoBalancedChunks(paraSentencesOut, maxParaWords);
             for (var pc = 0; pc < preChunks.length; pc++) {
               processedBlocks.push({ type: "p", text: preChunks[pc] });
             }
@@ -3183,7 +3645,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       }
 
       if (paraSentencesOut.length > 0) {
-        var chunks = splitParagraphIntoBalancedChunks(paraSentencesOut, 85);
+        var chunks = splitParagraphIntoBalancedChunks(paraSentencesOut, maxParaWords);
         if (chunks.length > 1) changesLog.push("Split long paragraph (" + para.wordCount + "w) into scannable paragraphs");
         for (var ch = 0; ch < chunks.length; ch++) {
           processedBlocks.push({ type: "p", text: chunks[ch] });
@@ -3203,9 +3665,9 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       }
     }
 
-    // Ensure at least one paragraph exists containing exact primary phrase in first 100 words
+    // Ensure at least one paragraph exists containing exact primary phrase in first 100 words (skip reordering for creative/blog narratives)
     var firstParaBlock = processedBlocks.find(function (b) { return b.type === "p"; });
-    if (firstParaBlock) {
+    if (firstParaBlock && contentMode !== "creative" && contentMode !== "blog") {
       var lead100 = firstParaBlock.text.split(/\s+/).slice(0, 95).join(" ").toLowerCase();
       if (lead100.indexOf(primary) === -1) {
         // Move the earliest paragraph containing primary phrase to the front, keeping all claims 100% source-grounded
@@ -3223,23 +3685,41 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     // 2. Assemble final structured document blocks (H1 -> Lead -> Concise Passage/Takeaways -> H2 Sections -> FAQ)
     var finalBlocks = [];
     var existingH1 = parsed.headings.find(function (h) { return h.level === 1; });
-    var h1Text = existingH1 && existingH1.text.toLowerCase().indexOf(primary) !== -1
-      ? existingH1.text
-      : (secondaries[0]
+    var h1Text = "";
+    if (existingH1 && existingH1.text.toLowerCase().indexOf(primary) !== -1) {
+      h1Text = existingH1.text;
+    } else if (contentMode === "blog") {
+      h1Text = secondaries[0]
+        ? primaryTitle + ": " + Lex.toTitleCase(secondaries[0].phrase) + " Insights"
+        : primaryTitle + " Complete Guide";
+    } else if (contentMode === "product") {
+      h1Text = secondaries[0]
+        ? primaryTitle + ": " + Lex.toTitleCase(secondaries[0].phrase) + " Features"
+        : primaryTitle + " Features and Specifications";
+    } else if (contentMode === "creative") {
+      h1Text = secondaries[0]
+        ? primaryTitle + ": " + Lex.toTitleCase(secondaries[0].phrase)
+        : primaryTitle;
+    } else {
+      h1Text = secondaries[0]
         ? primaryTitle + ": " + Lex.toTitleCase(secondaries[0].phrase) + " Guide"
-        : primaryTitle + " Overview and Practical Guide");
-    finalBlocks.push({ type: "h1", text: h1Text });
-    if (!existingH1) changesLog.push("Generated grounded H1 heading with primary keyphrase");
+        : primaryTitle + " Overview and Practical Guide";
+    }
+
+    if (existingH1 || contentMode !== "creative" || structureHeadings) {
+      finalBlocks.push({ type: "h1", text: h1Text });
+      if (!existingH1) changesLog.push("Generated grounded H1 heading with primary keyphrase");
+    }
 
     // Insert Lead paragraph first
     var bodyParagraphs = processedBlocks.filter(function (b) { return b.type === "p"; });
     var otherBlocks = processedBlocks.filter(function (b) { return b.type !== "p"; });
 
     if (bodyParagraphs.length > 0) {
-      // Ensure lead paragraph is concise (~45-62 words) for Google Passage / Snippet readiness if possible
+      // Ensure lead paragraph is concise (~45-62 words) for Google Passage / Snippet readiness (except creative voice)
       var leadText = bodyParagraphs[0].text;
       var leadWords = VeriRank.Analyzer.countWords(leadText);
-      if (leadWords > 62) {
+      if (contentMode !== "creative" && leadWords > 62) {
         var leadSents = VeriRank.Analyzer.splitSentences(leadText);
         if (leadSents.length >= 2) {
           var firstChunk = [];
@@ -3310,7 +3790,11 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
 
     var nextSubheading = function (blockText) {
       var cand = "";
-      if (secIdx === 0) {
+      if (contentMode === "creative") {
+        cand = secondaries[secIdx] ? Lex.toTitleCase(secondaries[secIdx].phrase) : (primaryTitle + " Synopsis");
+      } else if (contentMode === "product" && secIdx === 0) {
+        cand = primaryTitle + " Features and Specifications";
+      } else if (secIdx === 0) {
         cand = primaryTitle + " Requirements and Controls";
       } else if (secondaries[secIdx - 1]) {
         cand = Lex.toTitleCase(secondaries[secIdx - 1].phrase) + " Details";
@@ -3319,7 +3803,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       } else {
         cand = "Operational Implementation Steps";
       }
-      if (blockText && /\b(first|step|inspect|clean|calibrate|verify)\b/i.test(blockText) && analysis.intent.primary === "procedural") {
+      if (contentMode !== "creative" && blockText && /\b(first|step|inspect|clean|calibrate|verify)\b/i.test(blockText) && analysis.intent.primary === "procedural") {
         cand = "Practical Step-by-Step Checklist";
       }
       secIdx++;
@@ -3405,13 +3889,25 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var optimizedMarkdown = mdLines.join("\n\n");
 
     // 7. Build Metadata, JSON-LD, IndexNow, Internal Link Anchors & HTML
-    var titleVariants = buildTitleVariants(analysis, profile);
+    var titleVariants = buildTitleVariants(analysis, profile, contentMode);
     var selectedTitle = titleVariants[0].text;
     var metaDescription = buildGroundedMetaDescription(analysis, primary, profile);
     var slug = Lex.slugify(primary);
 
+    var schemaType = analysis.intent.recommendedSchemaType || "Article";
+    var ogType = "article";
+    if (contentMode === "blog") {
+      schemaType = analysis.intent.primary === "procedural" ? "HowTo" : "BlogPosting";
+    } else if (contentMode === "product") {
+      schemaType = "Product";
+      ogType = "product";
+    } else if (contentMode === "creative") {
+      schemaType = /\b(novel|book|chapter|trilogy|author|series|thriller|thrillers|fantasy|mystery|romance|memoir)\b/i.test(rawInput) ? "Book" : "CreativeWork";
+      ogType = "book";
+    }
+
     var articleSchema = {
-      "@type": analysis.intent.recommendedSchemaType || "Article",
+      "@type": schemaType,
       "headline": selectedTitle,
       "description": metaDescription,
       "keywords": [primary].concat(secondaries.slice(0, 4).map(function (s) { return s.phrase; })).join(", "),
@@ -3420,6 +3916,9 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
         "@id": "https://example.com/" + slug
       }
     };
+    if (schemaType === "Product" || schemaType === "Book" || schemaType === "CreativeWork") {
+      articleSchema.name = selectedTitle;
+    }
     var graph = [articleSchema];
     if (faqPairs.length > 0) {
       graph.push({
@@ -3456,7 +3955,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       };
     });
 
-    var renderedHtml = renderHtmlFromBlocks(finalBlocks, selectedTitle, metaDescription, slug, jsonLd);
+    var renderedHtml = renderHtmlFromBlocks(finalBlocks, selectedTitle, metaDescription, slug, jsonLd, ogType);
 
     var metadata = {
       title: selectedTitle,
@@ -3465,7 +3964,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       slug: slug,
       canonicalUrl: "https://example.com/" + slug,
       openGraph: {
-        "og:type": "article",
+        "og:type": ogType,
         "og:title": selectedTitle,
         "og:description": metaDescription,
         "og:url": "https://example.com/" + slug
@@ -3486,6 +3985,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
 
     return {
       sourceText: rawInput,
+      contentMode: contentMode,
       optimizedMarkdown: optimizedMarkdown,
       optimizedHtml: renderedHtml.articleHtml,
       fullHtmlDocument: renderedHtml.fullHtmlDocument,
@@ -3510,6 +4010,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var afterScores = VeriRank.Scorer.score(editedMarkdown, currentResult.metadata, afterAnalysis, profile);
 
     return Object.assign({}, currentResult, {
+      contentMode: currentResult.contentMode || (profile && profile.contentMode) || "corporate",
       optimizedMarkdown: editedMarkdown,
       afterAnalysis: afterAnalysis,
       afterScores: afterScores,
@@ -3771,22 +4272,33 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     {
       id: "cloud-zero-trust",
       fileName: "01-cloud-zero-trust-saas.txt",
-      label: "B2B SaaS: Cloud Zero-Trust",
+      label: "Business: Cloud Security",
+      preset: "corporate",
       text: "Enterprise cloud teams are increasingly adopting zero trust network access in order to protect distributed workloads across hybrid infrastructure. Traditional perimeter firewalls were built for offices where employees sat inside one network, which meant lateral movement inside the data center often went undetected for weeks. With zero trust network access, every user, device, and API session is continuously verified before receiving least-privilege access to sensitive applications. In our 2026 deployment review across 42 enterprise cloud environments, organizations implementing micro-segmentation and hardware-backed MFA reduced unauthorized lateral access attempts by 68% and shortened incident containment to 14 minutes while maintaining 99.95% service availability.\n\nIt is important to note that zero trust network access requires strict identity governance, encrypted service-to-service tunnels, and automated device posture checks. Due to the fact that legacy VPN concentrators expose broad IP subnets, attackers who compromise a single contractor credential can scan internal databases without triggering perimeter alerts. Modern cloud security teams should enforce continuous session evaluation under SOC 2 Type II and ISO 27001 controls, log every policy decision to an immutable SIEM pipeline, and rotate ephemeral workload certificates every 24 hours. Organizations that standardize on identity-aware proxies eliminate static bastion hosts, simplify remote onboarding for engineering contractors, and maintain verifiable audit trails across AWS and Azure production clusters."
     },
     {
       id: "heat-pump",
       fileName: "02-industrial-heat-pump-maintenance.txt",
-      label: "Industrial HVAC: Heat Pumps",
+      label: "Service: Commercial HVAC",
+      preset: "corporate",
       text: "Commercial facility managers rely on industrial heat pump maintenance in order to preserve thermal efficiency and prevent unscheduled compressor shutdowns during peak winter demand. High-capacity commercial heat pumps operate under elevated refrigerant pressures and variable ambient loads, which places continuous mechanical stress on evaporator coils, electronic expansion valves, and scroll compressors. When industrial heat pump maintenance is delayed beyond recommended quarterly intervals, fouled heat-exchanger fins force discharge pressure above 450 PSI and increase electrical draw by 18% across multi-unit chiller plants.\n\nField technicians should follow a structured inspection sequence on every preventive service visit. First, isolate electrical disconnect switches and verify zero voltage before inspecting compressor contactor terminals for pitting or thermal discoloration. Second, clean outdoor evaporator and condenser fin banks using non-corrosive coil cleaner while checking R-513A refrigerant subcooling and superheat readings against manufacturer specification sheets. Third, calibrate differential pressure sensors, inspect glycol loop strainers for particulate buildup, and verify variable-frequency drive fault logs in the building automation controller. It should be noted that facilities documenting quarterly industrial heat pump maintenance extend compressor service life by 6 years and cut emergency HVAC dispatch expenses by $14,500 per building annually."
     },
     {
       id: "healthcare-billing",
       fileName: "03-healthcare-billing-compliance.md",
-      label: "Healthcare: Billing Compliance",
+      label: "Healthcare: Compliance",
+      preset: "corporate",
       text: "Healthcare revenue cycle leaders depend on automated healthcare billing compliance workflows to reduce claim denials and satisfy federal payer audit standards. Medical groups submitting thousands of outpatient encounters each week face strict documentation rules under HIPAA, CMS National Correct Coding Initiative edits, and payer-specific medical necessity policies. When healthcare billing compliance checks occur only after claim rejection, billing teams spend an average of 72 hours per week reworking modifier errors and chasing missing clinical attestations, delaying net reimbursement by 21 days.\n\nPre-submission claim scrubbing engines validate ICD-10-CM diagnosis codes, CPT procedure pairings, and place-of-service indicators against current payer rulebooks before claims leave the clearinghouse. However, automated scrubbing does not replace certified clinical coding audits, and software validation never alters physician diagnosis codes without documented provider sign-off. In order to maintain audit readiness, compliance officers must retain immutable audit logs for 7 years, monitor first-pass clean claim rates above 96%, and conduct quarterly chart reviews on high-risk evaluation and management codes. Hospitals combining automated healthcare billing compliance screening with targeted coder education lowered preventable denial rates from 9.4% to 2.8% within two fiscal quarters."
     }
   ];
+
+  VeriRank.CreativeSample = {
+    id: "starlight-salvage",
+    fileName: "04-starlight-salvage-fiction-blurb.txt",
+    label: "Fiction: Sci-Fi Book Blurb",
+    preset: "creative",
+    text: "For twelve years, Captain Elena Vance has worked deep space salvage along the shattered rim of the Helios Sector. Her crew strips derelict freighters before radiation storms swallow their hulls. When an abandoned orbital station broadcasts a distress cipher from Earth's vanished colony fleet, Elena expects a routine recovery job. Instead, she finds a sealed vault holding the coordinates of a living star.\n\nHunted by corporate mercenaries and a rogue armada, Elena must trust a disgraced navigator who knows the station's darkest secret. Every clue inside those frozen corridors pulls them deeper into a cover-up that could reignite interstellar war. Readers who love character-driven sci-fi thrillers and high-stakes deep space salvage adventures will be hooked until the final jump."
+  };
 })(window);
 
 /* === cloud-sync.js === */
@@ -4094,6 +4606,31 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       validHtmlDoc,
       "HTML length: " + r1.fullHtmlDocument.length + " chars");
 
+    var creativePreset = VeriRank.Profiles.CONTENT_PRESETS.creative;
+    var creativeProf = VeriRank.Profiles.buildProfileForPreset(VeriRank.Profiles.FACTORY_PROFILE, "creative");
+    var creativeOpts = Object.assign({ contentMode: "creative", profile: creativeProf }, creativePreset.options);
+    var rCreative = VeriRank.Optimizer.optimize(VeriRank.CreativeSample.text, creativeOpts);
+    var creativeSchemaType = rCreative.metadata.jsonLd["@graph"][0]["@type"];
+    assert("Fiction / Creative Blurb preset preserves voice & scores >= 85",
+      rCreative.optimizedMarkdown.indexOf("Key Takeaways") === -1 &&
+      rCreative.optimizedMarkdown.indexOf("Frequently Asked Questions") === -1 &&
+      rCreative.factLock.passed && rCreative.factLock.issues.length === 0 &&
+      rCreative.afterScores.google.total >= 85 && rCreative.afterScores.bing.total >= 85 &&
+      (creativeSchemaType === "Book" || creativeSchemaType === "CreativeWork"),
+      "Google: " + rCreative.afterScores.google.total + ", Bing: " + rCreative.afterScores.bing.total + ", Schema: " + creativeSchemaType);
+
+    var presetIds = ["corporate", "blog", "product", "creative"];
+    var allPresetsOk = presetIds.every(function (pid) {
+      var pr = VeriRank.Profiles.CONTENT_PRESETS[pid];
+      var pf = VeriRank.Profiles.buildProfileForPreset(VeriRank.Profiles.FACTORY_PROFILE, pid);
+      var txt = pid === "creative" ? VeriRank.CreativeSample.text : s1;
+      var out = VeriRank.Optimizer.optimize(txt, Object.assign({ contentMode: pid, profile: pf }, pr.options));
+      return out.factLock.passed && out.afterScores.google.total >= 85 && out.afterScores.bing.total >= 85;
+    });
+    assert("All 4 Content Type presets execute with 100% Fact-Lock accuracy",
+      allPresetsOk,
+      "Verified: " + presetIds.join(", "));
+
     var passedCount = checks.filter(function (c) { return c.passed; }).length;
     var failedCount = checks.length - passedCount;
     var summary = {
@@ -4120,7 +4657,8 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
 
   var state = {
     currentResult: null,
-    activeProfile: VeriRank.Profiles.getActiveProfile(),
+    activePreset: "corporate",
+    activeProfile: VeriRank.Profiles.buildProfileForPreset(VeriRank.Profiles.getActiveProfile(), "corporate"),
     selectedTitleIdx: 0,
     viewMode: "preview",
     batchItems: [],
@@ -4265,8 +4803,37 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     }
   }
 
+  function applyContentPreset(presetId, shouldRunOptimize) {
+    var preset = VeriRank.Profiles.CONTENT_PRESETS[presetId] || VeriRank.Profiles.CONTENT_PRESETS.corporate;
+    state.activePreset = preset.id;
+
+    var cards = document.querySelectorAll("[data-preset]");
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].classList.toggle("active", cards[i].getAttribute("data-preset") === preset.id);
+    }
+
+    $("optStructureHeadings").checked = !!preset.options.structureHeadings;
+    $("optTakeaways").checked = !!preset.options.includeTakeaways;
+    $("optFaq").checked = !!preset.options.includeFaq;
+    $("optTighten").checked = !!preset.options.tightenReadability;
+    $("optLists").checked = !!preset.options.convertLists;
+
+    if ($("activePresetBadge")) {
+      $("activePresetBadge").textContent = preset.label;
+    }
+
+    state.activeProfile = VeriRank.Profiles.buildProfileForPreset(VeriRank.Profiles.getActiveProfile(), preset.id);
+    renderProfileForm();
+
+    if (shouldRunOptimize && $("sourceTextarea").value.trim()) {
+      runOptimization();
+      showToast("Switched to " + preset.label + " mode.", "ok");
+    }
+  }
+
   function getOptimizeOptionsFromUi() {
     return {
+      contentMode: state.activePreset,
       overrideKeyword: $("overrideKeywordInput").value.trim(),
       structureHeadings: $("optStructureHeadings").checked,
       includeTakeaways: $("optTakeaways").checked,
@@ -4400,7 +4967,8 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
 
     $("scoreHarmony").textContent = res.afterScores.harmonyScore + "/100";
     $("scoreHarmony").className = "score-value " + scoreClass(res.afterScores.harmonyScore);
-    $("scoreDensityInfo").textContent = "Density: " + res.afterScores.metrics.exactDensityPct + "% (" + res.afterScores.metrics.exactCount + "x / " + res.afterScores.metrics.wordCount + "w)";
+    var densityHealthy = res.afterScores.metrics.exactDensityPct <= state.activeProfile.bing.maxExactDensityPct;
+    $("scoreDensityInfo").textContent = "Keyword Density: " + res.afterScores.metrics.exactDensityPct + "% (" + (densityHealthy ? "Healthy" : "Adjust") + ")";
     setScoreRing("ringHarmony", res.afterScores.harmonyScore, scoreClass(res.afterScores.harmonyScore));
 
     $("scoreFactLock").textContent = res.factLock.passed ? "VERIFIED" : "BLOCKED";
@@ -4409,10 +4977,11 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     setScoreRing("ringFactLock", res.factLock.passed ? res.factLock.groundingScore : 15, res.factLock.passed ? "ok" : "bad");
 
     var primary = res.analysis.subject.primaryKeyphrase;
-    $("candidatePills").innerHTML = res.analysis.subject.candidateKeyphrases.map(function (c) {
+    $("candidatePills").innerHTML = res.analysis.subject.candidateKeyphrases.map(function (c, idx) {
       var sel = c.phrase === primary ? "selected" : "";
-      return "<button type='button' class='pill " + sel + "' data-cand-phrase='" + Lex.escapeHtml(c.phrase) + "'>" +
-        Lex.escapeHtml(c.phrase) + " (" + c.score + ")</button>";
+      var badgeTag = idx === 0 ? " ★ Top Match" : "";
+      return "<button type='button' class='pill " + sel + "' data-cand-phrase='" + Lex.escapeHtml(c.phrase) + "' title='Relevance score: " + c.score + " — Click to optimize around this phrase'>" +
+        Lex.escapeHtml(c.phrase + badgeTag) + "</button>";
     }).join("");
 
     var candBtns = $("candidatePills").querySelectorAll("[data-cand-phrase]");
@@ -4439,10 +5008,10 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     renderBreakdown("bingBreakdown", res.afterScores.bing.breakdown, true);
 
     $("subjectSummaryBox").innerHTML =
-      "<div><strong>Primary Subject:</strong> <code>" + Lex.escapeHtml(res.analysis.subject.primaryKeyphrase) + "</code></div>" +
-      "<div class='mt-8'><strong>Search Intent:</strong> <span class='badge primary'>" + Lex.escapeHtml(res.analysis.intent.primary.toUpperCase()) + " (" + res.analysis.intent.confidence + "%)</span> &bull; <strong>Schema:</strong> <code>" + Lex.escapeHtml(res.analysis.intent.recommendedSchemaType) + "</code></div>" +
-      "<div class='mt-8'><strong>Readability (After):</strong> Flesch Ease " + res.afterAnalysis.readability.fleschReadingEase + " &bull; Avg Sentence " + res.afterAnalysis.readability.avgSentenceWords + "w &bull; Long Paragraphs: " + res.afterAnalysis.readability.longParagraphCount + "</div>" +
-      "<div class='mt-8'><strong>Secondary Semantic Concepts:</strong> " + res.analysis.subject.secondaryKeyphrases.map(function (s) { return "<span class='badge'>" + Lex.escapeHtml(s.phrase) + "</span>"; }).join(" ") + "</div>";
+      "<div><strong>Focus Keyword:</strong> <code>" + Lex.escapeHtml(res.analysis.subject.primaryKeyphrase) + "</code></div>" +
+      "<div class='mt-8'><strong>Reader Search Intent:</strong> <span class='badge primary'>" + Lex.escapeHtml(res.analysis.intent.primary.toUpperCase()) + " (" + res.analysis.intent.confidence + "%)</span> &bull; <strong>Schema Type:</strong> <code>" + Lex.escapeHtml(res.metadata && res.metadata.jsonLd && res.metadata.jsonLd["@graph"] && res.metadata.jsonLd["@graph"][0] ? res.metadata.jsonLd["@graph"][0]["@type"] : res.analysis.intent.recommendedSchemaType) + "</code></div>" +
+      "<div class='mt-8'><strong>Reading Ease (Flesch):</strong> " + res.afterAnalysis.readability.fleschReadingEase + "/100 &bull; <strong>Avg Sentence:</strong> " + res.afterAnalysis.readability.avgSentenceWords + " words &bull; <strong>Long Paragraphs:</strong> " + res.afterAnalysis.readability.longParagraphCount + "</div>" +
+      "<div class='mt-8'><strong>Related Topic Phrases Found:</strong> " + res.analysis.subject.secondaryKeyphrases.map(function (s) { return "<span class='badge'>" + Lex.escapeHtml(s.phrase) + "</span>"; }).join(" ") + "</div>";
 
     $("diagnosticsChecklist").innerHTML = res.afterScores.diagnostics.map(function (d) {
       var cls = d.status === "pass" ? "ok" : (d.status === "warn" ? "warn" : "bad");
@@ -4572,8 +5141,10 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       return;
     }
 
-    $("studioActionStatus").textContent = "Running Grounded AI Polish + Fact-Lock sanitization...";
-    var sysPrompt = "You are a strict technical editor. Improve flow of the provided Markdown article ONLY using facts, numbers, entities, and polarity already present. Never invent statistics, brands, dates, or claims. Keep Markdown headings and lists intact.";
+    $("studioActionStatus").textContent = "Running Optional AI Smooth-Rewrite + Fact-Lock check...";
+    var sysPrompt = state.activePreset === "creative"
+      ? "You are a literary copy editor. Smooth pacing and flow ONLY using story details, names, and events already present. Never invent plot points, characters, ratings, or facts, and keep creative voice intact."
+      : "You are a strict technical editor. Improve flow of the provided Markdown article ONLY using facts, numbers, entities, and polarity already present. Never invent statistics, brands, dates, or claims. Keep Markdown headings and lists intact.";
 
     fetch("/api/ai-rewrite", {
       method: "POST",
@@ -4664,7 +5235,9 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var idx = 0;
     function step() {
       if (idx < total) {
-        state.batchItems[idx].result = VeriRank.Optimizer.optimize(state.batchItems[idx].content, { profile: state.activeProfile });
+        var batchOpts = getOptimizeOptionsFromUi();
+        batchOpts.overrideKeyword = "";
+        state.batchItems[idx].result = VeriRank.Optimizer.optimize(state.batchItems[idx].content, batchOpts);
         idx++;
         var pct = Math.round((idx / total) * 100);
         bar.style.width = pct + "%";
@@ -4831,7 +5404,98 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       });
   }
 
+  function initHelpTooltips() {
+    var pop = $("helpTooltipPopup");
+    if (!pop) return;
+    var activeTrigger = null;
+
+    function hideTooltip() {
+      activeTrigger = null;
+      pop.classList.remove("visible");
+      pop.setAttribute("aria-hidden", "true");
+    }
+
+    function showTooltip(btn) {
+      var title = btn.getAttribute("data-tip-title") || "Quick SEO Explanation";
+      var body = btn.getAttribute("data-tip") || "";
+      if (!body) return;
+      activeTrigger = btn;
+      pop.innerHTML = "<div class='help-popover-title'>" + Lex.escapeHtml(title) + "</div>" +
+        "<div class='help-popover-body'>" + Lex.escapeHtml(body) + "</div>";
+      pop.style.left = "0px";
+      pop.style.top = "0px";
+      pop.classList.add("visible");
+      pop.setAttribute("aria-hidden", "false");
+
+      var rect = btn.getBoundingClientRect();
+      var popRect = pop.getBoundingClientRect();
+      var vw = global.innerWidth || document.documentElement.clientWidth || 1024;
+      var vh = global.innerHeight || document.documentElement.clientHeight || 768;
+
+      var left = rect.left + (rect.width / 2) - (popRect.width / 2);
+      left = Math.max(12, Math.min(vw - popRect.width - 12, left));
+
+      var top = rect.top - popRect.height - 10;
+      if (top < 12) {
+        top = rect.bottom + 10;
+      }
+      if (top + popRect.height > vh - 12) {
+        top = Math.max(12, vh - popRect.height - 12);
+      }
+
+      pop.style.left = Math.round(left) + "px";
+      pop.style.top = Math.round(top) + "px";
+    }
+
+    document.addEventListener("mouseover", function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest(".help-tip") : null;
+      if (btn) showTooltip(btn);
+    });
+
+    document.addEventListener("mouseout", function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest(".help-tip") : null;
+      if (btn && btn === activeTrigger) {
+        if (!e.relatedTarget || !btn.contains(e.relatedTarget)) {
+          hideTooltip();
+        }
+      }
+    });
+
+    document.addEventListener("focusin", function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest(".help-tip") : null;
+      if (btn) showTooltip(btn);
+    });
+
+    document.addEventListener("focusout", function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest(".help-tip") : null;
+      if (btn) hideTooltip();
+    });
+
+    document.addEventListener("click", function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest(".help-tip") : null;
+      if (btn) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (activeTrigger === btn && pop.classList.contains("visible")) {
+          hideTooltip();
+        } else {
+          showTooltip(btn);
+        }
+      } else if (activeTrigger) {
+        hideTooltip();
+      }
+    });
+
+    global.addEventListener("scroll", hideTooltip, true);
+    global.addEventListener("resize", hideTooltip);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") hideTooltip();
+    });
+  }
+
   function init() {
+    initHelpTooltips();
+
     var mode = getRuntimeMode();
     if (mode === "desktop") {
       $("hostModeBadge").textContent = "Desktop Host Connected";
@@ -4883,16 +5547,65 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       });
     }
 
-    // Sample buttons
-    $("sampleButtons").innerHTML = VeriRank.Samples.map(function (s, idx) {
+    // 1-Click Content Type Presets
+    var presetOrder = ["corporate", "blog", "product", "creative"];
+    if ($("presetGrid") && VeriRank.Profiles.CONTENT_PRESETS) {
+      $("presetGrid").innerHTML = presetOrder.map(function (pid) {
+        var pr = VeriRank.Profiles.CONTENT_PRESETS[pid];
+        return "<div class='preset-card" + (pid === state.activePreset ? " active" : "") + "' role='button' tabindex='0' data-preset='" + Lex.escapeHtml(pr.id) + "'>" +
+          "<div class='preset-card-top'>" +
+            "<span class='preset-title'>" + Lex.escapeHtml(pr.label) + "</span>" +
+            "<button type='button' class='help-tip' aria-label='Explain " + Lex.escapeHtml(pr.label) + " preset' data-tip-title='" + Lex.escapeHtml(pr.label) + "' data-tip='" + Lex.escapeHtml(pr.tip) + "'>?</button>" +
+          "</div>" +
+          "<div class='preset-sub'>" + Lex.escapeHtml(pr.subtitle) + "</div>" +
+          "</div>";
+      }).join("");
+
+      var pCards = $("presetGrid").querySelectorAll("[data-preset]");
+      for (var pc = 0; pc < pCards.length; pc++) {
+        pCards[pc].addEventListener("click", function (e) {
+          if (e.target && e.target.closest && e.target.closest(".help-tip")) return;
+          applyContentPreset(this.getAttribute("data-preset"), true);
+        });
+        pCards[pc].addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            if (e.target && e.target.closest && e.target.closest(".help-tip")) return;
+            e.preventDefault();
+            applyContentPreset(this.getAttribute("data-preset"), true);
+          }
+        });
+      }
+    }
+
+    // Immediate feedback when individual formatting checkboxes are customized
+    ["optStructureHeadings", "optTakeaways", "optFaq", "optTighten", "optLists"].forEach(function (optId) {
+      var cb = $(optId);
+      if (cb) {
+        cb.addEventListener("change", function () {
+          var presetMeta = VeriRank.Profiles.CONTENT_PRESETS[state.activePreset];
+          if ($("activePresetBadge") && presetMeta) {
+            $("activePresetBadge").textContent = presetMeta.label + " (Custom)";
+          }
+          if ($("sourceTextarea").value.trim()) runOptimization();
+        });
+      }
+    });
+
+    // Sample buttons (3 corporate demos + 1 fiction blurb demo)
+    var allSamples = VeriRank.Samples.slice();
+    if (VeriRank.CreativeSample) allSamples.push(VeriRank.CreativeSample);
+    $("sampleButtons").innerHTML = allSamples.map(function (s, idx) {
       return "<button type='button' class='btn sm' data-sample-idx='" + idx + "'>" + Lex.escapeHtml(s.label) + "</button>";
     }).join("");
     var sBtns = $("sampleButtons").querySelectorAll("[data-sample-idx]");
     for (var sb = 0; sb < sBtns.length; sb++) {
       sBtns[sb].addEventListener("click", function () {
         var idx = parseInt(this.getAttribute("data-sample-idx"), 10);
-        $("sourceTextarea").value = VeriRank.Samples[idx].text;
+        var chosen = allSamples[idx];
+        if (!chosen) return;
+        $("sourceTextarea").value = chosen.text;
         $("overrideKeywordInput").value = "";
+        applyContentPreset(chosen.preset || "corporate", false);
         runOptimization();
       });
     }
@@ -5014,6 +5727,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
 
     // Batch Mode
     $("loadDemoBatchBtn").addEventListener("click", function () {
+      applyContentPreset("corporate", false);
       state.batchItems = VeriRank.Samples.map(function (s) {
         return { fileName: s.fileName, content: s.text, result: null };
       });
