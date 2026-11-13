@@ -16,7 +16,7 @@ create table if not exists public.seo_documents (
 -- Enable Row Level Security (RLS)
 alter table public.seo_documents enable row level security;
 
--- Allow public read & insert (can be customized for authenticated users)
+-- Allow public read, insert & delete (can be customized for authenticated users)
 create policy "Allow public read seo_documents"
   on public.seo_documents for select
   using (true);
@@ -24,3 +24,7 @@ create policy "Allow public read seo_documents"
 create policy "Allow public insert seo_documents"
   on public.seo_documents for insert
   with check (true);
+
+create policy "Allow public delete seo_documents"
+  on public.seo_documents for delete
+  using (true);
