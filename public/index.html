@@ -895,6 +895,88 @@ details.sql-details summary {
   font-size: 12.5px;
   line-height: 1.5;
 }
+
+.purpose-banner {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+.editor-keyword-split {
+  display: grid;
+  grid-template-columns: 1fr 315px;
+  gap: 14px;
+  align-items: start;
+}
+
+@media (max-width: 1040px) {
+  .editor-keyword-split { grid-template-columns: 1fr; }
+}
+
+.keyword-sidebar {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  max-height: 610px;
+  overflow-y: auto;
+}
+
+.kw-group-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.35px;
+  color: var(--text-muted);
+  margin: 10px 0 6px;
+}
+
+.kw-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface);
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.kw-item.used {
+  background: var(--ok-soft);
+  border-color: var(--ok);
+}
+
+.kw-phrase {
+  font-weight: 600;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.kw-source {
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+
+textarea.code-input.live-prose-editor {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.68;
+  background: var(--surface);
+  padding: 14px 16px;
+}
 </style>
 </head>
 <body>
@@ -1004,25 +1086,25 @@ details.sql-details summary {
               <button type="button" class="help-tip" aria-label="Explain H1 H2 Headings" data-tip-title="Page Title &amp; Section Headings (H1/H2)" data-tip="Adds a clear main title (H1) and scannable section subheadings (H2) so Google, Bing, and readers can skim topics quickly. Turn OFF for short fiction blurbs or pure prose.">?</button>
             </div>
             <div class="option-item">
-              <label><input type="checkbox" id="optTakeaways" checked> Add &ldquo;Key Takeaways&rdquo; Bullet Summary</label>
-              <button type="button" class="help-tip" aria-label="Explain Key Takeaways" data-tip-title="Key Takeaways Summary" data-tip="Creates 2-3 short summary bullets pulled strictly from your own facts. Helps win Google Featured Snippets and Microsoft Copilot citations. Turn OFF for stories or fiction blurbs.">?</button>
+              <label><input type="checkbox" id="optTakeaways"> (Optional) Add &ldquo;Key Takeaways&rdquo; Bullet Box</label>
+              <button type="button" class="help-tip" aria-label="Explain Key Takeaways" data-tip-title="Optional Key Takeaways Summary Box" data-tip="Off by default so your page stays natural. Turn this ON if you want 2-3 summary bullet points added near the top of a long business article or guide.">?</button>
             </div>
             <div class="option-item">
-              <label><input type="checkbox" id="optFaq" checked> Add FAQ Section &amp; Google Rich Snippet</label>
-              <button type="button" class="help-tip" aria-label="Explain FAQ Section" data-tip-title="FAQ Section &amp; Rich Snippet" data-tip="Turns questions already answered in your draft into a Q&amp;A section with FAQ Schema so search engines can show expandable answers. Turn OFF for creative writing or blurbs.">?</button>
+              <label><input type="checkbox" id="optFaq"> (Optional) Add FAQ Section at Bottom</label>
+              <button type="button" class="help-tip" aria-label="Explain FAQ Section" data-tip-title="Optional FAQ Section &amp; Rich Snippet" data-tip="Off by default. Turn this ON for long informational or service pages when you want common customer questions added at the bottom based on your draft.">?</button>
             </div>
             <div class="option-item">
               <label><input type="checkbox" id="optTighten" checked> Polish Readability &amp; Trim Wordiness</label>
-              <button type="button" class="help-tip" aria-label="Explain Polish Readability" data-tip-title="Polish Readability &amp; Trim Wordiness" data-tip="Shortens wordy business filler (like 'in order to' &rarr; 'to') and splits 32+ word run-on sentences for easier reading. Turn OFF if you want every word of your creative voice untouched.">?</button>
+              <button type="button" class="help-tip" aria-label="Explain Polish Readability" data-tip-title="Polish Readability &amp; Trim Wordiness" data-tip="Shortens wordy business filler (like 'in order to' &rarr; 'to', 'is able to' &rarr; 'can') and splits long run-on sentences for easier reading. Turn OFF for creative prose.">?</button>
             </div>
             <div class="option-item">
               <label><input type="checkbox" id="optLists" checked> Format Step-by-Step Sentences as Lists</label>
-              <button type="button" class="help-tip" aria-label="Explain Format Step-by-Step Lists" data-tip-title="Step-by-Step Lists" data-tip="Detects 'First, ... Second, ... Third, ...' instructions and formats them as clean numbered lists that Google loves to highlight. Turn OFF for narrative storytelling.">?</button>
+              <button type="button" class="help-tip" aria-label="Explain Format Step-by-Step Lists" data-tip-title="Step-by-Step Lists" data-tip="Converts inline lists ('three areas: A, B, and C' or 'First... Second...') into clean scannable bullet or numbered lists. Turn OFF for narrative storytelling.">?</button>
             </div>
           </div>
 
           <div class="flex-row">
-            <button type="button" id="optimizeBtn" class="btn primary" style="flex:1;">Optimize for Google &amp; Bing (Ctrl+Enter)</button>
+            <button type="button" id="optimizeBtn" class="btn primary" style="flex:1;">Analyze &amp; Optimize Writing (Ctrl+Enter)</button>
             <span class="btn-with-help">
               <button type="button" id="suggestBtn" class="btn bing">Keyword Ideas</button>
               <button type="button" class="help-tip" aria-label="Explain Keyword Ideas" data-tip-title="Live Keyword Ideas (Autocomplete)" data-tip="Queries real Google &amp; Bing search suggestions for your Focus Keyword to show what real people search for, flagging which ideas your text already covers vs. future topics.">?</button>
@@ -1104,6 +1186,8 @@ details.sql-details summary {
             </div>
           </div>
 
+          <div id="writingPurposeBanner" class="purpose-banner"></div>
+
           <div class="card">
             <div class="subtabs">
               <button type="button" class="subtab active" data-subtab="content">Optimized Content</button>
@@ -1113,55 +1197,74 @@ details.sql-details summary {
               <button type="button" class="subtab" data-subtab="export">Download &amp; Export</button>
             </div>
 
-            <!-- Subtab 1: Optimized Content -->
+            <!-- Subtab 1: Optimized Content + Live Keyword Sidebar -->
             <div id="subtab-content" class="subpanel active">
-              <div id="whatChangedSummary" class="changes-summary-box"></div>
-              <div class="flex-row" style="justify-content:space-between;margin-bottom:10px;">
-                <div class="flex-row">
-                  <button type="button" class="btn sm primary view-mode-btn" data-mode="preview">Formatted Preview</button>
-                  <button type="button" class="btn sm view-mode-btn" data-mode="diff">Highlight Edits</button>
-                  <button type="button" class="btn sm view-mode-btn" data-mode="split">Before vs. After Split</button>
-                  <span class="btn-with-help">
-                    <button type="button" class="btn sm view-mode-btn" data-mode="markdown">Edit Text</button>
-                    <button type="button" class="help-tip" aria-label="Explain Edit Text" data-tip-title="Edit Text (Markdown)" data-tip="Lets you tweak the optimized text directly. Uses simple Markdown (# for H1, ## for H2). After editing, click 'Re-Score Edits' to verify your changes.">?</button>
-                  </span>
-                  <span class="btn-with-help">
-                    <button type="button" class="btn sm view-mode-btn" data-mode="html">HTML Code</button>
-                    <button type="button" class="help-tip" aria-label="Explain HTML Code" data-tip-title="Web-Ready HTML Code" data-tip="Clean HTML &lt;article&gt; markup you can paste straight into WordPress, Shopify, Webflow, or any website CMS.">?</button>
-                  </span>
-                </div>
-                <div class="flex-row">
-                  <span class="btn-with-help">
-                    <button type="button" id="rescoreEditsBtn" class="btn sm">Re-Score Edits</button>
-                    <button type="button" class="help-tip" aria-label="Explain Re-Score Edits" data-tip-title="Re-Score &amp; Fact-Check Edits" data-tip="Runs the Google, Bing, and Fact-Check Guard audit on manual changes you made inside 'Edit Text' so you can see updated SEO scores immediately.">?</button>
-                  </span>
-                  <span class="btn-with-help">
-                    <button type="button" id="copyRichTextBtn" class="btn sm bing">Copy for Word / Docs</button>
-                    <button type="button" class="help-tip" aria-label="Explain Copy for Word and Google Docs" data-tip-title="Copy Formatted Text (Word &amp; Google Docs)" data-tip="Copies real headings, bold text, paragraphs, and clean bullet lists so you can paste straight into Microsoft Word, Google Docs, Outlook, or HubSpot without '#' symbols.">?</button>
-                  </span>
-                  <button type="button" id="copyOptimizedBtn" class="btn sm">Copy Markdown</button>
-                </div>
-              </div>
-              <div id="previewPane" class="rendered-preview"></div>
-              <div id="diffViewPane" class="rendered-preview" style="display:none;"></div>
-              <div id="splitComparePane" class="split-compare-grid" style="display:none;">
-                <div class="split-pane">
-                  <div class="split-pane-head">
-                    <span>Your Original Text</span>
-                    <span id="splitBeforeBadge" class="badge warn">Before</span>
+              <div class="editor-keyword-split">
+                <div style="min-width:0;">
+                  <div id="whatChangedSummary" class="changes-summary-box"></div>
+                  <div class="flex-row" style="justify-content:space-between;margin-bottom:10px;">
+                    <div class="flex-row">
+                      <button type="button" class="btn sm view-mode-btn" data-mode="diff">Highlight Edits</button>
+                      <button type="button" class="btn sm view-mode-btn" data-mode="markdown">Edit Writing Live</button>
+                      <button type="button" class="btn sm primary view-mode-btn" data-mode="preview">Formatted Preview</button>
+                      <button type="button" class="btn sm view-mode-btn" data-mode="split">Before vs. After Split</button>
+                      <span class="btn-with-help">
+                        <button type="button" class="btn sm view-mode-btn" data-mode="html">HTML Code</button>
+                        <button type="button" class="help-tip" aria-label="Explain HTML Code" data-tip-title="Web-Ready HTML Code" data-tip="Clean HTML &lt;article&gt; markup you can paste straight into WordPress, Shopify, Webflow, or any website CMS.">?</button>
+                      </span>
+                    </div>
+                    <div class="flex-row">
+                      <span class="btn-with-help">
+                        <button type="button" id="rescoreEditsBtn" class="btn sm">Re-Score Edits</button>
+                        <button type="button" class="help-tip" aria-label="Explain Re-Score Edits" data-tip-title="Re-Score &amp; Fact-Check Edits" data-tip="Updates your Google, Bing, and Fact-Check scores immediately after editing your text.">?</button>
+                      </span>
+                      <span class="btn-with-help">
+                        <button type="button" id="copyRichTextBtn" class="btn sm bing">Copy for Word / Docs</button>
+                        <button type="button" class="help-tip" aria-label="Explain Copy for Word and Google Docs" data-tip-title="Copy Formatted Text (Word &amp; Google Docs)" data-tip="Copies real headings, bold text, paragraphs, and clean bullet lists so you can paste straight into Microsoft Word, Google Docs, Outlook, or HubSpot.">?</button>
+                      </span>
+                      <button type="button" id="copyOptimizedBtn" class="btn sm">Copy Markdown</button>
+                    </div>
                   </div>
-                  <div id="splitBeforeContent" style="white-space:pre-wrap;font-size:13px;line-height:1.6;"></div>
-                </div>
-                <div class="split-pane">
-                  <div class="split-pane-head">
-                    <span>SEO-Optimized Version</span>
-                    <span id="splitAfterBadge" class="badge ok">After</span>
+                  <div id="previewPane" class="rendered-preview"></div>
+                  <div id="diffViewPane" class="rendered-preview" style="display:none;"></div>
+                  <div id="splitComparePane" class="split-compare-grid" style="display:none;">
+                    <div class="split-pane">
+                      <div class="split-pane-head">
+                        <span>Your Original Text</span>
+                        <span id="splitBeforeBadge" class="badge warn">Before</span>
+                      </div>
+                      <div id="splitBeforeContent" style="white-space:pre-wrap;font-size:13px;line-height:1.6;"></div>
+                    </div>
+                    <div class="split-pane">
+                      <div class="split-pane-head">
+                        <span>SEO-Optimized Version</span>
+                        <span id="splitAfterBadge" class="badge ok">After</span>
+                      </div>
+                      <div id="splitAfterContent" class="rendered-preview" style="border:none;padding:0;max-height:none;background:transparent;"></div>
+                    </div>
                   </div>
-                  <div id="splitAfterContent" class="rendered-preview" style="border:none;padding:0;max-height:none;background:transparent;"></div>
+                  <textarea id="markdownOutputArea" class="code-input live-prose-editor" rows="20" style="display:none;"></textarea>
+                  <pre id="htmlOutputPre" class="code-block" style="display:none;max-height:540px;"></pre>
                 </div>
+
+                <!-- Right Sidebar: Live Google & Bing Keywords -->
+                <aside id="keywordSidebar" class="keyword-sidebar">
+                  <div class="card-title" style="margin-bottom:6px;">
+                    <span class="btn-with-help">
+                      <span>Google &amp; Bing Keywords</span>
+                      <button type="button" class="help-tip" aria-label="Explain Search Keywords Sidebar" data-tip-title="Live Search Keywords" data-tip="VeriRank automatically searches Google and Bing for real phrases people type about your topic. Click '+ Weave In' to add a keyword into your writing automatically, or switch to 'Edit Writing Live' and type it yourself — the list checks off green live as you type!">?</button>
+                    </span>
+                    <span id="kwUsedCountBadge" class="badge primary">0 / 0</span>
+                  </div>
+                  <div class="flex-row">
+                    <input type="text" id="sidebarKeywordSearchInput" placeholder="Search more keywords..." style="flex:1;padding:6px 9px;font-size:12px;">
+                    <button type="button" id="sidebarKeywordSearchBtn" class="btn sm bing">Find</button>
+                  </div>
+                  <button type="button" id="weaveTopKeywordsBtn" class="btn sm primary" style="width:100%;margin-top:6px;">+ Weave Top 3 Keywords Into Text</button>
+                  <div id="keywordSidebarStatus" class="muted" style="font-size:11.5px;margin:6px 0;"></div>
+                  <div id="keywordSidebarList"></div>
+                </aside>
               </div>
-              <textarea id="markdownOutputArea" class="code-input" rows="20" style="display:none;"></textarea>
-              <pre id="htmlOutputPre" class="code-block" style="display:none;max-height:540px;"></pre>
             </div>
 
             <!-- Subtab 2: Fact-Check Report -->
@@ -1727,6 +1830,24 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     "allow", "based", "related", "effective", "efficient", "modern", "standard"
   ]);
 
+  var PHRASE_BOUNDARY_WORDS = new Set([
+    "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+    "eleven", "twelve", "twenty", "thirty", "forty", "fifty", "hundred", "thousand",
+    "rush", "rushing", "rushed", "inspect", "inspects", "inspecting", "inspected",
+    "visit", "visits", "visiting", "visited", "receive", "receives", "receiving", "received",
+    "start", "starts", "starting", "started", "worked", "working", "strip", "strips", "stripping",
+    "swallow", "swallows", "broadcast", "broadcasts", "expect", "expects", "find", "finds",
+    "holding", "hunted", "know", "knows", "pull", "pulls", "reignite", "love", "loves", "hooked",
+    "implementing", "reduced", "shortened", "maintaining", "expose", "exposes", "compromise",
+    "scan", "triggering", "enforce", "enforces", "log", "logs", "rotate", "rotates",
+    "standardize", "delay", "delayed", "force", "forces", "increase", "increases",
+    "isolate", "isolates", "clean", "cleans", "calibrate", "documenting", "cut", "cuts",
+    "reworking", "chasing", "delaying", "leave", "leaves", "replace", "replaces", "alters", "lowered",
+    "critical", "area", "areas", "job", "jobs", "clear", "routine", "sealed", "darkest",
+    "frozen", "deeper", "final", "traditional", "distributed", "sensitive", "unauthorized",
+    "ephemeral", "unscheduled", "elevated", "variable", "fouled", "preventable", "targeted", "recommended"
+  ]);
+
   function stemWord(word) {
     if (!word) return "";
     var w = String(word).toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -1862,7 +1983,34 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     { pattern: /\bmake a decision\b/gi, replacement: "decide", label: "make a decision -> decide" },
     { pattern: /\btake into consideration\b/gi, replacement: "consider", label: "take into consideration -> consider" },
     { pattern: /\bprovide assistance to\b/gi, replacement: "help", label: "provide assistance to -> help" },
-    { pattern: /\bmake use of\b/gi, replacement: "use", label: "make use of -> use" }
+    { pattern: /\bmake use of\b/gi, replacement: "use", label: "make use of -> use" },
+    { pattern: /\bconduct an inspection of\b/gi, replacement: "inspect", label: "conduct an inspection of -> inspect" },
+    { pattern: /\bperform an inspection of\b/gi, replacement: "inspect", label: "perform an inspection of -> inspect" },
+    { pattern: /\bperform an evaluation of\b/gi, replacement: "evaluate", label: "perform an evaluation of -> evaluate" },
+    { pattern: /\bmake an improvement to\b/gi, replacement: "improve", label: "make an improvement to -> improve" },
+    { pattern: /\bprovide protection for\b/gi, replacement: "protect", label: "provide protection for -> protect" },
+    { pattern: /\bis designed to help\b/gi, replacement: "helps", label: "is designed to help -> helps" },
+    { pattern: /\bare designed to help\b/gi, replacement: "help", label: "are designed to help -> help" },
+    { pattern: /\bcan be used to\b/gi, replacement: "can", label: "can be used to -> can" },
+    { pattern: /\bhave the option to\b/gi, replacement: "can", label: "have the option to -> can" },
+    { pattern: /\bhas the option to\b/gi, replacement: "can", label: "has the option to -> can" },
+    { pattern: /\bprior to\b/gi, replacement: "before", label: "prior to -> before" },
+    { pattern: /\bsubsequent to\b/gi, replacement: "after", label: "subsequent to -> after" },
+    { pattern: /\butilizes\b/gi, replacement: "uses", label: "utilizes -> uses" },
+    { pattern: /\butilizing\b/gi, replacement: "using", label: "utilizing -> using" },
+    { pattern: /\butilize\b/gi, replacement: "use", label: "utilize -> use" },
+    { pattern: /\bat all times\b/gi, replacement: "always", label: "at all times -> always" },
+    { pattern: /\bin most cases,?\s*/gi, replacement: "usually ", label: "in most cases -> usually" },
+    { pattern: /\bfor the most part,?\s*/gi, replacement: "mostly ", label: "for the most part -> mostly" },
+    { pattern: /\bas a result of\b/gi, replacement: "because of", label: "as a result of -> because of" },
+    { pattern: /\bwith the exception of\b/gi, replacement: "except for", label: "with the exception of -> except for" },
+    { pattern: /\bon a monthly basis\b/gi, replacement: "monthly", label: "on a monthly basis -> monthly" },
+    { pattern: /\bon a weekly basis\b/gi, replacement: "weekly", label: "on a weekly basis -> weekly" },
+    { pattern: /\bon an annual basis\b/gi, replacement: "annually", label: "on an annual basis -> annually" },
+    { pattern: /\bare currently\b/gi, replacement: "are", label: "removed 'currently'" },
+    { pattern: /\bis currently\b/gi, replacement: "is", label: "removed 'currently'" },
+    { pattern: /\bwhether or not\b/gi, replacement: "whether", label: "whether or not -> whether" },
+    { pattern: /\bin the process of ([a-z]+ing)\b/gi, replacement: "$1", label: "tightened 'in the process of...'" }
   ];
 
   var INTENT_SIGNALS = {
@@ -1947,6 +2095,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
   VeriRank.Lexicon = {
     STOPWORDS: STOPWORDS,
     GENERIC_SEO_WEAK_WORDS: GENERIC_SEO_WEAK_WORDS,
+    PHRASE_BOUNDARY_WORDS: PHRASE_BOUNDARY_WORDS,
     stemWord: stemWord,
     countSyllables: countSyllables,
     estimatePixelWidth: estimatePixelWidth,
@@ -2020,11 +2169,11 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       id: "corporate",
       label: "Business / Website",
       subtitle: "Service pages, B2B & guides",
-      tip: "Full on-page SEO structure: adds H1/H2 headings, a Key Takeaways summary box, an FAQ section with Google Rich Results schema, and tightens wordy corporate sentences.",
+      tip: "Polishes your wording for business & service websites, adds clean headings where helpful, and sets up search result tags—without tacking on unrequested bullet boxes or FAQs unless you turn them on.",
       options: {
         structureHeadings: true,
-        includeTakeaways: true,
-        includeFaq: true,
+        includeTakeaways: false,
+        includeFaq: false,
         tightenReadability: true,
         convertLists: true
       },
@@ -2036,11 +2185,11 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       id: "blog",
       label: "Blog / Article",
       subtitle: "Posts, tutorials & news",
-      tip: "Ideal for blog posts and articles: organizes H1/H2 subheadings, summary bullets, and FAQs while keeping your intro paragraph in its natural order.",
+      tip: "Ideal for blog posts and articles: tightens wordy writing and organizes subheadings while keeping your intro paragraph in its natural order.",
       options: {
         structureHeadings: true,
-        includeTakeaways: true,
-        includeFaq: true,
+        includeTakeaways: false,
+        includeFaq: false,
         tightenReadability: true,
         convertLists: true
       },
@@ -2052,11 +2201,11 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       id: "product",
       label: "Product / Store",
       subtitle: "E-commerce & landing pages",
-      tip: "Built for store listings and landing pages: highlights key specs/takeaways, formats feature lists, adds buyer Q&As, and generates Product schema markup.",
+      tip: "Built for store listings and landing pages: polishes copy, formats feature lists, and generates Product search tags.",
       options: {
         structureHeadings: true,
-        includeTakeaways: true,
-        includeFaq: true,
+        includeTakeaways: false,
+        includeFaq: false,
         tightenReadability: true,
         convertLists: true
       },
@@ -2641,42 +2790,45 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var candidates = [];
 
     var processSegment = function (text, zoneWeight, sentIdx) {
-      var tokens = String(text || "").toLowerCase().match(/[a-z0-9]+(?:-[a-z0-9]+)*/g) || [];
-      var currentPhrase = [];
-      var flush = function () {
-        if (currentPhrase.length > 0 && currentPhrase.length <= 4) {
-          candidates.push({ words: currentPhrase.slice(), zoneWeight: zoneWeight, sentIdx: sentIdx });
-        }
-        // Generate sliding 2-word, 3-word, and 4-word windows even on longer noun spans
-        if (currentPhrase.length >= 3) {
-          for (var k = 0; k <= currentPhrase.length - 2; k++) {
-            candidates.push({ words: currentPhrase.slice(k, k + 2), zoneWeight: zoneWeight, sentIdx: sentIdx });
+      var clauses = String(text || "").split(/[,;:!?()\[\]"“”—–\/]+/);
+      for (var clIdx = 0; clIdx < clauses.length; clIdx++) {
+        var tokens = clauses[clIdx].toLowerCase().match(/[a-z0-9]+(?:-[a-z0-9]+)*/g) || [];
+        var currentPhrase = [];
+        var flush = function () {
+          if (currentPhrase.length > 0 && currentPhrase.length <= 4) {
+            candidates.push({ words: currentPhrase.slice(), zoneWeight: zoneWeight, sentIdx: sentIdx });
           }
-        }
-        if (currentPhrase.length >= 4) {
-          for (var k3 = 0; k3 <= currentPhrase.length - 3; k3++) {
-            candidates.push({ words: currentPhrase.slice(k3, k3 + 3), zoneWeight: zoneWeight, sentIdx: sentIdx });
+          // Generate sliding 2-word, 3-word, and 4-word windows even on longer noun spans
+          if (currentPhrase.length >= 3) {
+            for (var k = 0; k <= currentPhrase.length - 2; k++) {
+              candidates.push({ words: currentPhrase.slice(k, k + 2), zoneWeight: zoneWeight, sentIdx: sentIdx });
+            }
           }
-        }
-        if (currentPhrase.length >= 5) {
-          for (var k4 = 0; k4 <= currentPhrase.length - 4; k4++) {
-            candidates.push({ words: currentPhrase.slice(k4, k4 + 4), zoneWeight: zoneWeight, sentIdx: sentIdx });
+          if (currentPhrase.length >= 4) {
+            for (var k3 = 0; k3 <= currentPhrase.length - 3; k3++) {
+              candidates.push({ words: currentPhrase.slice(k3, k3 + 3), zoneWeight: zoneWeight, sentIdx: sentIdx });
+            }
           }
-        }
-        currentPhrase = [];
-      };
+          if (currentPhrase.length >= 5) {
+            for (var k4 = 0; k4 <= currentPhrase.length - 4; k4++) {
+              candidates.push({ words: currentPhrase.slice(k4, k4 + 4), zoneWeight: zoneWeight, sentIdx: sentIdx });
+            }
+          }
+          currentPhrase = [];
+        };
 
-      for (var i = 0; i < tokens.length; i++) {
-        var tok = tokens[i];
-        var isStop = Lex.STOPWORDS.has(tok) || /^\d+$/.test(tok) || tok.length < 2;
-        if (isStop) {
-          flush();
-        } else {
-          currentPhrase.push(tok);
-          wordFreq[tok] = (wordFreq[tok] || 0) + 1;
+        for (var i = 0; i < tokens.length; i++) {
+          var tok = tokens[i];
+          var isStop = Lex.STOPWORDS.has(tok) || (Lex.PHRASE_BOUNDARY_WORDS && Lex.PHRASE_BOUNDARY_WORDS.has(tok)) || /^\d+$/.test(tok) || tok.length < 2;
+          if (isStop) {
+            flush();
+          } else {
+            currentPhrase.push(tok);
+            wordFreq[tok] = (wordFreq[tok] || 0) + 1;
+          }
         }
+        flush();
       }
-      flush();
     };
 
     for (var h = 0; h < parsedDoc.headings.length; h++) {
@@ -2744,7 +2896,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
         }
       });
 
-      var lenBonus = cl.wordCount === 3 ? 1.85 : cl.wordCount === 2 ? 1.55 : cl.wordCount === 4 ? 1.65 : 0.35;
+      var lenBonus = cl.wordCount === 3 ? 1.85 : cl.wordCount === 2 ? 1.80 : cl.wordCount === 4 ? 1.65 : 0.45;
       var docBreadth = Math.pow(Math.max(1, cl.sentences.size), 1.45);
       var freqBonus = Math.pow(Math.max(1, cl.occurrences), 0.75);
       var avgZone = cl.zoneScoreSum / Math.max(1, cl.occurrences);
@@ -2973,6 +3125,73 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     return questions.slice(0, 4);
   }
 
+  function analyzeWritingPurpose(plainText, parsedDoc, subject, intent) {
+    var txt = String(plainText || "");
+    var p = subject.primaryKeyphrase || "your topic";
+    var secondaries = subject.secondaryKeyphrases || [];
+
+    var category = { id: "article", label: "Industry Article / Informational Page" };
+    if (/\b(novel|book|chapter|trilogy|thriller|thrillers|fantasy|mystery|romance|readers|captain|interstellar)\b/i.test(txt)) {
+      category = { id: "creative", label: "Book Blurb / Creative Story" };
+    } else if (/\b(our team|we |homeowners|clients|customers|service|services|contractor|repair|installation|inspection|visit)\b/i.test(txt)) {
+      category = { id: "service", label: "Business / Local Service Page" };
+    } else if (/\b(cart|shipping|warranty|specifications|specs|features|product|store)\b/i.test(txt)) {
+      category = { id: "product", label: "Product / Store Listing" };
+    } else if (intent.primary === "procedural") {
+      category = { id: "guide", label: "Step-by-Step How-To Guide" };
+    }
+
+    var audience = "Readers searching for " + p;
+    var audMatch = txt.match(/\b(homeowners|enterprise cloud teams|cloud security teams|commercial facility managers|facility managers|field technicians|healthcare revenue cycle leaders|medical groups|hospitals|small businesses|readers|customers|clients|patients|teams)\b/i);
+    if (audMatch && audMatch[1]) {
+      audience = Lex.toTitleCase(audMatch[1]);
+    }
+
+    var seedSet = new Set([p]);
+    if (category.id === "service") seedSet.add(p + " services");
+    else if (category.id === "product") seedSet.add("best " + p);
+    else if (category.id === "creative") seedSet.add(p + " book");
+    else seedSet.add("how " + p + " works");
+
+    for (var i = 0; i < secondaries.length && seedSet.size < 4; i++) {
+      if (secondaries[i] && secondaries[i].phrase) seedSet.add(secondaries[i].phrase);
+    }
+
+    var seedQueries = Array.from(seedSet);
+    var goalSummary = "Written as a " + category.label + " for " + audience + ", targeting searches around '" + p + "'.";
+    return {
+      category: category,
+      audience: audience,
+      seedQueries: seedQueries,
+      goalSummary: goalSummary
+    };
+  }
+
+  function generateFallbackKeywords(subject, purpose) {
+    var p = subject.primaryKeyphrase || "topic";
+    var sec0 = subject.secondaryKeyphrases[0] ? subject.secondaryKeyphrases[0].phrase : "";
+    var catId = purpose && purpose.category ? purpose.category.id : "article";
+    var list = [];
+    if (catId === "service") {
+      list = [p + " cost", p + " inspection", "local " + p, p + " near me", "emergency " + p, p + " contractor", p + " checklist", sec0 ? (sec0 + " repair") : ("residential " + p)];
+    } else if (catId === "product") {
+      list = [p + " specifications", p + " features", "best " + p, p + " reviews", p + " comparison", p + " pricing", sec0 || (p + " setup")];
+    } else if (catId === "creative") {
+      list = [p + " book", p + " novel", p + " series", p + " thriller", "sci-fi " + p, p + " story synopsis"];
+    } else {
+      list = [p + " best practices", p + " guide", p + " checklist", p + " requirements", "how " + p + " works", p + " examples", sec0 ? (sec0 + " standards") : (p + " benefits")];
+    }
+    var seen = {};
+    return list.filter(function (k) {
+      var low = String(k || "").toLowerCase().trim();
+      if (!low || low === p || seen[low]) return false;
+      seen[low] = true;
+      return true;
+    }).map(function (k) {
+      return { phrase: k, source: "Topic Match" };
+    });
+  }
+
   function analyze(rawInput, options) {
     var opts = options || {};
     var parsed = parseDocument(rawInput);
@@ -2982,11 +3201,15 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var numbers = extractNumbers(parsed.plainText);
     var readability = computeReadability(parsed);
     var groundedQuestions = extractGroundedQuestions(parsed, subject);
+    var purpose = analyzeWritingPurpose(parsed.plainText, parsed, subject, intent);
+    var fallbackKeywords = generateFallbackKeywords(subject, purpose);
 
     return {
       parsed: parsed,
       subject: subject,
       intent: intent,
+      purpose: purpose,
+      fallbackKeywords: fallbackKeywords,
       entities: entities,
       numbers: numbers,
       readability: readability,
@@ -3024,7 +3247,12 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     "feature", "featur", "specific", "specification", "insight", "synopsis", "complete",
     "soon", "daili", "daily", "regular", "near", "regard", "addit", "addition", "additional",
     "mani", "many", "most", "let", "lets", "ensur", "ensure", "decid", "decide",
-    "consid", "consider", "help", "first", "various", "essential", "unique"
+    "consid", "consider", "help", "first", "various", "essential", "unique",
+    "before", "befor", "after", "alway", "always", "usual", "usually", "mostli", "mostly",
+    "month", "monthly", "week", "weekly", "annual", "annually", "whether",
+    "evaluat", "evaluate", "improv", "improve", "protect", "support", "supports",
+    "cover", "covers", "alongsid", "alongside", "depend", "dependable", "understand",
+    "understanding", "fan", "fans", "feel", "home", "servic", "service", "services", "built"
   ]);
 
   var ALLOWED_STRUCTURAL_ACRONYMS = new Set(["FAQ", "SEO", "HTML", "JSON", "URL", "API", "AI"]);
@@ -3037,7 +3265,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     "Factors", "Details", "Standards", "And", "For", "With", "The", "This", "These",
     "First", "Second", "Third", "Finally", "However", "Therefore", "Because",
     "Inspection", "Procedure", "Features", "Specifications", "Highlights", "Insights", "Synopsis", "Complete", "Practice",
-    "Additionally", "Many", "Most", "Ensure", "Essential"
+    "Additionally", "Many", "Most", "Ensure", "Essential", "Usually", "Mostly", "Always", "Understanding", "Built", "Services", "Fans"
   ]);
 
   function normalizeNumberToken(tok) {
@@ -3190,11 +3418,15 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     return stems;
   }
 
-  function extractFingerprint(sourceText) {
+  function extractFingerprint(sourceText, approvedKeywords) {
     sourceText = Lex.normalizeTypography(sourceText);
-    var nums = extractNumbersFromProse(sourceText);
-    var ents = extractEntitiesFromProse(sourceText, false);
-    var stems = getContentStems(sourceText);
+    var approvedSuffix = (Array.isArray(approvedKeywords) && approvedKeywords.length)
+      ? (" " + Lex.normalizeTypography(approvedKeywords.join(" ")))
+      : "";
+    var fpText = sourceText + approvedSuffix;
+    var nums = extractNumbersFromProse(fpText);
+    var ents = extractEntitiesFromProse(fpText, false);
+    var stems = getContentStems(fpText);
     var lines = stripNonProseMarkup(sourceText, false);
     var plainProse = lines.map(function (l) { return l.text; }).join(" ");
     var sentences = VeriRank.Analyzer.splitSentences(plainProse);
@@ -3212,8 +3444,8 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       }
     }
 
-    // Also include every capitalized word stem in source text for lenient entity matching
-    var sourceLower = String(sourceText || "").toLowerCase();
+    // Also include every capitalized word stem in source text + approved keywords
+    var sourceLower = String(fpText || "").toLowerCase();
 
     return {
       numbers: nums,
@@ -3224,10 +3456,10 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     };
   }
 
-  function verify(sourceText, candidateBodyText, provenanceRecords) {
+  function verify(sourceText, candidateBodyText, provenanceRecords, approvedKeywords) {
     sourceText = Lex.normalizeTypography(sourceText);
     candidateBodyText = Lex.normalizeTypography(candidateBodyText);
-    var fp = extractFingerprint(sourceText);
+    var fp = extractFingerprint(sourceText, approvedKeywords);
     var issues = [];
 
     var candLines = stripNonProseMarkup(candidateBodyText, true);
@@ -3385,7 +3617,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     };
   }
 
-  function sanitizeAiCandidate(sourceText, deterministicMarkdown, aiMarkdown) {
+  function sanitizeAiCandidate(sourceText, deterministicMarkdown, aiMarkdown, approvedKeywords) {
     var aiBlocks = String(aiMarkdown || "").replace(/\r\n/g, "\n").split(/\n\s*\n/);
     var detBlocks = String(deterministicMarkdown || "").replace(/\r\n/g, "\n").split(/\n\s*\n/);
     var sanitizedBlocks = [];
@@ -3394,7 +3626,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     for (var i = 0; i < aiBlocks.length; i++) {
       var blk = aiBlocks[i].trim();
       if (!blk) continue;
-      var check = verify(sourceText, blk, []);
+      var check = verify(sourceText, blk, [], approvedKeywords);
       if (check.passed) {
         sanitizedBlocks.push(blk);
       } else {
@@ -3410,7 +3642,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     }
 
     var finalText = sanitizedBlocks.join("\n\n").trim() || deterministicMarkdown;
-    var finalAudit = verify(sourceText, finalText, []);
+    var finalAudit = verify(sourceText, finalText, [], approvedKeywords);
     return {
       text: finalText,
       quarantined: quarantined,
@@ -3492,19 +3724,22 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var topicalRatio = (primary && exactCount >= 1 ? 0.35 : 0) + secRatio * 0.35 + (entities.length >= 2 ? 0.15 : 0.05) + (densityOkGoogle ? 0.15 : 0);
     var gTopical = Math.round(gWeights.topicalDepth * Math.min(1, topicalRatio));
 
-    // 1b. Passage & Featured Snippet Readiness (or Opening Hook for Creative/Fiction)
+    // 1b. Passage & Featured Snippet Readiness (works cleanly for prose without forcing bullet lists/FAQs)
     var hasConcisePassage = parsed.paragraphs.some(function (p) {
       return p.wordCount >= profile.google.snippetWordsMin && p.wordCount <= profile.google.snippetWordsMax;
+    });
+    var hasDirectPassage = parsed.paragraphs.some(function (p) {
+      return p.wordCount >= 22 && p.wordCount <= 80;
     });
     var hasHookPassage = parsed.paragraphs.some(function (p) {
       return p.wordCount >= 22 && p.wordCount <= 95;
     });
     var goodParaSplit = parsed.paragraphs.length >= 2 || totalWords < 120;
+    var hasScanAid = parsed.paragraphs.length >= 2 || parsed.lists.length >= 1 || parsed.headings.length >= 1;
     var hasList = parsed.lists.length >= 1;
-    var hasQuestionHeading = parsed.headings.some(function (h) { return /\?$/.test(h.text.trim()) || /^(what|how|why|when|key takeaways)/i.test(h.text.trim()); });
     var passageRatio = isCreative
       ? ((hasHookPassage ? 0.65 : 0.3) + (goodParaSplit ? 0.35 : 0.15))
-      : ((hasConcisePassage ? 0.45 : 0.15) + (hasList ? 0.3 : 0) + (hasQuestionHeading ? 0.25 : 0));
+      : ((hasDirectPassage ? 0.65 : 0.25) + (hasScanAid ? 0.35 : 0.1));
     var gPassage = Math.round(gWeights.passageSnippet * Math.min(1, passageRatio));
 
     if (isCreative) {
@@ -3518,10 +3753,10 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     } else {
       diagnostics.push({
         engine: "Google",
-        status: hasConcisePassage && hasList ? "pass" : (hasConcisePassage || hasList ? "warn" : "fail"),
-        label: "Featured Snippet & Summary Readiness",
-        detail: (hasConcisePassage ? "40-60 word answer passage present. " : "No 38-62 word direct summary passage detected. ") +
-          (hasList ? parsed.lists.length + " scannable list(s) found." : "Add a bulleted or numbered list for extraction.")
+        status: hasDirectPassage && hasScanAid ? "pass" : (hasDirectPassage || hasScanAid ? "warn" : "fail"),
+        label: "Featured Snippet & Opening Summary",
+        detail: (hasDirectPassage ? "Direct summary paragraph sized cleanly for search excerpts. " : "Aim for an opening paragraph of 25-80 words. ") +
+          (hasList ? parsed.lists.length + " scannable list(s) found." : "Clean paragraph structure detected.")
       });
     }
 
@@ -3549,7 +3784,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var goodSentLen = readability.avgSentenceWords <= 24;
     var structRatio = isCreative
       ? (((hasH1 || !!title) ? 0.35 : 0) + (parsed.paragraphs.every(function (p) { return p.wordCount <= 130; }) ? 0.4 : 0.1) + (readability.avgSentenceWords <= 28 ? 0.25 : 0.12))
-      : ((hasH1 ? 0.25 : 0) + (h2Count >= 2 || totalWords < 130 ? 0.3 : (h2Count === 1 ? 0.15 : 0)) + (noWallOfText ? 0.25 : 0) + (goodSentLen ? 0.2 : 0.08));
+      : ((hasH1 ? 0.25 : 0) + ((h2Count >= 2 || totalWords < 200) ? 0.3 : (h2Count === 1 ? 0.2 : 0)) + (noWallOfText ? 0.25 : 0) + (goodSentLen ? 0.2 : 0.08));
     var gStruct = Math.round(gWeights.structureReadability * Math.min(1, structRatio));
 
     if (isCreative) {
@@ -3562,7 +3797,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     } else {
       diagnostics.push({
         engine: "Both",
-        status: hasH1 && h2Count >= 2 && noWallOfText ? "pass" : (hasH1 || noWallOfText ? "warn" : "fail"),
+        status: hasH1 && (h2Count >= 1 || totalWords < 160) && noWallOfText ? "pass" : (hasH1 || noWallOfText ? "warn" : "fail"),
         label: "Headings & Paragraph Readability",
         detail: (hasH1 ? "1 H1" : "Missing H1") + ", " + h2Count + " H2 subheading(s), " + readability.longParagraphCount + " oversized paragraph(s) (>110w), avg sentence " + readability.avgSentenceWords + " words."
       });
@@ -3600,7 +3835,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var inSlug = primary && slug && slug.indexOf(Lex.slugify(primary)) !== -1;
     var exactPlacementRatio = isCreative
       ? ((inTitleExact ? 0.4 : (titleHasConcept ? 0.2 : 0)) + (inLead100 ? 0.35 : (exactCount >= 1 ? 0.2 : 0)) + (inSlug ? 0.25 : 0))
-      : ((inTitleExact ? 0.25 : 0) + (inH1Exact ? 0.2 : 0) + (inLead100 ? 0.25 : 0) + (inH2Exact ? 0.15 : 0) + (inSlug ? 0.15 : 0));
+      : ((inTitleExact ? 0.25 : 0) + (inH1Exact ? 0.25 : 0) + (inLead100 ? 0.3 : 0) + ((inH2Exact || totalWords < 180) ? 0.05 : 0) + (inSlug ? 0.15 : 0));
     var bLead = Math.round(bWeights.exactLeadPlacement * Math.min(1, exactPlacementRatio));
 
     if (isCreative) {
@@ -3630,7 +3865,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var hasFaq = parsed.headings.some(function (h) { return /frequently asked questions|\?/i.test(h.text); });
     var bCopilotRatio = isCreative
       ? ((metaGoodBing ? 0.45 : (metaDesc ? 0.25 : 0)) + (hasHookPassage ? 0.35 : 0.15) + (hasJsonLd ? 0.2 : 0))
-      : ((hasFaq ? 0.45 : 0) + (hasList ? 0.3 : 0) + (hasConcisePassage ? 0.25 : 0.1));
+      : ((hasDirectPassage ? 0.5 : 0.2) + (metaGoodBing ? 0.3 : (metaDesc ? 0.15 : 0)) + ((parsed.headings.length >= 1 || hasList || hasFaq) ? 0.2 : 0));
     var bCopilot = Math.round(bWeights.copilotQaClarity * Math.min(1, bCopilotRatio));
 
     if (isCreative) {
@@ -3644,9 +3879,9 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     } else {
       diagnostics.push({
         engine: "Bing",
-        status: hasFaq && hasList ? "pass" : (hasList || hasFaq ? "warn" : "fail"),
-        label: "AI Search & FAQ Citation Readiness",
-        detail: (hasFaq ? "Structured FAQ Q&A block ready for Bing & Copilot answers. " : "No explicit Q&A section found. ") +
+        status: hasDirectPassage && (parsed.headings.length >= 1 || hasList || hasFaq) ? "pass" : "warn",
+        label: "AI Search & Scannable Clarity",
+        detail: (hasDirectPassage ? "Clear opening passage ready for Bing & AI answers. " : "Keep opening sentences concise for AI extraction. ") +
           (hasOpenGraph ? "Social preview (OpenGraph) tags attached." : "OpenGraph tags missing.")
       });
     }
@@ -4132,13 +4367,14 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
   function optimize(rawInput, options) {
     var t0 = (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
     var opts = options || {};
-    var includeTakeaways = opts.includeTakeaways !== false;
-    var includeFaq = opts.includeFaq !== false;
+    var includeTakeaways = opts.includeTakeaways === true;
+    var includeFaq = opts.includeFaq === true;
     var tightenReadability = opts.tightenReadability !== false;
     var convertLists = opts.convertLists !== false;
     var structureHeadings = opts.structureHeadings !== false;
     var profile = opts.profile || VeriRank.Profiles.getActiveProfile();
     var contentMode = opts.contentMode || (profile && profile.contentMode) || "corporate";
+    var approvedKeywords = Array.isArray(opts.approvedKeywords) ? opts.approvedKeywords.slice() : [];
     var maxParaWords = contentMode === "creative" ? 62 : 80;
 
     var analysis = VeriRank.Analyzer.analyze(rawInput, { overrideKeyword: opts.overrideKeyword });
@@ -4278,6 +4514,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     // 2. Assemble final structured document blocks (H1 -> Lead -> Concise Passage/Takeaways -> H2 Sections -> FAQ)
     var finalBlocks = [];
     var existingH1 = parsed.headings.find(function (h) { return h.level === 1; });
+    var isServicePurpose = analysis.purpose && analysis.purpose.category && analysis.purpose.category.id === "service";
     var h1Text = "";
     if (existingH1 && existingH1.text.toLowerCase().indexOf(primary) !== -1) {
       h1Text = existingH1.text;
@@ -4293,6 +4530,10 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       h1Text = secondaries[0]
         ? primaryTitle + ": " + Lex.toTitleCase(secondaries[0].phrase)
         : primaryTitle;
+    } else if (isServicePurpose) {
+      h1Text = secondaries[0]
+        ? primaryTitle + " & " + Lex.toTitleCase(secondaries[0].phrase) + " Services"
+        : primaryTitle + " Services";
     } else {
       h1Text = secondaries[0]
         ? primaryTitle + ": " + Lex.toTitleCase(secondaries[0].phrase) + " Guide"
@@ -4389,12 +4630,10 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
         cand = secondaries[secIdx] ? Lex.toTitleCase(secondaries[secIdx].phrase) : (primaryTitle + " Synopsis");
       } else if (contentMode === "product" && secIdx === 0) {
         cand = primaryTitle + " Features and Specifications";
-      } else if (secIdx === 0) {
-        cand = primaryTitle + " Requirements and Controls";
-      } else if (secondaries[secIdx - 1]) {
-        cand = Lex.toTitleCase(secondaries[secIdx - 1].phrase) + " Details";
       } else if (secondaries[secIdx]) {
         cand = Lex.toTitleCase(secondaries[secIdx].phrase);
+      } else if (secIdx === 0) {
+        cand = primaryTitle + " Overview";
       } else {
         cand = "Operational Implementation Steps";
       }
@@ -4409,7 +4648,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       return cand;
     };
 
-    if (structureHeadings && remainingBody.length > 0 && totalInputWords >= 45) {
+    if (structureHeadings && remainingBody.length > 0 && totalInputWords >= 150) {
       for (var rb = 0; rb < remainingBody.length; rb++) {
         var blk = remainingBody[rb];
         var prevIsHeading = finalBlocks.length > 0 && finalBlocks[finalBlocks.length - 1].type === "h2";
@@ -4600,7 +4839,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     };
 
     // 8. Fact-Lock Verification & Post-Optimization Scoring
-    var factLock = VeriRank.FactLock.verify(rawInput, optimizedMarkdown, provenance);
+    var factLock = VeriRank.FactLock.verify(rawInput, optimizedMarkdown, provenance, approvedKeywords);
     var afterAnalysis = VeriRank.Analyzer.analyze(optimizedMarkdown, { overrideKeyword: primary });
     var afterScores = VeriRank.Scorer.score(optimizedMarkdown, metadata, afterAnalysis, profile);
 
@@ -4610,6 +4849,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     return {
       sourceText: rawInput,
       contentMode: contentMode,
+      approvedKeywords: approvedKeywords,
       optimizedMarkdown: optimizedMarkdown,
       optimizedHtml: renderedHtml.articleHtml,
       fullHtmlDocument: renderedHtml.fullHtmlDocument,
@@ -4627,20 +4867,135 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     };
   }
 
+  function markdownToBlocks(mdText) {
+    var lines = String(mdText || "").replace(/\r\n/g, "\n").split("\n");
+    var blocks = [];
+    var curList = null;
+    var flushList = function () {
+      if (curList && curList.items.length > 0) blocks.push(curList);
+      curList = null;
+    };
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (!line) {
+        flushList();
+        continue;
+      }
+      var h1 = line.match(/^#\s+(.+)$/);
+      var h2 = line.match(/^##\s+(.+)$/);
+      var h3 = line.match(/^###\s+(.+)$/);
+      var ul = line.match(/^[-*+]\s+(.+)$/);
+      var ol = line.match(/^\d+[.)]\s+(.+)$/);
+      if (h1) { flushList(); blocks.push({ type: "h1", text: h1[1] }); }
+      else if (h2) { flushList(); blocks.push({ type: "h2", text: h2[1] }); }
+      else if (h3) { flushList(); blocks.push({ type: "h3", text: h3[1] }); }
+      else if (ul) {
+        if (!curList || curList.type !== "ul") { flushList(); curList = { type: "ul", items: [] }; }
+        curList.items.push(ul[1]);
+      } else if (ol) {
+        if (!curList || curList.type !== "ol") { flushList(); curList = { type: "ol", items: [] }; }
+        curList.items.push(ol[1]);
+      } else {
+        flushList();
+        blocks.push({ type: "p", text: line });
+      }
+    }
+    flushList();
+    return blocks;
+  }
+
   function rescoreEditedMarkdown(sourceText, editedMarkdown, currentResult, profileInput) {
     var profile = profileInput || VeriRank.Profiles.getActiveProfile();
     var primary = currentResult.analysis.subject.primaryKeyphrase;
+    var approved = currentResult.approvedKeywords || [];
     var afterAnalysis = VeriRank.Analyzer.analyze(editedMarkdown, { overrideKeyword: primary });
-    var factLock = VeriRank.FactLock.verify(sourceText, editedMarkdown, currentResult.factLock.sentenceProvenance);
+    var factLock = VeriRank.FactLock.verify(sourceText, editedMarkdown, currentResult.factLock.sentenceProvenance, approved);
     var afterScores = VeriRank.Scorer.score(editedMarkdown, currentResult.metadata, afterAnalysis, profile);
+    var newBlocks = markdownToBlocks(editedMarkdown);
+    var m = currentResult.metadata || {};
+    var renderedHtml = renderHtmlFromBlocks(newBlocks, m.title, m.metaDescription, m.canonicalUrl || m.slug, m.jsonLd, m.ogType, m.brandName);
 
     return Object.assign({}, currentResult, {
       contentMode: currentResult.contentMode || (profile && profile.contentMode) || "corporate",
+      approvedKeywords: approved,
+      blocks: newBlocks,
       optimizedMarkdown: editedMarkdown,
+      optimizedHtml: renderedHtml.articleHtml,
+      fullHtmlDocument: renderedHtml.fullHtmlDocument,
       afterAnalysis: afterAnalysis,
       afterScores: afterScores,
       factLock: factLock
     });
+  }
+
+  function weaveKeywordsIntoMarkdown(currentResult, keywordsToWeave, profileInput) {
+    if (!currentResult || !Array.isArray(keywordsToWeave) || keywordsToWeave.length === 0) return currentResult;
+    var approved = (currentResult.approvedKeywords || []).slice();
+    var md = currentResult.optimizedMarkdown || "";
+    var blocks = markdownToBlocks(md);
+    var catId = currentResult.analysis && currentResult.analysis.purpose && currentResult.analysis.purpose.category
+      ? currentResult.analysis.purpose.category.id
+      : (currentResult.contentMode || "corporate");
+    var changesLog = (currentResult.changesSummary || []).slice();
+    var wovenCount = 0;
+
+    for (var k = 0; k < keywordsToWeave.length; k++) {
+      var rawKw = String(keywordsToWeave[k] || "").trim();
+      if (!rawKw) continue;
+      if (approved.indexOf(rawKw) === -1) approved.push(rawKw);
+
+      var plainCheck = md.replace(/\*\*/g, "").toLowerCase();
+      if (plainCheck.indexOf(rawKw.toLowerCase()) !== -1) continue;
+
+      var kwWords = rawKw.toLowerCase().split(/\s+/).filter(function (w) { return w.length >= 3 && !Lex.STOPWORDS.has(w); });
+      var bestParaIdx = -1;
+      var bestOverlap = -1;
+      for (var bi = 0; bi < blocks.length; bi++) {
+        if (blocks[bi].type !== "p") continue;
+        if (blocks[bi].text.indexOf("Frequently Asked Questions") !== -1) break;
+        var pLow = blocks[bi].text.toLowerCase();
+        var overlap = 0;
+        kwWords.forEach(function (w) { if (pLow.indexOf(w) !== -1) overlap++; });
+        if (overlap > bestOverlap) {
+          bestOverlap = overlap;
+          bestParaIdx = bi;
+        }
+      }
+      if (bestParaIdx === -1) {
+        bestParaIdx = blocks.findIndex(function (b) { return b.type === "p"; });
+      }
+
+      if (bestParaIdx !== -1) {
+        var sentenceAdd = "";
+        if (catId === "service") sentenceAdd = " Our services also cover **" + rawKw + "**.";
+        else if (catId === "product") sentenceAdd = " Designed to support **" + rawKw + "**.";
+        else if (catId === "creative") sentenceAdd = " Readers who enjoy **" + rawKw + "** will feel right at home.";
+        else sentenceAdd = " Understanding **" + rawKw + "** also strengthens results around " + currentResult.analysis.subject.primaryKeyphrase + ".";
+
+        blocks[bestParaIdx].text = blocks[bestParaIdx].text.replace(/\s+$/, "") + sentenceAdd;
+        wovenCount++;
+        changesLog.push("Wove search keyword '" + rawKw + "' into paragraph");
+      }
+
+      md = blocks.map(function (b) {
+        if (b.type === "h1") return "# " + b.text;
+        if (b.type === "h2") return "## " + b.text;
+        if (b.type === "h3") return "### " + b.text;
+        if (b.type === "ul") return b.items.map(function (it) { return "- " + it; }).join("\n");
+        if (b.type === "ol") return b.items.map(function (it, idx) { return (idx + 1) + ". " + it; }).join("\n");
+        return b.text;
+      }).join("\n\n");
+    }
+
+    var withApproved = Object.assign({}, currentResult, {
+      approvedKeywords: approved,
+      changesSummary: changesLog,
+      writingEditsCount: changesLog.length
+    });
+    if (wovenCount === 0 && approved.length === (currentResult.approvedKeywords || []).length) {
+      return currentResult;
+    }
+    return rescoreEditedMarkdown(currentResult.sourceText, md, withApproved, profileInput);
   }
 
   function updateResultMetadata(currentResult, metaOverrides, profileInput) {
@@ -4728,6 +5083,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     optimize: optimize,
     rescoreEditedMarkdown: rescoreEditedMarkdown,
     updateResultMetadata: updateResultMetadata,
+    weaveKeywordsIntoMarkdown: weaveKeywordsIntoMarkdown,
     renderHtmlFromBlocks: renderHtmlFromBlocks
   };
 })(window);
@@ -5407,7 +5763,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var shortInput = "There are a lot of roofers who rush roof repair jobs. In addition to this, our team is able to inspect three critical areas on every visit: shingle flashing, attic ventilation, and gutter drainage. We make sure that homeowners receive clear photo reports on a daily basis before any work starts.";
     var shortRes = VeriRank.Optimizer.optimize(shortInput, VeriRank.Profiles.CONTENT_PRESETS.corporate.options);
     var shortPlainMd = shortRes.optimizedMarkdown.replace(/\*\*/g, "");
-    assert("Short everyday paragraph (60w) receives real prose edits, headings & bullets",
+    assert("Short everyday paragraph (60w) receives real prose edits without unwanted bullets/FAQs",
       shortRes.optimizedMarkdown !== shortInput &&
       /Many roofers/i.test(shortPlainMd) &&
       /\bcan inspect\b/i.test(shortPlainMd) &&
@@ -5415,14 +5771,33 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       /\bdaily\b/i.test(shortPlainMd) &&
       shortRes.optimizedMarkdown.indexOf("# ") === 0 &&
       shortRes.optimizedMarkdown.indexOf("- Shingle flashing") !== -1 &&
+      shortRes.optimizedMarkdown.indexOf("Key Takeaways") === -1 &&
+      shortRes.optimizedMarkdown.indexOf("Frequently Asked Questions") === -1 &&
       shortRes.factLock.passed && shortRes.factLock.issues.length === 0,
       "Changes applied: " + shortRes.changesSummary.length + " (" + shortRes.changesSummary.slice(0, 3).join("; ") + ")");
 
-    assert("Key Takeaways distill clauses & bold emphasis renders cleanly",
+    var optTakeawayRes = VeriRank.Optimizer.optimize(s1, { includeTakeaways: true, includeFaq: true });
+    assert("Optional Key Takeaways distill clauses & bold emphasis renders cleanly",
       r1.optimizedMarkdown.indexOf("**") !== -1 &&
       r1.optimizedHtml.indexOf("<strong>") !== -1 &&
-      r1.factLock.passed,
-      "Bold emphasis verified & Fact-Lock 100% passed");
+      optTakeawayRes.optimizedMarkdown.indexOf("Key Takeaways") !== -1 &&
+      r1.factLock.passed && optTakeawayRes.factLock.passed,
+      "Bold emphasis & optional takeaways verified with Fact-Lock 100% passed");
+
+    var candListLow = shortRes.analysis.subject.candidateKeyphrases.map(function (c) { return c.phrase; });
+    assert("Topic extractor isolates clean search keywords without cross-comma or verb noise",
+      shortRes.analysis.subject.primaryKeyphrase === "roof repair" &&
+      candListLow.indexOf("rush roof repair") === -1 &&
+      candListLow.indexOf("shingle flashing attic") === -1 &&
+      shortRes.analysis.purpose && shortRes.analysis.purpose.category.id === "service",
+      "Detected topic: '" + shortRes.analysis.subject.primaryKeyphrase + "', purpose: " + shortRes.analysis.purpose.category.label);
+
+    var wovenRes = VeriRank.Optimizer.weaveKeywordsIntoMarkdown(shortRes, ["residential roof repair", "roof leak inspection"]);
+    assert("1-Click Keyword Weaver integrates selected search keywords & passes Fact-Lock",
+      wovenRes.optimizedMarkdown.toLowerCase().indexOf("residential roof repair") !== -1 &&
+      wovenRes.optimizedMarkdown.toLowerCase().indexOf("roof leak inspection") !== -1 &&
+      wovenRes.factLock.passed && wovenRes.factLock.issues.length === 0,
+      "Wove 2 keywords; Fact-Lock: " + wovenRes.factLock.status + ", Google: " + wovenRes.afterScores.google.total);
 
     var passedCount = checks.filter(function (c) { return c.passed; }).length;
     var failedCount = checks.length - passedCount;
@@ -5453,6 +5828,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     activePreset: "corporate",
     activeProfile: VeriRank.Profiles.buildProfileForPreset(VeriRank.Profiles.getActiveProfile(), "corporate"),
     siteSettings: VeriRank.Profiles.getSiteSettings ? VeriRank.Profiles.getSiteSettings() : { baseUrl: "https://yoursite.com", brandName: "", indexNowKey: "" },
+    sidebarKeywords: [],
     selectedTitleIdx: 0,
     viewMode: "preview",
     batchItems: [],
@@ -5890,6 +6266,150 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     }
   }
 
+  function mergeSidebarKeywords(newItems, prepend) {
+    var map = {};
+    var out = [];
+    var pushItem = function (it) {
+      if (!it || !it.phrase) return;
+      var low = String(it.phrase).toLowerCase().trim();
+      if (!low || low.length < 3) return;
+      if (!map[low]) {
+        map[low] = { phrase: String(it.phrase).trim(), source: it.source || "Topic Match" };
+        out.push(map[low]);
+      } else if (map[low].source === "Topic Match" && it.source && it.source !== "Topic Match") {
+        map[low].source = it.source;
+      }
+    };
+    if (prepend) {
+      (newItems || []).forEach(pushItem);
+      (state.sidebarKeywords || []).forEach(pushItem);
+    } else {
+      (state.sidebarKeywords || []).forEach(pushItem);
+      (newItems || []).forEach(pushItem);
+    }
+    state.sidebarKeywords = out.slice(0, 26);
+  }
+
+  function renderKeywordSidebar() {
+    var listEl = $("keywordSidebarList");
+    var badgeEl = $("kwUsedCountBadge");
+    if (!listEl) return;
+
+    var currentMd = ($("markdownOutputArea") && $("markdownOutputArea").value) || (state.currentResult ? state.currentResult.optimizedMarkdown : "") || "";
+    var plainLow = currentMd.replace(/\*\*/g, "").toLowerCase();
+
+    var usedList = [];
+    var unusedList = [];
+    (state.sidebarKeywords || []).forEach(function (item) {
+      var low = item.phrase.toLowerCase();
+      var count = VeriRank.Scorer.countExactPhrase(plainLow, low);
+      if (count === 0 && plainLow.indexOf(low) !== -1) count = 1;
+      var rec = { phrase: item.phrase, source: item.source, count: count };
+      if (count > 0) usedList.push(rec);
+      else unusedList.push(rec);
+    });
+
+    if (badgeEl) {
+      badgeEl.textContent = usedList.length + " / " + (usedList.length + unusedList.length) + " in text";
+    }
+
+    var html = [];
+    if (unusedList.length > 0) {
+      html.push("<div class='kw-group-label'>Suggested Search Keywords (Click + Weave In or Type Manually)</div>");
+      unusedList.slice(0, 16).forEach(function (u) {
+        html.push(
+          "<div class='kw-item'>" +
+            "<div style='min-width:0;flex:1;'>" +
+              "<div class='kw-phrase'>" + Lex.escapeHtml(u.phrase) + "</div>" +
+              "<div class='kw-source'>" + Lex.escapeHtml(u.source) + "</div>" +
+            "</div>" +
+            "<button type='button' class='btn sm' data-weave-kw='" + Lex.escapeHtml(u.phrase) + "' style='flex-shrink:0;'>+ Weave In</button>" +
+          "</div>"
+        );
+      });
+    } else {
+      html.push("<div class='muted' style='margin:6px 0;'>All listed search keywords are already in your writing!</div>");
+    }
+
+    if (usedList.length > 0) {
+      html.push("<div class='kw-group-label'>Already in Your Writing (" + usedList.length + ")</div>");
+      usedList.forEach(function (u) {
+        html.push(
+          "<div class='kw-item used'>" +
+            "<div style='min-width:0;flex:1;'>" +
+              "<div class='kw-phrase'>&#10003; " + Lex.escapeHtml(u.phrase) + "</div>" +
+              "<div class='kw-source'>" + Lex.escapeHtml(u.source) + " &bull; Used " + u.count + "x</div>" +
+            "</div>" +
+          "</div>"
+        );
+      });
+    }
+
+    listEl.innerHTML = html.join("");
+
+    var wBtns = listEl.querySelectorAll("[data-weave-kw]");
+    for (var i = 0; i < wBtns.length; i++) {
+      wBtns[i].addEventListener("click", function () {
+        var kw = this.getAttribute("data-weave-kw");
+        if (!state.currentResult || !kw || !VeriRank.Optimizer.weaveKeywordsIntoMarkdown) return;
+        var updated = VeriRank.Optimizer.weaveKeywordsIntoMarkdown(state.currentResult, [kw], state.activeProfile);
+        state.currentResult = updated;
+        renderResult(updated);
+        if (state.viewMode !== "markdown") {
+          switchContentViewMode("diff");
+        }
+        showToast("Added '" + kw + "' naturally into your writing!", "ok");
+      });
+    }
+  }
+
+  function fetchLiveKeywordsForSidebar(res, customQuery) {
+    if (!res) return;
+    var statusEl = $("keywordSidebarStatus");
+    var primary = customQuery || res.analysis.subject.primaryKeyphrase;
+    var seeds = customQuery
+      ? [customQuery]
+      : (res.analysis.purpose && res.analysis.purpose.seedQueries ? res.analysis.purpose.seedQueries : [primary]);
+
+    if (!isApiAvailable()) {
+      if (statusEl) {
+        statusEl.textContent = "Showing offline keyword ideas for '" + primary + "' (live Google/Bing search runs automatically on the web/desktop app).";
+      }
+      renderKeywordSidebar();
+      return;
+    }
+
+    if (statusEl) statusEl.textContent = "Searching live Google & Bing keywords for '" + primary + "'...";
+    fetch("/api/suggest", {
+      method: "POST",
+      headers: hostHeaders(),
+      body: JSON.stringify({ query: primary, seeds: seeds })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data || data.offline) {
+          if (statusEl) statusEl.textContent = "Using smart topic keyword ideas (live search unreachable).";
+          renderKeywordSidebar();
+          return;
+        }
+        var items = Array.isArray(data.items) && data.items.length
+          ? data.items.map(function (it) { return { phrase: it.phrase, source: (it.engines || []).join(" + ") || "Google + Bing" }; })
+          : [].concat(
+              (data.google || []).map(function (q) { return { phrase: q, source: "Google" }; }),
+              (data.bing || []).map(function (q) { return { phrase: q, source: "Bing" }; })
+            );
+        mergeSidebarKeywords(items, !!customQuery);
+        if (statusEl) {
+          statusEl.textContent = "Live Google & Bing results for '" + primary + "' (" + items.length + " live phrases found).";
+        }
+        renderKeywordSidebar();
+      })
+      .catch(function () {
+        if (statusEl) statusEl.textContent = "Using built-in topic keyword ideas.";
+        renderKeywordSidebar();
+      });
+  }
+
   function runOptimization() {
     var raw = $("sourceTextarea").value.trim();
     if (!raw) {
@@ -5900,7 +6420,23 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     state.selectedTitleIdx = 0;
     var res = VeriRank.Optimizer.optimize(raw, getOptimizeOptionsFromUi());
     state.currentResult = res;
+
+    // Seed sidebar with primary, detected secondary topics & intent fallback keywords before live fetch completes
+    var seedItems = [{ phrase: res.analysis.subject.primaryKeyphrase, source: "Main Topic" }];
+    (res.analysis.subject.secondaryKeyphrases || []).forEach(function (s) {
+      seedItems.push({ phrase: s.phrase, source: "Found in Text" });
+    });
+    (res.analysis.fallbackKeywords || []).forEach(function (f) {
+      seedItems.push(f);
+    });
+    state.sidebarKeywords = [];
+    mergeSidebarKeywords(seedItems, false);
+
     renderResult(res);
+    if (res.changesSummary && res.changesSummary.length > 0 && state.viewMode !== "markdown") {
+      switchContentViewMode("diff");
+    }
+    fetchLiveKeywordsForSidebar(res);
     updateSourceTelemetry();
     if (VeriRank.Profiles && VeriRank.Profiles.saveDraftState) {
       VeriRank.Profiles.saveDraftState({
@@ -6201,8 +6737,20 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var rendered = renderSimpleMarkdownToHtml(res.optimizedMarkdown);
     $("previewPane").innerHTML = rendered;
     renderDiffView(res);
-    $("markdownOutputArea").value = res.optimizedMarkdown;
+    if ($("markdownOutputArea") && document.activeElement !== $("markdownOutputArea")) {
+      $("markdownOutputArea").value = res.optimizedMarkdown;
+    }
     $("htmlOutputPre").textContent = res.optimizedHtml;
+
+    if ($("writingPurposeBanner") && res.analysis.purpose) {
+      var purp = res.analysis.purpose;
+      $("writingPurposeBanner").innerHTML =
+        "<div><strong>Purpose Analysis:</strong> <span class='badge primary'>" + Lex.escapeHtml(purp.category.label) + "</span> " +
+        "<span class='muted'>For <strong>" + Lex.escapeHtml(purp.audience) + "</strong></span></div>" +
+        "<div class='muted'>Main Topic: <code>" + Lex.escapeHtml(res.analysis.subject.primaryKeyphrase) + "</code></div>";
+    }
+
+    renderKeywordSidebar();
 
     if ($("whatChangedSummary")) {
       var changes = res.changesSummary || [];
@@ -6921,13 +7469,83 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     $("rescoreEditsBtn").addEventListener("click", function () {
       if (!state.currentResult) return;
       var edited = $("markdownOutputArea").value;
-      var updated = VeriRank.Optimizer.rescoreEditedMarkdown(state.currentResult.sourceText, edited, state.currentResult, state.activeProfile);
+      var lowEdit = edited.replace(/\*\*/g, "").toLowerCase();
+      var approved = (state.currentResult.approvedKeywords || []).slice();
+      (state.sidebarKeywords || []).forEach(function (item) {
+        var low = item.phrase.toLowerCase();
+        if (lowEdit.indexOf(low) !== -1 && approved.indexOf(item.phrase) === -1) {
+          approved.push(item.phrase);
+        }
+      });
+      var baseWithApproved = Object.assign({}, state.currentResult, { approvedKeywords: approved });
+      var updated = VeriRank.Optimizer.rescoreEditedMarkdown(state.currentResult.sourceText, edited, baseWithApproved, state.activeProfile);
       state.currentResult = updated;
       renderResult(updated);
       $("studioActionStatus").textContent = updated.factLock.passed
         ? "Manual edits verified: 100% source-grounded."
         : "Warning: Manual edit introduced ungrounded content flagged by Fact-Lock.";
     });
+
+    // Live checkoff & score update while typing manually inside Edit Writing Live
+    var liveEditTimer = null;
+    $("markdownOutputArea").addEventListener("input", function () {
+      clearTimeout(liveEditTimer);
+      liveEditTimer = setTimeout(function () {
+        if (!state.currentResult) return;
+        var edited = $("markdownOutputArea").value;
+        var lowEdit = edited.replace(/\*\*/g, "").toLowerCase();
+        var approved = (state.currentResult.approvedKeywords || []).slice();
+        (state.sidebarKeywords || []).forEach(function (item) {
+          var low = item.phrase.toLowerCase();
+          if (lowEdit.indexOf(low) !== -1 && approved.indexOf(item.phrase) === -1) {
+            approved.push(item.phrase);
+          }
+        });
+        var baseWithApproved = Object.assign({}, state.currentResult, { approvedKeywords: approved });
+        var updated = VeriRank.Optimizer.rescoreEditedMarkdown(state.currentResult.sourceText, edited, baseWithApproved, state.activeProfile);
+        state.currentResult = updated;
+        renderResult(updated);
+      }, 220);
+    });
+
+    if ($("weaveTopKeywordsBtn")) {
+      $("weaveTopKeywordsBtn").addEventListener("click", function () {
+        if (!state.currentResult || !VeriRank.Optimizer.weaveKeywordsIntoMarkdown) return;
+        var currentLow = (state.currentResult.optimizedMarkdown || "").replace(/\*\*/g, "").toLowerCase();
+        var top3 = [];
+        (state.sidebarKeywords || []).forEach(function (item) {
+          if (top3.length < 3 && currentLow.indexOf(item.phrase.toLowerCase()) === -1) {
+            top3.push(item.phrase);
+          }
+        });
+        if (top3.length === 0) {
+          showToast("Top keywords are already in your writing!", "ok");
+          return;
+        }
+        var updated = VeriRank.Optimizer.weaveKeywordsIntoMarkdown(state.currentResult, top3, state.activeProfile);
+        state.currentResult = updated;
+        renderResult(updated);
+        if (state.viewMode !== "markdown") {
+          switchContentViewMode("diff");
+        }
+        showToast("Wove " + top3.length + " top search keyword(s) into your writing!", "ok");
+      });
+    }
+
+    if ($("sidebarKeywordSearchBtn") && $("sidebarKeywordSearchInput")) {
+      var runSidebarSearch = function () {
+        var q = $("sidebarKeywordSearchInput").value.trim();
+        if (!q || !state.currentResult) return;
+        fetchLiveKeywordsForSidebar(state.currentResult, q);
+      };
+      $("sidebarKeywordSearchBtn").addEventListener("click", runSidebarSearch);
+      $("sidebarKeywordSearchInput").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          runSidebarSearch();
+        }
+      });
+    }
 
     if ($("copyRichTextBtn")) {
       $("copyRichTextBtn").addEventListener("click", function () {
