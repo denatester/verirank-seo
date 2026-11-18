@@ -852,6 +852,49 @@ details.sql-details summary {
 
 .meter-fill.warn { background: var(--warn); }
 .meter-fill.bad { background: var(--bad); }
+
+.diff-del {
+  background: var(--bad-soft);
+  color: var(--bad);
+  text-decoration: line-through;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.diff-ins {
+  background: var(--ok-soft);
+  color: var(--ok);
+  font-weight: 600;
+  text-decoration: none;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.diff-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.changes-summary-box {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--ok);
+  border-radius: 8px;
+  padding: 9px 12px;
+  margin-bottom: 10px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
 </style>
 </head>
 <body>
@@ -1072,9 +1115,11 @@ details.sql-details summary {
 
             <!-- Subtab 1: Optimized Content -->
             <div id="subtab-content" class="subpanel active">
+              <div id="whatChangedSummary" class="changes-summary-box"></div>
               <div class="flex-row" style="justify-content:space-between;margin-bottom:10px;">
                 <div class="flex-row">
                   <button type="button" class="btn sm primary view-mode-btn" data-mode="preview">Formatted Preview</button>
+                  <button type="button" class="btn sm view-mode-btn" data-mode="diff">Highlight Edits</button>
                   <button type="button" class="btn sm view-mode-btn" data-mode="split">Before vs. After Split</button>
                   <span class="btn-with-help">
                     <button type="button" class="btn sm view-mode-btn" data-mode="markdown">Edit Text</button>
@@ -1098,6 +1143,7 @@ details.sql-details summary {
                 </div>
               </div>
               <div id="previewPane" class="rendered-preview"></div>
+              <div id="diffViewPane" class="rendered-preview" style="display:none;"></div>
               <div id="splitComparePane" class="split-compare-grid" style="display:none;">
                 <div class="split-pane">
                   <div class="split-pane-head">
@@ -1765,18 +1811,58 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
   }
 
   var FILLER_REPLACEMENTS = [
+    { pattern: /\bthere are a lot of ([a-z]+)\s+(?:who|that)\s+/gi, replacement: function (_, n) { return "many " + n + " "; }, label: "tightened 'there are a lot of...'" },
+    { pattern: /\bthere are many ([a-z]+)\s+(?:who|that)\s+/gi, replacement: function (_, n) { return "many " + n + " "; }, label: "tightened 'there are many...'" },
     { pattern: /\bin order to\b/gi, replacement: "to", label: "in order to -> to" },
     { pattern: /\bdue to the fact that\b/gi, replacement: "because", label: "due to the fact that -> because" },
+    { pattern: /\bin light of the fact that\b/gi, replacement: "because", label: "in light of the fact that -> because" },
+    { pattern: /\bgiven the fact that\b/gi, replacement: "because", label: "given the fact that -> because" },
+    { pattern: /\bfor the simple reason that\b/gi, replacement: "because", label: "for the simple reason that -> because" },
     { pattern: /\bin the event that\b/gi, replacement: "if", label: "in the event that -> if" },
+    { pattern: /\bin a situation where\b/gi, replacement: "when", label: "in a situation where -> when" },
     { pattern: /\bat this point in time\b/gi, replacement: "now", label: "at this point in time -> now" },
-    { pattern: /\bhas the ability to\b/gi, replacement: "can", label: "has the ability to -> can" },
-    { pattern: /\bhave the ability to\b/gi, replacement: "can", label: "have the ability to -> can" },
-    { pattern: /\bis able to\b/gi, replacement: "can", label: "is able to -> can" },
-    { pattern: /\bare able to\b/gi, replacement: "can", label: "are able to -> can" },
+    { pattern: /\bat the present time\b/gi, replacement: "now", label: "at the present time -> now" },
+    { pattern: /\bin the near future\b/gi, replacement: "soon", label: "in the near future -> soon" },
+    { pattern: /\bon a daily basis\b/gi, replacement: "daily", label: "on a daily basis -> daily" },
+    { pattern: /\bon a regular basis\b/gi, replacement: "regularly", label: "on a regular basis -> regularly" },
+    { pattern: /\bin close proximity to\b/gi, replacement: "near", label: "in close proximity to -> near" },
+    { pattern: /\bfor the purpose of\b/gi, replacement: "for", label: "for the purpose of -> for" },
+    { pattern: /\bwith regard to\b/gi, replacement: "regarding", label: "with regard to -> regarding" },
+    { pattern: /\bin terms of\b/gi, replacement: "for", label: "in terms of -> for" },
+    { pattern: /\bwhen it comes to\b/gi, replacement: "for", label: "when it comes to -> for" },
+    { pattern: /\bas a matter of fact,?\s*/gi, replacement: "", label: "removed 'as a matter of fact'" },
     { pattern: /\bit is important to note that\s+/gi, replacement: "", label: "removed 'it is important to note that'" },
     { pattern: /\bit should be noted that\s+/gi, replacement: "", label: "removed 'it should be noted that'" },
-    { pattern: /\bfor the purpose of\b/gi, replacement: "for", label: "for the purpose of -> for" },
-    { pattern: /\bwith regard to\b/gi, replacement: "regarding", label: "with regard to -> regarding" }
+    { pattern: /\bit is worth noting that\s+/gi, replacement: "", label: "removed 'it is worth noting that'" },
+    { pattern: /\bneedless to say,?\s*/gi, replacement: "", label: "removed 'needless to say'" },
+    { pattern: /\bin addition to this,\s*/gi, replacement: "Additionally, ", label: "in addition to this -> Additionally" },
+    { pattern: /\bfirst and foremost,\s*/gi, replacement: "First, ", label: "first and foremost -> First" },
+    { pattern: /\ba large number of\b/gi, replacement: "many", label: "a large number of -> many" },
+    { pattern: /\ba lot of\b/gi, replacement: "many", label: "a lot of -> many" },
+    { pattern: /\blots of\b/gi, replacement: "many", label: "lots of -> many" },
+    { pattern: /\ba majority of\b/gi, replacement: "most", label: "a majority of -> most" },
+    { pattern: /\beach and every\b/gi, replacement: "every", label: "each and every -> every" },
+    { pattern: /\bvarious different\b/gi, replacement: "various", label: "various different -> various" },
+    { pattern: /\bcompletely eliminate\b/gi, replacement: "eliminate", label: "completely eliminate -> eliminate" },
+    { pattern: /\bfuture plans\b/gi, replacement: "plans", label: "future plans -> plans" },
+    { pattern: /\bpast history\b/gi, replacement: "history", label: "past history -> history" },
+    { pattern: /\bend result\b/gi, replacement: "result", label: "end result -> result" },
+    { pattern: /\bvery unique\b/gi, replacement: "unique", label: "very unique -> unique" },
+    { pattern: /\breally important\b/gi, replacement: "essential", label: "really important -> essential" },
+    { pattern: /\bvery important\b/gi, replacement: "essential", label: "very important -> essential" },
+    { pattern: /\bhas the ability to\b/gi, replacement: "can", label: "has the ability to -> can" },
+    { pattern: /\bhave the ability to\b/gi, replacement: "can", label: "have the ability to -> can" },
+    { pattern: /\bgives you the ability to\b/gi, replacement: "lets you", label: "gives you the ability to -> lets you" },
+    { pattern: /\ballows you to\b/gi, replacement: "lets you", label: "allows you to -> lets you" },
+    { pattern: /\bis able to\b/gi, replacement: "can", label: "is able to -> can" },
+    { pattern: /\bare able to\b/gi, replacement: "can", label: "are able to -> can" },
+    { pattern: /\bis going to\b/gi, replacement: "will", label: "is going to -> will" },
+    { pattern: /\bare going to\b/gi, replacement: "will", label: "are going to -> will" },
+    { pattern: /\bmake sure that\b/gi, replacement: "ensure", label: "make sure that -> ensure" },
+    { pattern: /\bmake a decision\b/gi, replacement: "decide", label: "make a decision -> decide" },
+    { pattern: /\btake into consideration\b/gi, replacement: "consider", label: "take into consideration -> consider" },
+    { pattern: /\bprovide assistance to\b/gi, replacement: "help", label: "provide assistance to -> help" },
+    { pattern: /\bmake use of\b/gi, replacement: "use", label: "make use of -> use" }
   ];
 
   var INTENT_SIGNALS = {
@@ -2935,7 +3021,10 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     "detail", "perform", "performance", "benefit", "process", "action",
     "implement", "use", "using", "organiz", "organization", "team", "work",
     "explain", "highlight", "note", "focus", "section", "best", "practic", "inspect",
-    "feature", "featur", "specific", "specification", "insight", "synopsis", "complete"
+    "feature", "featur", "specific", "specification", "insight", "synopsis", "complete",
+    "soon", "daili", "daily", "regular", "near", "regard", "addit", "addition", "additional",
+    "mani", "many", "most", "let", "lets", "ensur", "ensure", "decid", "decide",
+    "consid", "consider", "help", "first", "various", "essential", "unique"
   ]);
 
   var ALLOWED_STRUCTURAL_ACRONYMS = new Set(["FAQ", "SEO", "HTML", "JSON", "URL", "API", "AI"]);
@@ -2947,7 +3036,8 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     "What", "When", "Where", "Which", "Does", "Organizations", "Apply", "Govern",
     "Factors", "Details", "Standards", "And", "For", "With", "The", "This", "These",
     "First", "Second", "Third", "Finally", "However", "Therefore", "Because",
-    "Inspection", "Procedure", "Features", "Specifications", "Highlights", "Insights", "Synopsis", "Complete", "Practice"
+    "Inspection", "Procedure", "Features", "Specifications", "Highlights", "Insights", "Synopsis", "Complete", "Practice",
+    "Additionally", "Many", "Most", "Ensure", "Essential"
   ]);
 
   function normalizeNumberToken(tok) {
@@ -3658,24 +3748,36 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
+  function formatInlineMarkdown(escapedText) {
+    return String(escapedText || "").replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  }
+
+  function isNearNegationBoundary(leftStr, rightStr) {
+    var negRe = /\b(?:not|never|no|without|neither|nor|cannot|can't|doesn't|don't|won't|didn't|isn't|aren't|only|unless|except)\b/i;
+    var leftTail = leftStr.trim().split(/\s+/).slice(-4).join(" ");
+    var rightHead = rightStr.trim().split(/\s+/).slice(0, 4).join(" ");
+    return negRe.test(leftTail) || negRe.test(rightHead);
+  }
+
   function tightenSentence(sentenceObj, provenanceOut, changesLog) {
     var txt = sentenceObj.text;
     var applied = [];
 
     for (var i = 0; i < Lex.FILLER_REPLACEMENTS.length; i++) {
       var rule = Lex.FILLER_REPLACEMENTS[i];
-      if (rule.pattern.test(txt)) {
-        txt = txt.replace(rule.pattern, rule.replacement);
+      var nextTxt = txt.replace(rule.pattern, rule.replacement);
+      if (nextTxt !== txt) {
+        txt = nextTxt;
         applied.push(rule.label);
       }
     }
     txt = txt.replace(/\s+/g, " ").replace(/\s+([.,;:!?])/g, "$1").trim();
     txt = capitalizeFirst(txt);
 
-    // Split overly long sentences at clean semicolon or ", which " boundaries when safe
+    // Split overly long sentences (>= 26 words) at clean semicolon, ", which ", or compound ", and/so " boundaries
     var parts = [txt];
     var wordCount = VeriRank.Analyzer.countWords(txt);
-    if (wordCount > 32) {
+    if (wordCount >= 26) {
       if (/;\s+(?:however|therefore|moreover|additionally),?\s+/i.test(txt)) {
         var semiSplit = txt.split(/;\s+(?=(?:however|therefore|moreover|additionally)\b)/i);
         if (semiSplit.length === 2 && VeriRank.Analyzer.countWords(semiSplit[0]) >= 8 && VeriRank.Analyzer.countWords(semiSplit[1]) >= 8) {
@@ -3685,13 +3787,32 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
           ];
           applied.push("Split long semicolon clause for readability");
         }
-      } else if (/,\s+which\s+(?:means|meant|places|reduces|increases|prevents|allows|creates|causes)\s+/i.test(txt)) {
+      } else if (/;\s+[a-z]{3,}/i.test(txt)) {
+        var semiGen = txt.split(/;\s+/);
+        if (semiGen.length === 2 && VeriRank.Analyzer.countWords(semiGen[0]) >= 9 && VeriRank.Analyzer.countWords(semiGen[1]) >= 9 && !isNearNegationBoundary(semiGen[0], semiGen[1])) {
+          parts = [
+            semiGen[0].replace(/[.;,\s]+$/, "") + ".",
+            capitalizeFirst(semiGen[1].trim())
+          ];
+          applied.push("Split long compound sentence for easier reading");
+        }
+      } else if (/,\s+which\s+(?:means|meant|places|reduces|increases|prevents|allows|lets|creates|causes)\s+/i.test(txt)) {
         var idx = txt.search(/,\s+which\s+/i);
-        if (idx > 35 && txt.length - idx > 30) {
+        if (idx > 32 && txt.length - idx > 28) {
           var left = txt.slice(0, idx).trim() + ".";
           var right = "This " + txt.slice(idx).replace(/^,\s+which\s+/i, "").trim();
           parts = [left, right];
           applied.push("Split long ', which' clause into two sentences");
+        }
+      } else {
+        var compMatch = txt.match(/,\s+(?:and|so)\s+(?=(?:it|they|this|these|we|you|our|their|teams|organizations|companies|users|customers|patients|technicians|hospitals|facilities|readers)\b)/i);
+        if (compMatch && compMatch.index > 35) {
+          var cLeft = txt.slice(0, compMatch.index).trim();
+          var cRight = txt.slice(compMatch.index + compMatch[0].length).trim();
+          if (VeriRank.Analyzer.countWords(cLeft) >= 9 && VeriRank.Analyzer.countWords(cRight) >= 9 && !isNearNegationBoundary(cLeft, cRight)) {
+            parts = [cLeft.replace(/[.;,\s]+$/, "") + ".", capitalizeFirst(cRight)];
+            applied.push("Split long compound sentence for easier reading");
+          }
         }
       }
     }
@@ -3703,12 +3824,14 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var result = [];
     for (var p = 0; p < parts.length; p++) {
       result.push(parts[p]);
-      provenanceOut.push({
-        outputSentence: parts[p],
-        sourceIds: [sentenceObj.id],
-        sourceTexts: [sentenceObj.text],
-        editType: applied.length ? applied.join("; ") : "Preserved verbatim"
-      });
+      if (provenanceOut) {
+        provenanceOut.push({
+          outputSentence: parts[p],
+          sourceIds: [sentenceObj.id],
+          sourceTexts: [sentenceObj.text],
+          editType: applied.length ? applied.join("; ") : "Preserved verbatim"
+        });
+      }
     }
     return result;
   }
@@ -3720,6 +3843,72 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       return { marker: m[1].toLowerCase(), body: capitalizeFirst(m[2].trim()) };
     }
     return null;
+  }
+
+  function tryExtractColonList(sentenceText) {
+    var m = String(sentenceText || "").trim().match(/^([^:]{12,90}):\s+([^.!?]{18,})[.!?]$/);
+    if (!m) return null;
+    var lead = m[1].trim() + ":";
+    var rawItems = m[2].split(/,\s+(?:and\s+)?|\s+and\s+/i).map(function (s) { return s.trim(); }).filter(Boolean);
+    if (rawItems.length < 3 || rawItems.length > 7) return null;
+    var valid = rawItems.every(function (it) {
+      var wc = VeriRank.Analyzer.countWords(it);
+      return wc >= 1 && wc <= 12;
+    });
+    if (!valid) return null;
+    return {
+      lead: lead,
+      items: rawItems.map(function (it) { return capitalizeFirst(it); })
+    };
+  }
+
+  function distillTakeawayBullet(sentenceObj) {
+    var tightened = tightenSentence(sentenceObj, null, []).join(" ");
+    var stripped = tightened;
+    var m = tightened.match(/^(?:In our \d{4} [^,]{4,45},\s+|When [^,]{8,55},\s+|With [^,]{4,35},\s+)/i);
+    if (m && !/\b(?:not|never|no|without|unless|except|only)\b/i.test(m[0])) {
+      var rest = tightened.slice(m[0].length).trim();
+      if (VeriRank.Analyzer.countWords(rest) >= 10) {
+        stripped = capitalizeFirst(rest);
+      }
+    }
+    return trimToWordRange(stripped, 22);
+  }
+
+  function applyScannableBolding(blocks, primary, secondaries, contentMode) {
+    var boldedCount = 0;
+    var targets = [];
+    if (primary) targets.push(primary);
+    if (contentMode !== "creative" && Array.isArray(secondaries)) {
+      for (var s = 0; s < secondaries.length && targets.length < 3; s++) {
+        if (secondaries[s] && secondaries[s].phrase) targets.push(secondaries[s].phrase);
+      }
+    }
+    var usedTargets = new Set();
+    for (var bIdx = 0; bIdx < blocks.length; bIdx++) {
+      var blk = blocks[bIdx];
+      if (blk.type !== "p" || !blk.text) continue;
+      for (var tIdx = 0; tIdx < targets.length; tIdx++) {
+        var phrase = targets[tIdx];
+        if (usedTargets.has(phrase)) continue;
+        var esc = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+        var re = new RegExp("\\b(" + esc + ")\\b", "i");
+        var match = blk.text.match(re);
+        if (match) {
+          var idx = match.index;
+          var before = blk.text.slice(0, idx);
+          if (before.slice(-2) === "**") continue;
+          // Ensure we do not nest ** inside an already bolded phrase
+          var openBold = (before.match(/\*\*/g) || []).length % 2 === 1;
+          if (openBold) continue;
+          blk.text = before + "**" + match[1] + "**" + blk.text.slice(idx + match[0].length);
+          usedTargets.add(phrase);
+          boldedCount++;
+          break;
+        }
+      }
+    }
+    return boldedCount;
   }
 
   function trimToWordRange(text, maxWords) {
@@ -3885,10 +4074,10 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       } else if (b.type === "h3") {
         bodyParts.push("  <h3>" + esc(b.text) + "</h3>");
       } else if (b.type === "p") {
-        bodyParts.push("  <p>" + esc(b.text) + "</p>");
+        bodyParts.push("  <p>" + formatInlineMarkdown(esc(b.text)) + "</p>");
       } else if (b.type === "ul" || b.type === "ol") {
         var tag = b.type;
-        var itemsHtml = b.items.map(function (it) { return "    <li>" + esc(it) + "</li>"; }).join("\n");
+        var itemsHtml = b.items.map(function (it) { return "    <li>" + formatInlineMarkdown(esc(it)) + "</li>"; }).join("\n");
         bodyParts.push("  <" + tag + ">\n" + itemsHtml + "\n  </" + tag + ">");
       }
     }
@@ -3950,7 +4139,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var structureHeadings = opts.structureHeadings !== false;
     var profile = opts.profile || VeriRank.Profiles.getActiveProfile();
     var contentMode = opts.contentMode || (profile && profile.contentMode) || "corporate";
-    var maxParaWords = contentMode === "creative" ? 115 : 85;
+    var maxParaWords = contentMode === "creative" ? 62 : 80;
 
     var analysis = VeriRank.Analyzer.analyze(rawInput, { overrideKeyword: opts.overrideKeyword });
     var beforeScores = VeriRank.Scorer.score(rawInput, null, analysis, profile);
@@ -4005,7 +4194,31 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
           stepBuffer.push({ text: tightenedStep.join(" "), rawText: sObj.text });
         } else {
           flushSteps();
-          if (tightenReadability) {
+          var colonList = convertLists ? tryExtractColonList(sObj.text) : null;
+          if (colonList) {
+            if (paraSentencesOut.length > 0) {
+              var preListChunks = splitParagraphIntoBalancedChunks(paraSentencesOut, maxParaWords);
+              for (var plc = 0; plc < preListChunks.length; plc++) {
+                processedBlocks.push({ type: "p", text: preListChunks[plc] });
+              }
+              paraSentencesOut = [];
+            }
+            var tightenedLead = tightenReadability
+              ? tightenSentence({ id: sObj.id, text: colonList.lead }, null, changesLog).join(" ")
+              : colonList.lead;
+            var tightenedItems = tightenReadability
+              ? colonList.items.map(function (it) { return tightenSentence({ id: sObj.id, text: it }, null, changesLog).join(" "); })
+              : colonList.items;
+            processedBlocks.push({ type: "p", text: tightenedLead });
+            processedBlocks.push({ type: "ul", items: tightenedItems });
+            provenance.push({
+              outputSentence: tightenedLead + " " + tightenedItems.join("; "),
+              sourceIds: [sObj.id],
+              sourceTexts: [sObj.text],
+              editType: "Formatted inline list into bullet points"
+            });
+            changesLog.push("Formatted inline comma list into scannable bullet points");
+          } else if (tightenReadability) {
             var tParts = tightenSentence(sObj, provenance, changesLog);
             paraSentencesOut = paraSentencesOut.concat(tParts);
           } else {
@@ -4022,7 +4235,11 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
 
       if (paraSentencesOut.length > 0) {
         var chunks = splitParagraphIntoBalancedChunks(paraSentencesOut, maxParaWords);
-        if (chunks.length > 1) changesLog.push("Split long paragraph (" + para.wordCount + "w) into scannable paragraphs");
+        if (chunks.length > 1) {
+          changesLog.push(contentMode === "creative"
+            ? "Formatted blurb into reader-friendly story paragraphs"
+            : "Split long paragraph (" + para.wordCount + "w) into scannable paragraphs");
+        }
         for (var ch = 0; ch < chunks.length; ch++) {
           processedBlocks.push({ type: "p", text: chunks[ch] });
         }
@@ -4118,9 +4335,10 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       finalBlocks.push(bodyParagraphs[0]);
     }
 
-    // 3. Key Takeaways block (concise extractive bullets from non-lead sentences, keeping keyword density disciplined)
+    // 3. Key Takeaways block (distilled concise summary bullets from non-lead sentences, working on 45+ word drafts)
     var totalInputWords = parsed.totalWords;
-    if (includeTakeaways && totalInputWords >= 100 && parsed.sentences.length >= 3) {
+    var usedTakeawayIds = new Set();
+    if (includeTakeaways && totalInputWords >= 45 && parsed.sentences.length >= 3) {
       var takeawayItems = [];
       var leadLow = bodyParagraphs[0] ? bodyParagraphs[0].text.toLowerCase() : "";
       var candidateSents = parsed.sentences.filter(function (s) {
@@ -4133,8 +4351,8 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       var rankedSents = candidateSents.map(function (s) {
         var sc = 1;
         if (/\d/.test(s.text)) sc += 3;
-        if (/\b(?:not|never|requires|must|reduce|lowered|extend|contain)\b/i.test(s.text)) sc += 2;
-        if (s.wordCount >= 12 && s.wordCount <= 34) sc += 2;
+        if (/\b(?:not|never|requires|must|reduce|lowered|extend|contain|can|ensure|help)\b/i.test(s.text)) sc += 2;
+        if (s.wordCount >= 10 && s.wordCount <= 34) sc += 2;
         if (baseExactCount >= 2 && s.text.toLowerCase().indexOf(primary) !== -1) sc -= 4;
         return { s: s, sc: sc };
       });
@@ -4142,20 +4360,21 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
 
       for (var tk = 0; tk < rankedSents.length && takeawayItems.length < 3; tk++) {
         var srcS = rankedSents[tk].s;
-        var concise = trimToWordRange(tightenSentence(srcS, [], []).join(" "), 26);
+        var concise = distillTakeawayBullet(srcS);
         takeawayItems.push(concise);
+        usedTakeawayIds.add(srcS.id);
         provenance.push({
           outputSentence: concise,
           sourceIds: [srcS.id],
           sourceTexts: [srcS.text],
-          editType: "Extractive Key Takeaway"
+          editType: "Distilled Key Takeaway"
         });
       }
 
       if (takeawayItems.length >= 2) {
         finalBlocks.push({ type: "h2", text: "Key Takeaways" });
         finalBlocks.push({ type: "ul", items: takeawayItems });
-        changesLog.push("Added extractive Key Takeaways block for Google & Copilot scannability");
+        changesLog.push("Created distilled Key Takeaways bullet summary");
       }
     }
 
@@ -4190,7 +4409,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       return cand;
     };
 
-    if (structureHeadings && remainingBody.length > 0 && totalInputWords >= 90) {
+    if (structureHeadings && remainingBody.length > 0 && totalInputWords >= 45) {
       for (var rb = 0; rb < remainingBody.length; rb++) {
         var blk = remainingBody[rb];
         var prevIsHeading = finalBlocks.length > 0 && finalBlocks[finalBlocks.length - 1].type === "h2";
@@ -4200,23 +4419,28 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
         }
         finalBlocks.push(blk);
       }
-      changesLog.push("Organized body into clean H1 -> H2 -> H3 semantic hierarchy");
+      changesLog.push("Organized body under clear H1 & H2 section headings");
     } else {
       finalBlocks = finalBlocks.concat(remainingBody);
     }
 
-    // 5. Grounded FAQ Section (with density guardrail so Dual-Engine Harmony stays <= 2.2%)
+    // 5. Grounded FAQ Section (works on 55+ word drafts; prefers non-takeaway sentences when available)
     var faqPairs = [];
-    if (includeFaq && analysis.groundedQuestions.length >= 2 && totalInputWords >= 120) {
+    if (includeFaq && analysis.groundedQuestions.length >= 1 && totalInputWords >= 55) {
       var runningText = finalBlocks.map(function (b) { return b.text || (b.items ? b.items.join(" ") : ""); }).join(" ");
       var runningExactCount = VeriRank.Scorer.countExactPhrase(runningText, primary);
       var runningWords = VeriRank.Analyzer.countWords(runningText);
       var faqAddedBlocks = [];
+      var orderedQs = analysis.groundedQuestions.slice().sort(function (qa, qb) {
+        var qaUsed = qa.sourceIds && usedTakeawayIds.has(qa.sourceIds[0]) ? 1 : 0;
+        var qbUsed = qb.sourceIds && usedTakeawayIds.has(qb.sourceIds[0]) ? 1 : 0;
+        return qaUsed - qbUsed;
+      });
 
-      for (var fq = 0; fq < Math.min(3, analysis.groundedQuestions.length); fq++) {
-        var gq = analysis.groundedQuestions[fq];
+      for (var fq = 0; fq < Math.min(3, orderedQs.length); fq++) {
+        var gq = orderedQs[fq];
         var ansSrc = gq.answerSourceSentences[0];
-        var ansText = tightenSentence(ansSrc, [], []).join(" ");
+        var ansText = tightenSentence(ansSrc, null, []).join(" ");
         var qText = gq.question;
         var pairText = qText + " " + ansText;
         var pairExact = VeriRank.Scorer.countExactPhrase(pairText, primary);
@@ -4247,8 +4471,14 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       if (faqPairs.length > 0) {
         finalBlocks.push({ type: "h2", text: "Frequently Asked Questions" });
         finalBlocks = finalBlocks.concat(faqAddedBlocks);
-        changesLog.push("Generated " + faqPairs.length + " source-grounded FAQ items for Copilot & FAQ Schema");
+        changesLog.push("Added " + faqPairs.length + " Frequently Asked Question(s) from your facts");
       }
+    }
+
+    // 5b. Bold focus keyword & key concepts once in prose for reader skimmability
+    var boldedTermsCount = applyScannableBolding(finalBlocks, primary, secondaries, contentMode);
+    if (boldedTermsCount > 0) {
+      changesLog.push("Highlighted focus keyword and key concepts in bold for skimmers");
     }
 
     // 6. Render Markdown
@@ -4392,6 +4622,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       factLock: factLock,
       warnings: warnings,
       changesSummary: changesLog,
+      writingEditsCount: changesLog.length,
       durationMs: durationMs
     };
   }
@@ -5173,6 +5404,26 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       csvExport.charCodeAt(0) === 0xFEFF && csvExport.indexOf("SEO Title,Meta Description,Canonical URL") !== -1 && histSaved.length >= 1,
       "CSV length: " + csvExport.length + " chars, history items: " + histSaved.length);
 
+    var shortInput = "There are a lot of roofers who rush roof repair jobs. In addition to this, our team is able to inspect three critical areas on every visit: shingle flashing, attic ventilation, and gutter drainage. We make sure that homeowners receive clear photo reports on a daily basis before any work starts.";
+    var shortRes = VeriRank.Optimizer.optimize(shortInput, VeriRank.Profiles.CONTENT_PRESETS.corporate.options);
+    var shortPlainMd = shortRes.optimizedMarkdown.replace(/\*\*/g, "");
+    assert("Short everyday paragraph (60w) receives real prose edits, headings & bullets",
+      shortRes.optimizedMarkdown !== shortInput &&
+      /Many roofers/i.test(shortPlainMd) &&
+      /\bcan inspect\b/i.test(shortPlainMd) &&
+      /\bensure homeowners\b/i.test(shortPlainMd) &&
+      /\bdaily\b/i.test(shortPlainMd) &&
+      shortRes.optimizedMarkdown.indexOf("# ") === 0 &&
+      shortRes.optimizedMarkdown.indexOf("- Shingle flashing") !== -1 &&
+      shortRes.factLock.passed && shortRes.factLock.issues.length === 0,
+      "Changes applied: " + shortRes.changesSummary.length + " (" + shortRes.changesSummary.slice(0, 3).join("; ") + ")");
+
+    assert("Key Takeaways distill clauses & bold emphasis renders cleanly",
+      r1.optimizedMarkdown.indexOf("**") !== -1 &&
+      r1.optimizedHtml.indexOf("<strong>") !== -1 &&
+      r1.factLock.passed,
+      "Bold emphasis verified & Fact-Lock 100% passed");
+
     var passedCount = checks.filter(function (c) { return c.passed; }).length;
     var failedCount = checks.length - passedCount;
     var summary = {
@@ -5243,6 +5494,10 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     }, 3400);
   }
 
+  function formatInlineMarkdownHtml(escapedStr) {
+    return String(escapedStr || "").replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  }
+
   function renderSimpleMarkdownToHtml(md) {
     var lines = String(md || "").replace(/\r\n/g, "\n").split("\n");
     var html = [];
@@ -5281,21 +5536,183 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
           listType = "ul";
           html.push("<ul>");
         }
-        html.push("<li>" + Lex.escapeHtml(ul[1]) + "</li>");
+        html.push("<li>" + formatInlineMarkdownHtml(Lex.escapeHtml(ul[1])) + "</li>");
       } else if (ol) {
         if (listType !== "ol") {
           closeList();
           listType = "ol";
           html.push("<ol>");
         }
-        html.push("<li>" + Lex.escapeHtml(ol[1]) + "</li>");
+        html.push("<li>" + formatInlineMarkdownHtml(Lex.escapeHtml(ol[1])) + "</li>");
       } else {
         closeList();
-        html.push("<p>" + Lex.escapeHtml(line) + "</p>");
+        html.push("<p>" + formatInlineMarkdownHtml(Lex.escapeHtml(line)) + "</p>");
       }
     }
     closeList();
     return html.join("\n");
+  }
+
+  function buildWordDiffHtml(oldText, newText) {
+    var oldWords = String(oldText || "").trim().split(/\s+/).filter(Boolean);
+    var newWords = String(newText || "").replace(/\*\*([^*]+)\*\*/g, "$1").trim().split(/\s+/).filter(Boolean);
+    var m = oldWords.length;
+    var n = newWords.length;
+    if (m === 0) return "<ins class='diff-ins'>" + Lex.escapeHtml(newWords.join(" ")) + "</ins>";
+    if (m > 80 || n > 80) {
+      return "<del class='diff-del'>" + Lex.escapeHtml(oldText) + "</del> <ins class='diff-ins'>" + Lex.escapeHtml(newWords.join(" ")) + "</ins>";
+    }
+
+    var dp = [];
+    for (var i = 0; i <= m; i++) {
+      dp[i] = new Array(n + 1);
+      for (var j = 0; j <= n; j++) dp[i][j] = 0;
+    }
+    for (var r = m - 1; r >= 0; r--) {
+      for (var c = n - 1; c >= 0; c--) {
+        if (oldWords[r] === newWords[c]) {
+          dp[r][c] = 1 + dp[r + 1][c + 1];
+        } else {
+          dp[r][c] = Math.max(dp[r + 1][c], dp[r][c + 1]);
+        }
+      }
+    }
+
+    var ops = [];
+    var x = 0;
+    var y = 0;
+    while (x < m && y < n) {
+      if (oldWords[x] === newWords[y]) {
+        ops.push({ type: "eq", text: newWords[y] });
+        x++;
+        y++;
+      } else if (dp[x + 1][y] >= dp[x][y + 1]) {
+        ops.push({ type: "del", text: oldWords[x] });
+        x++;
+      } else {
+        ops.push({ type: "ins", text: newWords[y] });
+        y++;
+      }
+    }
+    while (x < m) ops.push({ type: "del", text: oldWords[x++] });
+    while (y < n) ops.push({ type: "ins", text: newWords[y++] });
+
+    // Merge consecutive tokens of same op type for readable pills
+    var out = [];
+    for (var k = 0; k < ops.length; k++) {
+      var cur = ops[k];
+      var grp = [cur.text];
+      while (k + 1 < ops.length && ops[k + 1].type === cur.type) {
+        grp.push(ops[++k].text);
+      }
+      var joined = Lex.escapeHtml(grp.join(" "));
+      if (cur.type === "eq") out.push(joined);
+      else if (cur.type === "del") out.push("<del class='diff-del'>" + joined + "</del>");
+      else out.push("<ins class='diff-ins'>" + joined + "</ins>");
+    }
+    return out.join(" ");
+  }
+
+  function renderDiffView(res) {
+    if (!$("diffViewPane") || !res) return;
+    var prov = (res.factLock && res.factLock.sentenceProvenance) || [];
+
+    // Group body provenance records by source sentence so split sentences diff together cleanly
+    var bodyByOutSentence = {};
+    var groupedBySrc = {};
+    for (var pi = 0; pi < prov.length; pi++) {
+      var pr = prov[pi];
+      if (!pr || !pr.sourceIds || !pr.sourceIds.length) continue;
+      if (pr.editType === "Distilled Key Takeaway" || pr.editType === "Grounded FAQ answer") continue;
+      var sid = pr.sourceIds[0];
+      if (!groupedBySrc[sid]) {
+        groupedBySrc[sid] = {
+          sourceText: (pr.sourceTexts && pr.sourceTexts[0]) || "",
+          outParts: [],
+          editType: pr.editType
+        };
+      }
+      groupedBySrc[sid].outParts.push(pr.outputSentence);
+    }
+    Object.keys(groupedBySrc).forEach(function (sid) {
+      var g = groupedBySrc[sid];
+      var combinedOut = g.outParts.join(" ");
+      g.outParts.forEach(function (part, idx) {
+        bodyByOutSentence[part.trim()] = {
+          isFirst: idx === 0,
+          sourceText: g.sourceText,
+          combinedOut: combinedOut,
+          editType: g.editType
+        };
+      });
+    });
+
+    var diffLegend = "<div style='margin-bottom:12px;font-size:12px;color:var(--text-muted);display:flex;gap:12px;flex-wrap:wrap;align-items:center;'>" +
+      "<span><del class='diff-del'>Removed wording</del></span>" +
+      "<span><ins class='diff-ins'>Tightened / Added text</ins></span>" +
+      "<span><span class='diff-tag'>Added Section</span> New SEO headings, bullets, or Q&amp;As</span>" +
+      "</div>";
+
+    var blocks = res.blocks || [];
+    var htmlParts = [diffLegend];
+    var inFaq = false;
+
+    for (var bi = 0; bi < blocks.length; bi++) {
+      var b = blocks[bi];
+      if (b.type === "h1") {
+        htmlParts.push("<h1><span class='diff-tag'>Added Page Title</span>" + Lex.escapeHtml(b.text) + "</h1>");
+      } else if (b.type === "h2") {
+        inFaq = /frequently asked questions/i.test(b.text);
+        var hTag = /key takeaways/i.test(b.text) ? "Added Summary" : (inFaq ? "Added FAQ Section" : "Added Heading");
+        htmlParts.push("<h2><span class='diff-tag'>" + hTag + "</span>" + Lex.escapeHtml(b.text) + "</h2>");
+      } else if (b.type === "h3") {
+        htmlParts.push("<h3><span class='diff-tag'>Added Question</span>" + Lex.escapeHtml(b.text) + "</h3>");
+      } else if (b.type === "ul" || b.type === "ol") {
+        var listTag = b.type;
+        htmlParts.push("<" + listTag + ">");
+        for (var li = 0; li < b.items.length; li++) {
+          var itemTxt = b.items[li];
+          htmlParts.push("<li><ins class='diff-ins'>" + formatInlineMarkdownHtml(Lex.escapeHtml(itemTxt)) + "</ins></li>");
+        }
+        htmlParts.push("</" + listTag + ">");
+      } else if (b.type === "p") {
+        if (inFaq) {
+          htmlParts.push("<p><span class='diff-tag'>Fact-Checked Answer</span>" + formatInlineMarkdownHtml(Lex.escapeHtml(b.text)) + "</p>");
+          continue;
+        }
+        var cleanPara = b.text.replace(/\*\*([^*]+)\*\*/g, "$1");
+        var sents = VeriRank.Analyzer.splitSentences(cleanPara);
+        if (sents.length === 0) sents = [cleanPara];
+        var sentHtml = [];
+        for (var si = 0; si < sents.length; si++) {
+          var st = sents[si].trim();
+          var info = bodyByOutSentence[st];
+          if (info) {
+            if (!info.isFirst) continue;
+            var hasBoldDiff = b.text.indexOf("**") !== -1 && info.combinedOut.indexOf("**") === -1;
+            var srcNorm = Lex.normalizeTypography ? Lex.normalizeTypography(info.sourceText) : info.sourceText;
+            var outClean = info.combinedOut.replace(/\*\*([^*]+)\*\*/g, "$1");
+            if (srcNorm.trim() !== outClean.trim()) {
+              sentHtml.push(buildWordDiffHtml(srcNorm, outClean));
+            } else if (hasBoldDiff) {
+              sentHtml.push(buildWordDiffHtml(outClean, b.text));
+            } else {
+              sentHtml.push(Lex.escapeHtml(st));
+            }
+          } else {
+            sentHtml.push(formatInlineMarkdownHtml(Lex.escapeHtml(st)));
+          }
+        }
+        // Highlight **bolded** focus words cleanly if exact text wasn't rewritten elsewhere
+        var finalParaHtml = sentHtml.join(" ");
+        if (b.text.indexOf("**") !== -1 && finalParaHtml.indexOf("diff-ins") === -1 && finalParaHtml.indexOf("diff-del") === -1) {
+          finalParaHtml = Lex.escapeHtml(b.text).replace(/\*\*([^*]+)\*\*/g, "<ins class='diff-ins'><strong>$1</strong></ins>");
+        }
+        htmlParts.push("<p>" + finalParaHtml + "</p>");
+      }
+    }
+
+    $("diffViewPane").innerHTML = htmlParts.join("\n");
   }
 
   function scoreClass(val) {
@@ -5588,20 +6005,34 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     }).join("");
   }
 
+  function formatSignedDelta(n) {
+    return (n >= 0 ? "+" : "") + n;
+  }
+
   function updateScoreTiles(res) {
     var gAfter = res.afterScores.google.total;
     var gBefore = res.beforeScores.google.total;
     var bAfter = res.afterScores.bing.total;
     var bBefore = res.beforeScores.bing.total;
 
+    var gB = res.beforeScores.google.breakdown;
+    var gA = res.afterScores.google.breakdown;
+    var gTagsDelta = (gA.titleMeta.score + gA.schemaJsonLd.score) - (gB.titleMeta.score + gB.schemaJsonLd.score);
+    var gWriteDelta = (gAfter - gBefore) - gTagsDelta;
+
+    var bB = res.beforeScores.bing.breakdown;
+    var bA = res.afterScores.bing.breakdown;
+    var bTagsDelta = (bA.cleanHierarchyMeta.score + bA.mediaLinksIndexNow.score) - (bB.cleanHierarchyMeta.score + bB.mediaLinksIndexNow.score);
+    var bWriteDelta = (bAfter - bBefore) - bTagsDelta;
+
     $("scoreGoogleAfter").textContent = gAfter + "/100";
     $("scoreGoogleAfter").className = "score-value " + scoreClass(gAfter);
-    $("scoreGoogleDelta").textContent = "Before: " + gBefore + " (" + (gAfter - gBefore >= 0 ? "+" : "") + (gAfter - gBefore) + " pts)";
+    $("scoreGoogleDelta").textContent = "Before: " + gBefore + " (" + formatSignedDelta(gWriteDelta) + " Writing, " + formatSignedDelta(gTagsDelta) + " Tags)";
     setScoreRing("ringGoogle", gAfter, scoreClass(gAfter));
 
     $("scoreBingAfter").textContent = bAfter + "/100";
     $("scoreBingAfter").className = "score-value " + scoreClass(bAfter);
-    $("scoreBingDelta").textContent = "Before: " + bBefore + " (" + (bAfter - bBefore >= 0 ? "+" : "") + (bAfter - bBefore) + " pts)";
+    $("scoreBingDelta").textContent = "Before: " + bBefore + " (" + formatSignedDelta(bWriteDelta) + " Writing, " + formatSignedDelta(bTagsDelta) + " Tags)";
     setScoreRing("ringBing", bAfter, "bing");
 
     $("scoreHarmony").textContent = res.afterScores.harmonyScore + "/100";
@@ -5769,8 +6200,28 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
 
     var rendered = renderSimpleMarkdownToHtml(res.optimizedMarkdown);
     $("previewPane").innerHTML = rendered;
+    renderDiffView(res);
     $("markdownOutputArea").value = res.optimizedMarkdown;
     $("htmlOutputPre").textContent = res.optimizedHtml;
+
+    if ($("whatChangedSummary")) {
+      var changes = res.changesSummary || [];
+      var summaryDesc = changes.length > 0
+        ? changes.map(function (c) { return Lex.escapeHtml(c); }).join(" &bull; ")
+        : (res.contentMode === "creative"
+          ? "Preserved your story wording as requested while adding behind-the-scenes Google & Bing search tags."
+          : "Organized your text with clean structure.");
+      var metaLen = res.metadata && res.metadata.metaDescription ? res.metadata.metaDescription.length : 0;
+      $("whatChangedSummary").innerHTML =
+        "<div><strong>Changes Made to Your Text:</strong> " + summaryDesc +
+        " <button type='button' id='jumpToDiffBtn' class='btn sm' style='margin-left:6px;padding:2px 8px;'>See Highlighted Edits</button></div>" +
+        "<div class='muted mt-8' style='margin-top:4px;'><strong>Behind-the-Scenes Search Tags Added:</strong> Google &amp; Bing Title (" + (res.metadata.title || "").length + " chars), Search Summary (" + metaLen + " chars), URL Slug, and Schema markup &mdash; view or customize under &ldquo;Search Preview &amp; Meta Tags&rdquo;.</div>";
+      if ($("jumpToDiffBtn")) {
+        $("jumpToDiffBtn").addEventListener("click", function () {
+          switchContentViewMode("diff");
+        });
+      }
+    }
 
     // Split Compare View
     $("splitBeforeContent").textContent = res.sourceText;
@@ -5808,6 +6259,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       btns[i].classList.toggle("primary", btns[i].getAttribute("data-mode") === mode);
     }
     $("previewPane").style.display = mode === "preview" ? "block" : "none";
+    if ($("diffViewPane")) $("diffViewPane").style.display = mode === "diff" ? "block" : "none";
     $("splitComparePane").style.display = mode === "split" ? "grid" : "none";
     $("markdownOutputArea").style.display = mode === "markdown" ? "block" : "none";
     $("htmlOutputPre").style.display = mode === "html" ? "block" : "none";
