@@ -87,13 +87,19 @@
     "purcellville", "dumfries", "lorton", "springfield", "annandale", "burke", "oakton",
     "laurel", "greenbelt", "clarksburg", "damascus", "olney",
     "philippines", "malaysia", "singapore", "nigeria", "pakistan", "bangladesh", "kenya", "ghana", "jamaica", "african", "zealand",
+    "karachi", "lahore", "islamabad", "mumbai", "delhi", "bangalore", "chennai", "manila", "cebu",
+    "vancouver", "montreal", "calgary", "edmonton", "ottawa", "manchester", "birmingham", "glasgow", "dublin", "auckland",
+    "sacramento", "oakland", "fresno", "bakersfield", "tucson", "mesa", "omaha", "raleigh", "tulsa", "wichita",
+    "cleveland", "pittsburgh", "cincinnati", "louisville", "knoxville", "chattanooga", "spokane", "tacoma", "reno", "boise",
     "reddit", "youtube", "quora", "wikipedia", "yelp", "angi", "thumbtack", "craigslist",
     "lowes", "walmart", "amazon", "tiktok", "meme", "lyrics", "pdf", "login", "salary", "hiring"
   ]);
 
   var MULTIWORD_GEO_NOISE = [
-    "home depot", "las vegas", "los angeles", "san diego", "san antonio", "sign in", "pdf download",
-    "silver spring", "falls church", "great falls", "college park", "front royal", "south africa", "new zealand"
+    "home depot", "las vegas", "los angeles", "san diego", "san antonio", "san jose", "san francisco",
+    "el paso", "fort worth", "salt lake", "st louis", "kansas city", "new orleans", "virginia beach",
+    "long beach", "colorado springs", "sign in", "pdf download", "silver spring", "falls church",
+    "great falls", "college park", "front royal", "south africa", "new zealand"
   ];
 
   var TRAILING_STATE_CODE_RE = /(?:\s+|,\s*)(al|ak|az|ar|ca|co|ct|de|fl|ga|ia|id|il|ks|ky|la|ma|md|mi|mn|mo|ms|mt|nc|nd|ne|nh|nj|nm|nv|ny|oh|pa|ri|sc|sd|tn|tx|ut|va|vt|wa|wi|wv|wy)$/i;
