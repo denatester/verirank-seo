@@ -224,34 +224,39 @@
 
     var r1DiffHtml = VeriRank.Optimizer.renderBlocksDiffHtml(r1);
     var shortDiffHtml = VeriRank.Optimizer.renderBlocksDiffHtml(shortRes);
+    var r1DiffPlain = r1DiffHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+    var shortDiffPlain = shortDiffHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
     var r1FirstSentCountMd = (r1.optimizedMarkdown.match(/Traditional perimeter firewalls/g) || []).length;
-    var r1FirstSentCountDiff = (r1DiffHtml.match(/Traditional perimeter firewalls/g) || []).length;
+    var r1FirstSentCountDiff = (r1DiffPlain.match(/Traditional perimeter firewalls/g) || []).length;
     var idxVisitIntro = shortRes.optimizedMarkdown.indexOf("on every visit:");
     var idxBullet = shortRes.optimizedMarkdown.indexOf("- Shingle flashing");
     var idxDailyReport = shortRes.optimizedMarkdown.indexOf("clear photo reports daily");
     assert("Zero Sentence Duplication in Highlight Edits Diff & Preserved Paragraph/List Order",
       r1FirstSentCountMd === 1 &&
       r1FirstSentCountDiff === 1 &&
-      shortDiffHtml.indexOf("Many roofers") !== -1 &&
-      (shortDiffHtml.match(/daily/g) || []).length >= 1 &&
+      shortDiffPlain.indexOf("Many") !== -1 &&
+      shortDiffPlain.indexOf("roofers") !== -1 &&
+      (shortDiffPlain.match(/daily/g) || []).length >= 1 &&
       idxVisitIntro !== -1 && idxBullet > idxVisitIntro && idxDailyReport > idxBullet,
       "Diff occurrences: " + r1FirstSentCountDiff + ", Bullet follows intro cleanly: " + (idxBullet > idxVisitIntro && idxDailyReport > idxBullet));
 
     var bizReadersText = "Readers of our homeowner guide can book an inspection online for roof repair and leak checks. Our team serves homeowners with clear photo reports on every visit.";
     var bizReadersRes = VeriRank.Optimizer.optimize(bizReadersText, VeriRank.Profiles.CONTENT_PRESETS.corporate.options);
     var geoFilteredOut = VeriRank.Lexicon.cleanSuggestedKeyword("roof repair florida", "local roof repair for homeowners");
+    var stateCodeFiltered = VeriRank.Lexicon.cleanSuggestedKeyword("roof repair herndon va", "local roof repair for homeowners");
     var geoKeptWhenLocal = VeriRank.Lexicon.cleanSuggestedKeyword("roof repair florida", "serving tampa, florida homeowners");
     var nearMeNormalized = VeriRank.Lexicon.cleanSuggestedKeyword("roof repair near me", "local roof repair");
     assert("Smart Purpose Classifier Resists Ambiguous 'book'/'readers' & Filters Unrelated Geo Noise",
       bizReadersRes.analysis.purpose && bizReadersRes.analysis.purpose.category.id === "service" &&
       rCreative.analysis.purpose && rCreative.analysis.purpose.category.id === "creative" &&
       geoFilteredOut === "" &&
+      stateCodeFiltered === "" &&
       geoKeptWhenLocal === "roof repair florida" &&
       nearMeNormalized === "local roof repair",
       "Biz purpose: " + bizReadersRes.analysis.purpose.category.id + ", Near-me -> '" + nearMeNormalized + "'");
 
     var multiBizWoven = shortRes;
-    ["residential roof repair", "roof repair cost", "roof leak inspection", "roof repair checklist"].forEach(function (kw) {
+    ["residential roof repair", "roof repair cost", "roof leak inspection", "roof repair checklist", "local roof repair"].forEach(function (kw) {
       multiBizWoven = VeriRank.Optimizer.weaveKeywordsIntoMarkdown(multiBizWoven, [kw]);
     });
     var multiCreativeWoven = rCreative;
@@ -260,9 +265,12 @@
     });
     var bizMdLow = multiBizWoven.optimizedMarkdown.toLowerCase();
     var creMdLow = multiCreativeWoven.optimizedMarkdown.toLowerCase();
+    var boldMarkersEven = ((multiBizWoven.optimizedMarkdown.match(/\*\*/g) || []).length % 2) === 0;
+    var hasUnbalancedBold = /\*\*[^*\n]+\*\*\s+[a-z]+\*\*/i.test(multiBizWoven.optimizedMarkdown);
     assert("Multi-Keyword Smart Weaver Uses In-Place Expansion, Clause Merging & Zero Repeated Templates",
       bizMdLow.indexOf("many roofers rush **residential roof repair** jobs") !== -1 &&
-      bizMdLow.indexOf("roof repair cost") !== -1 &&
+      bizMdLow.indexOf("**roof repair cost**") !== -1 &&
+      !hasUnbalancedBold && boldMarkersEven &&
       bizMdLow.indexOf("**roof leak inspection** and **roof repair checklist**") !== -1 &&
       creMdLow.indexOf("deep space salvage novel") !== -1 &&
       creMdLow.indexOf("space opera") !== -1 &&

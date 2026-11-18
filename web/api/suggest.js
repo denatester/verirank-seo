@@ -8,13 +8,18 @@ const UNRELATED_GEO_AND_NOISE = new Set([
   "diego", "antonio", "charlotte", "jacksonville", "columbus", "indianapolis",
   "philadelphia", "detroit", "memphis", "nashville", "baltimore", "toronto", "london",
   "sydney", "melbourne", "dubai", "uk", "canada", "australia", "india", "ireland", "nz",
+  "ashburn", "aldie", "herndon", "vienna", "reston", "fairfax", "leesburg", "sterling",
+  "manassas", "chantilly", "centreville", "langley", "woodbridge", "warrenton", "bristow",
+  "mclean", "arlington", "alexandria", "bethesda", "rockville",
   "reddit", "youtube", "quora", "wikipedia", "yelp", "angi", "thumbtack", "craigslist",
   "lowes", "walmart", "amazon", "tiktok", "meme", "lyrics", "pdf", "login", "salary", "hiring"
 ]);
 
 const MULTIWORD_NOISE = [
-  "home depot", "las vegas", "los angeles", "san diego", "san antonio", "sign in", "pdf download"
+  "home depot", "las vegas", "los angeles", "san diego", "san antonio", "sign in", "pdf download", "silver spring"
 ];
+
+const TRAILING_STATE_CODE_RE = /(?:\s+|,\s*)(al|ak|az|ar|ca|co|ct|de|fl|ga|ia|id|il|ks|ky|la|ma|md|mi|mn|mo|ms|mt|nc|nd|ne|nh|nj|nm|nv|ny|oh|pa|ri|sc|sd|tn|tx|ut|va|vt|wa|wi|wv|wy)$/i;
 
 function cleanSuggestions(rawList, contextLower) {
   if (!Array.isArray(rawList)) return [];
@@ -31,6 +36,10 @@ function cleanSuggestions(rawList, contextLower) {
     }
 
     const low = s.toLowerCase();
+    const stateMatch = low.match(TRAILING_STATE_CODE_RE);
+    if (stateMatch && stateMatch[1] && !(new RegExp(`\\b${stateMatch[1]}\\b`, "i").test(ctx))) {
+      continue;
+    }
     let blocked = false;
     for (const mw of MULTIWORD_NOISE) {
       if (low.includes(mw) && !ctx.includes(mw)) {

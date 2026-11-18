@@ -79,13 +79,18 @@
     "diego", "antonio", "charlotte", "jacksonville", "columbus", "indianapolis",
     "philadelphia", "detroit", "memphis", "nashville", "baltimore", "toronto", "london",
     "sydney", "melbourne", "dubai", "uk", "canada", "australia", "india", "ireland", "nz",
+    "ashburn", "aldie", "herndon", "vienna", "reston", "fairfax", "leesburg", "sterling",
+    "manassas", "chantilly", "centreville", "langley", "woodbridge", "warrenton", "bristow",
+    "mclean", "arlington", "alexandria", "bethesda", "rockville",
     "reddit", "youtube", "quora", "wikipedia", "yelp", "angi", "thumbtack", "craigslist",
     "lowes", "walmart", "amazon", "tiktok", "meme", "lyrics", "pdf", "login", "salary", "hiring"
   ]);
 
   var MULTIWORD_GEO_NOISE = [
-    "home depot", "las vegas", "los angeles", "san diego", "san antonio", "sign in", "pdf download"
+    "home depot", "las vegas", "los angeles", "san diego", "san antonio", "sign in", "pdf download", "silver spring"
   ];
+
+  var TRAILING_STATE_CODE_RE = /(?:\s+|,\s*)(al|ak|az|ar|ca|co|ct|de|fl|ga|ia|id|il|ks|ky|la|ma|md|mi|mn|mo|ms|mt|nc|nd|ne|nh|nj|nm|nv|ny|oh|pa|ri|sc|sd|tn|tx|ut|va|vt|wa|wi|wv|wy)$/i;
 
   function cleanSuggestedKeyword(rawPhrase, sourceTextLower) {
     var cleaned = String(rawPhrase || "").replace(/\s+/g, " ").trim();
@@ -100,6 +105,12 @@
 
     var low = cleaned.toLowerCase();
     var srcLow = String(sourceTextLower || "").toLowerCase();
+
+    var stateMatch = low.match(TRAILING_STATE_CODE_RE);
+    if (stateMatch && stateMatch[1]) {
+      var stRe = new RegExp("\\b" + stateMatch[1] + "\\b", "i");
+      if (!stRe.test(srcLow)) return "";
+    }
 
     for (var m = 0; m < MULTIWORD_GEO_NOISE.length; m++) {
       var mw = MULTIWORD_GEO_NOISE[m];

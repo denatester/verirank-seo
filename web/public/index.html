@@ -1860,13 +1860,18 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     "diego", "antonio", "charlotte", "jacksonville", "columbus", "indianapolis",
     "philadelphia", "detroit", "memphis", "nashville", "baltimore", "toronto", "london",
     "sydney", "melbourne", "dubai", "uk", "canada", "australia", "india", "ireland", "nz",
+    "ashburn", "aldie", "herndon", "vienna", "reston", "fairfax", "leesburg", "sterling",
+    "manassas", "chantilly", "centreville", "langley", "woodbridge", "warrenton", "bristow",
+    "mclean", "arlington", "alexandria", "bethesda", "rockville",
     "reddit", "youtube", "quora", "wikipedia", "yelp", "angi", "thumbtack", "craigslist",
     "lowes", "walmart", "amazon", "tiktok", "meme", "lyrics", "pdf", "login", "salary", "hiring"
   ]);
 
   var MULTIWORD_GEO_NOISE = [
-    "home depot", "las vegas", "los angeles", "san diego", "san antonio", "sign in", "pdf download"
+    "home depot", "las vegas", "los angeles", "san diego", "san antonio", "sign in", "pdf download", "silver spring"
   ];
+
+  var TRAILING_STATE_CODE_RE = /(?:\s+|,\s*)(al|ak|az|ar|ca|co|ct|de|fl|ga|ia|id|il|ks|ky|la|ma|md|mi|mn|mo|ms|mt|nc|nd|ne|nh|nj|nm|nv|ny|oh|pa|ri|sc|sd|tn|tx|ut|va|vt|wa|wi|wv|wy)$/i;
 
   function cleanSuggestedKeyword(rawPhrase, sourceTextLower) {
     var cleaned = String(rawPhrase || "").replace(/\s+/g, " ").trim();
@@ -1881,6 +1886,12 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
 
     var low = cleaned.toLowerCase();
     var srcLow = String(sourceTextLower || "").toLowerCase();
+
+    var stateMatch = low.match(TRAILING_STATE_CODE_RE);
+    if (stateMatch && stateMatch[1]) {
+      var stRe = new RegExp("\\b" + stateMatch[1] + "\\b", "i");
+      if (!stRe.test(srcLow)) return "";
+    }
 
     for (var m = 0; m < MULTIWORD_GEO_NOISE.length; m++) {
       var mw = MULTIWORD_GEO_NOISE[m];
@@ -5294,7 +5305,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       var tailPhrase = kwTokens.slice(kwTokens.length - tailLen).join(" ");
       var prefixStr = kwTokens.slice(0, kwTokens.length - tailLen).join(" ").toLowerCase();
       var escTail = tailPhrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
-      var re = new RegExp("(?:\\*\\*)?\\b(" + escTail + ")\\b(?:\\*\\*)?", "gi");
+      var re = new RegExp("\\b(" + escTail + ")\\b", "gi");
 
       for (var bi = 0; bi < faqBoundaryIdx; bi++) {
         if (blocks[bi].type !== "p") continue;
@@ -5302,12 +5313,22 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
         re.lastIndex = 0;
         var m;
         while ((m = re.exec(pText)) !== null) {
-          var before = pText.slice(0, m.index);
-          var after = pText.slice(m.index + m[0].length);
+          var startIdx = m.index;
+          var endIdx = m.index + m[0].length;
+          var insideBold = ((pText.slice(0, startIdx).match(/\*\*/g) || []).length % 2) === 1;
 
-          // Skip if match lies inside an already longer **...** bold span
-          if (((before.match(/\*\*/g) || []).length % 2) === 1) continue;
+          // Only replace inside bold if the bold markers tightly wrap this exact tailPhrase (never split **roof repair cost**)
+          if (insideBold) {
+            if (pText.slice(startIdx - 2, startIdx) === "**" && pText.slice(endIdx, endIdx + 2) === "**") {
+              startIdx -= 2;
+              endIdx += 2;
+            } else {
+              continue;
+            }
+          }
 
+          var before = pText.slice(0, startIdx);
+          var after = pText.slice(endIdx);
           var beforeClean = before.replace(/\*\*/g, "").trim();
           var prevWord = beforeClean ? (beforeClean.split(/\s+/).pop() || "").toLowerCase().replace(/^[^a-z]+|[^a-z]+$/g, "") : "";
           if (prevWord) {
@@ -6473,34 +6494,39 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
 
     var r1DiffHtml = VeriRank.Optimizer.renderBlocksDiffHtml(r1);
     var shortDiffHtml = VeriRank.Optimizer.renderBlocksDiffHtml(shortRes);
+    var r1DiffPlain = r1DiffHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+    var shortDiffPlain = shortDiffHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
     var r1FirstSentCountMd = (r1.optimizedMarkdown.match(/Traditional perimeter firewalls/g) || []).length;
-    var r1FirstSentCountDiff = (r1DiffHtml.match(/Traditional perimeter firewalls/g) || []).length;
+    var r1FirstSentCountDiff = (r1DiffPlain.match(/Traditional perimeter firewalls/g) || []).length;
     var idxVisitIntro = shortRes.optimizedMarkdown.indexOf("on every visit:");
     var idxBullet = shortRes.optimizedMarkdown.indexOf("- Shingle flashing");
     var idxDailyReport = shortRes.optimizedMarkdown.indexOf("clear photo reports daily");
     assert("Zero Sentence Duplication in Highlight Edits Diff & Preserved Paragraph/List Order",
       r1FirstSentCountMd === 1 &&
       r1FirstSentCountDiff === 1 &&
-      shortDiffHtml.indexOf("Many roofers") !== -1 &&
-      (shortDiffHtml.match(/daily/g) || []).length >= 1 &&
+      shortDiffPlain.indexOf("Many") !== -1 &&
+      shortDiffPlain.indexOf("roofers") !== -1 &&
+      (shortDiffPlain.match(/daily/g) || []).length >= 1 &&
       idxVisitIntro !== -1 && idxBullet > idxVisitIntro && idxDailyReport > idxBullet,
       "Diff occurrences: " + r1FirstSentCountDiff + ", Bullet follows intro cleanly: " + (idxBullet > idxVisitIntro && idxDailyReport > idxBullet));
 
     var bizReadersText = "Readers of our homeowner guide can book an inspection online for roof repair and leak checks. Our team serves homeowners with clear photo reports on every visit.";
     var bizReadersRes = VeriRank.Optimizer.optimize(bizReadersText, VeriRank.Profiles.CONTENT_PRESETS.corporate.options);
     var geoFilteredOut = VeriRank.Lexicon.cleanSuggestedKeyword("roof repair florida", "local roof repair for homeowners");
+    var stateCodeFiltered = VeriRank.Lexicon.cleanSuggestedKeyword("roof repair herndon va", "local roof repair for homeowners");
     var geoKeptWhenLocal = VeriRank.Lexicon.cleanSuggestedKeyword("roof repair florida", "serving tampa, florida homeowners");
     var nearMeNormalized = VeriRank.Lexicon.cleanSuggestedKeyword("roof repair near me", "local roof repair");
     assert("Smart Purpose Classifier Resists Ambiguous 'book'/'readers' & Filters Unrelated Geo Noise",
       bizReadersRes.analysis.purpose && bizReadersRes.analysis.purpose.category.id === "service" &&
       rCreative.analysis.purpose && rCreative.analysis.purpose.category.id === "creative" &&
       geoFilteredOut === "" &&
+      stateCodeFiltered === "" &&
       geoKeptWhenLocal === "roof repair florida" &&
       nearMeNormalized === "local roof repair",
       "Biz purpose: " + bizReadersRes.analysis.purpose.category.id + ", Near-me -> '" + nearMeNormalized + "'");
 
     var multiBizWoven = shortRes;
-    ["residential roof repair", "roof repair cost", "roof leak inspection", "roof repair checklist"].forEach(function (kw) {
+    ["residential roof repair", "roof repair cost", "roof leak inspection", "roof repair checklist", "local roof repair"].forEach(function (kw) {
       multiBizWoven = VeriRank.Optimizer.weaveKeywordsIntoMarkdown(multiBizWoven, [kw]);
     });
     var multiCreativeWoven = rCreative;
@@ -6509,9 +6535,12 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     });
     var bizMdLow = multiBizWoven.optimizedMarkdown.toLowerCase();
     var creMdLow = multiCreativeWoven.optimizedMarkdown.toLowerCase();
+    var boldMarkersEven = ((multiBizWoven.optimizedMarkdown.match(/\*\*/g) || []).length % 2) === 0;
+    var hasUnbalancedBold = /\*\*[^*\n]+\*\*\s+[a-z]+\*\*/i.test(multiBizWoven.optimizedMarkdown);
     assert("Multi-Keyword Smart Weaver Uses In-Place Expansion, Clause Merging & Zero Repeated Templates",
       bizMdLow.indexOf("many roofers rush **residential roof repair** jobs") !== -1 &&
-      bizMdLow.indexOf("roof repair cost") !== -1 &&
+      bizMdLow.indexOf("**roof repair cost**") !== -1 &&
+      !hasUnbalancedBold && boldMarkersEven &&
       bizMdLow.indexOf("**roof leak inspection** and **roof repair checklist**") !== -1 &&
       creMdLow.indexOf("deep space salvage novel") !== -1 &&
       creMdLow.indexOf("space opera") !== -1 &&

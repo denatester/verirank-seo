@@ -1228,7 +1228,7 @@
       var tailPhrase = kwTokens.slice(kwTokens.length - tailLen).join(" ");
       var prefixStr = kwTokens.slice(0, kwTokens.length - tailLen).join(" ").toLowerCase();
       var escTail = tailPhrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
-      var re = new RegExp("(?:\\*\\*)?\\b(" + escTail + ")\\b(?:\\*\\*)?", "gi");
+      var re = new RegExp("\\b(" + escTail + ")\\b", "gi");
 
       for (var bi = 0; bi < faqBoundaryIdx; bi++) {
         if (blocks[bi].type !== "p") continue;
@@ -1236,12 +1236,22 @@
         re.lastIndex = 0;
         var m;
         while ((m = re.exec(pText)) !== null) {
-          var before = pText.slice(0, m.index);
-          var after = pText.slice(m.index + m[0].length);
+          var startIdx = m.index;
+          var endIdx = m.index + m[0].length;
+          var insideBold = ((pText.slice(0, startIdx).match(/\*\*/g) || []).length % 2) === 1;
 
-          // Skip if match lies inside an already longer **...** bold span
-          if (((before.match(/\*\*/g) || []).length % 2) === 1) continue;
+          // Only replace inside bold if the bold markers tightly wrap this exact tailPhrase (never split **roof repair cost**)
+          if (insideBold) {
+            if (pText.slice(startIdx - 2, startIdx) === "**" && pText.slice(endIdx, endIdx + 2) === "**") {
+              startIdx -= 2;
+              endIdx += 2;
+            } else {
+              continue;
+            }
+          }
 
+          var before = pText.slice(0, startIdx);
+          var after = pText.slice(endIdx);
           var beforeClean = before.replace(/\*\*/g, "").trim();
           var prevWord = beforeClean ? (beforeClean.split(/\s+/).pop() || "").toLowerCase().replace(/^[^a-z]+|[^a-z]+$/g, "") : "";
           if (prevWord) {
