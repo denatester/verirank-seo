@@ -760,6 +760,98 @@ details.sql-details summary {
   font-weight: 700;
   font-size: 12.5px;
 }
+
+.serp-desc strong {
+  color: #111827;
+  font-weight: 700;
+}
+
+.history-drawer {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.history-row:first-of-type {
+  border-top: none;
+}
+
+.placement-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.placement-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+.placement-pill.ok {
+  background: var(--ok-soft);
+  border-color: var(--ok);
+  color: var(--ok);
+}
+
+.placement-pill.warn {
+  background: var(--warn-soft);
+  border-color: var(--warn);
+  color: var(--warn);
+}
+
+.serp-editor-box {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.three-col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .three-col { grid-template-columns: 1fr; }
+}
+
+.meter-bar {
+  height: 5px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.meter-fill {
+  height: 100%;
+  background: var(--ok);
+  transition: width 0.18s ease, background-color 0.18s ease;
+}
+
+.meter-fill.warn { background: var(--warn); }
+.meter-fill.bad { background: var(--bad); }
 </style>
 </head>
 <body>
@@ -818,6 +910,10 @@ details.sql-details summary {
           <div class="card-title mt-12">
             <span>2. Paste or Upload Your Text</span>
             <div class="flex-row">
+              <span class="btn-with-help">
+                <button type="button" id="toggleHistoryBtn" class="btn sm">Recent (0)</button>
+                <button type="button" class="help-tip" aria-label="Explain Recent Drafts" data-tip-title="Recent Local History (Offline-Ready)" data-tip="Automatically remembers your last 10 optimizations right in this browser or desktop app so you can jump back to earlier work without losing drafts.">?</button>
+              </span>
               <button type="button" id="clearSourceBtn" class="btn sm">Clear</button>
               <label class="btn sm" style="cursor:pointer;">
                 Upload File
@@ -825,6 +921,8 @@ details.sql-details summary {
               </label>
             </div>
           </div>
+
+          <div id="localHistoryDrawer" class="history-drawer" style="display:none;"></div>
 
           <div class="muted" style="font-size:11.5px;margin-bottom:5px;">Try an example (click any button to test):</div>
           <div class="sample-row" id="sampleButtons"></div>
@@ -881,7 +979,7 @@ details.sql-details summary {
           </div>
 
           <div class="flex-row">
-            <button type="button" id="optimizeBtn" class="btn primary" style="flex:1;">Optimize for Google &amp; Bing</button>
+            <button type="button" id="optimizeBtn" class="btn primary" style="flex:1;">Optimize for Google &amp; Bing (Ctrl+Enter)</button>
             <span class="btn-with-help">
               <button type="button" id="suggestBtn" class="btn bing">Keyword Ideas</button>
               <button type="button" class="help-tip" aria-label="Explain Keyword Ideas" data-tip-title="Live Keyword Ideas (Autocomplete)" data-tip="Queries real Google &amp; Bing search suggestions for your Focus Keyword to show what real people search for, flagging which ideas your text already covers vs. future topics.">?</button>
@@ -992,7 +1090,11 @@ details.sql-details summary {
                     <button type="button" id="rescoreEditsBtn" class="btn sm">Re-Score Edits</button>
                     <button type="button" class="help-tip" aria-label="Explain Re-Score Edits" data-tip-title="Re-Score &amp; Fact-Check Edits" data-tip="Runs the Google, Bing, and Fact-Check Guard audit on manual changes you made inside 'Edit Text' so you can see updated SEO scores immediately.">?</button>
                   </span>
-                  <button type="button" id="copyOptimizedBtn" class="btn sm">Copy Text</button>
+                  <span class="btn-with-help">
+                    <button type="button" id="copyRichTextBtn" class="btn sm bing">Copy for Word / Docs</button>
+                    <button type="button" class="help-tip" aria-label="Explain Copy for Word and Google Docs" data-tip-title="Copy Formatted Text (Word &amp; Google Docs)" data-tip="Copies real headings, bold text, paragraphs, and clean bullet lists so you can paste straight into Microsoft Word, Google Docs, Outlook, or HubSpot without '#' symbols.">?</button>
+                  </span>
+                  <button type="button" id="copyOptimizedBtn" class="btn sm">Copy Markdown</button>
                 </div>
               </div>
               <div id="previewPane" class="rendered-preview"></div>
@@ -1065,6 +1167,15 @@ details.sql-details summary {
 
             <!-- Subtab 3: SEO Checklist -->
             <div id="subtab-diagnostics" class="subpanel">
+              <div class="card" style="box-shadow:none;background:var(--surface-alt);margin-bottom:12px;">
+                <div class="card-title">
+                  <span class="btn-with-help">
+                    <span>7-Point Focus Keyword Placement Check</span>
+                    <button type="button" class="help-tip" aria-label="Explain Focus Keyword Placement Check" data-tip-title="Yoast-Style Keyword Placement Matrix" data-tip="Shows at a glance whether your Focus Keyword appears in every critical SEO spot (Title, Meta Description, URL Slug, H1, Intro, Subheadings, and balanced Density).">?</button>
+                  </span>
+                </div>
+                <div id="placementMatrixBox" class="placement-strip"></div>
+              </div>
               <div class="two-col">
                 <div>
                   <div class="card-title">Google Ranking Factors (100 pts)</div>
@@ -1102,17 +1213,79 @@ details.sql-details summary {
               <div class="serp-grid">
                 <div class="serp-card">
                   <div style="font-size:11px;font-weight:700;color:#6b7280;margin-bottom:4px;">GOOGLE SEARCH RESULT PREVIEW</div>
-                  <div class="serp-url" id="serpGoogleUrl">https://example.com/...</div>
+                  <div class="serp-url" id="serpGoogleUrl">https://yoursite.com/...</div>
                   <div class="serp-title-google" id="serpGoogleTitle">--</div>
                   <div class="serp-desc" id="serpGoogleDesc">--</div>
                   <div style="font-size:11px;color:#4b5563;margin-top:6px;" id="serpGoogleMeter"></div>
                 </div>
                 <div class="serp-card">
                   <div style="font-size:11px;font-weight:700;color:#0d9488;margin-bottom:4px;">BING + COPILOT SEARCH PREVIEW</div>
-                  <div class="serp-url" id="serpBingUrl">https://example.com/...</div>
+                  <div class="serp-url" id="serpBingUrl">https://yoursite.com/...</div>
                   <div class="serp-title-bing" id="serpBingTitle">--</div>
                   <div class="serp-desc" id="serpBingDesc">--</div>
                   <div style="font-size:11px;color:#4b5563;margin-top:6px;" id="serpBingMeter"></div>
+                </div>
+              </div>
+
+              <div class="serp-editor-box">
+                <div class="card-title">
+                  <span class="btn-with-help">
+                    <span>Interactive Snippet &amp; Website URL Editor</span>
+                    <button type="button" class="help-tip" aria-label="Explain Interactive SERP Snippet Editor" data-tip-title="Live Search Snippet &amp; Domain Editor" data-tip="Customize your actual domain, brand name, SEO Title, URL slug, and Meta Description here. Changes immediately recalculate Google/Bing scores, Canonical links, Schema JSON-LD, and IndexNow payloads.">?</button>
+                  </span>
+                  <button type="button" id="resetSerpSnippetBtn" class="btn sm">Reset Auto-Snippet</button>
+                </div>
+
+                <div class="three-col">
+                  <div>
+                    <label class="muted" style="font-weight:600;display:flex;align-items:center;gap:5px;margin-bottom:4px;">
+                      <span>Your Website URL</span>
+                      <button type="button" class="help-tip" aria-label="Explain Website Base URL" data-tip-title="Your Website Base URL" data-tip="Enter your real domain (e.g. https://acme.com/blog) so Canonical tags, JSON-LD, and Bing IndexNow point to your real website instead of a placeholder.">?</button>
+                    </label>
+                    <input type="text" id="siteBaseUrlInput" placeholder="https://yoursite.com/blog">
+                  </div>
+                  <div>
+                    <label class="muted" style="font-weight:600;display:flex;align-items:center;gap:5px;margin-bottom:4px;">
+                      <span>Brand / Site Name</span>
+                      <button type="button" class="help-tip" aria-label="Explain Brand Name" data-tip-title="Brand / Site Name (og:site_name)" data-tip="Optional company or book series name. Automatically adds OpenGraph og:site_name tags and creates a Branded Title Option below when space fits under 580px.">?</button>
+                    </label>
+                    <input type="text" id="siteBrandNameInput" placeholder="Optional Brand Name">
+                  </div>
+                  <div>
+                    <label class="muted" style="font-weight:600;display:flex;align-items:center;gap:5px;margin-bottom:4px;">
+                      <span>Bing IndexNow Key</span>
+                      <button type="button" class="help-tip" aria-label="Explain IndexNow Key" data-tip-title="Bing IndexNow API Key" data-tip="Optional key from Bing Webmaster Tools. Automatically populates your ready-to-submit IndexNow JSON payload below.">?</button>
+                    </label>
+                    <input type="text" id="siteIndexNowKeyInput" placeholder="Optional IndexNow key">
+                  </div>
+                </div>
+
+                <div class="two-col mt-8">
+                  <div>
+                    <div class="progress-head" style="margin-bottom:4px;">
+                      <span>SEO Title</span>
+                      <span id="serpTitleMeterLabel" class="muted">0 / 60 chars (0 / 580px)</span>
+                    </div>
+                    <input type="text" id="serpEditTitleInput" placeholder="Edit SEO Page Title...">
+                    <div class="meter-bar"><div id="serpTitleMeterFill" class="meter-fill" style="width:0%;"></div></div>
+                  </div>
+                  <div>
+                    <div class="progress-head" style="margin-bottom:4px;">
+                      <span>URL Slug</span>
+                      <span id="serpSlugPreviewLabel" class="muted">/slug</span>
+                    </div>
+                    <input type="text" id="serpEditSlugInput" placeholder="your-page-url-slug">
+                  </div>
+                </div>
+
+                <div class="mt-8">
+                  <div class="progress-head" style="margin-bottom:4px;">
+                    <span>Meta Description</span>
+                    <span id="serpDescMeterLabel" class="muted">0 / 160 chars</span>
+                  </div>
+                  <textarea id="serpEditDescInput" rows="2" placeholder="Edit search result summary description (ideal: 135-160 characters)..."></textarea>
+                  <div class="meter-bar"><div id="serpDescMeterFill" class="meter-fill" style="width:0%;"></div></div>
+                  <div id="serpMetaFactWarning" class="mt-8" style="display:none;"></div>
                 </div>
               </div>
 
@@ -1210,6 +1383,10 @@ details.sql-details summary {
               <button type="button" class="help-tip" aria-label="Explain Load 3 Sample Articles" data-tip-title="Test Bulk Optimization" data-tip="Loads 3 built-in sample documents (Cloud Security, HVAC, Healthcare) and optimizes them in parallel so you can preview bulk reporting without uploading your own files.">?</button>
             </span>
             <button type="button" id="runBatchBtn" class="btn sm bing">Optimize All Queued Files</button>
+            <span class="btn-with-help">
+              <button type="button" id="downloadBatchCsvBtn" class="btn sm" disabled>Export Audit CSV (Excel)</button>
+              <button type="button" class="help-tip" aria-label="Explain Export Audit CSV" data-tip-title="Export SEO Spreadsheet (.csv)" data-tip="Downloads an Excel-ready CSV spreadsheet listing every file's Focus Keyword, SEO Title, Meta Description, Word Count, Google/Bing Before &amp; After scores, and Fact-Check status.">?</button>
+            </span>
             <span class="btn-with-help">
               <button type="button" id="downloadBatchZipBtn" class="btn sm" disabled>Download All (.zip)</button>
               <button type="button" class="help-tip" aria-label="Explain Download All Zip" data-tip-title="Download Full Batch (.zip)" data-tip="Packages every optimized file, its HTML meta tags, and a combined score summary CSV/report into one downloadable .zip archive.">?</button>
@@ -1666,6 +1843,21 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       .replace(/^-|-$/g, "") || "document";
   }
 
+  function normalizeTypography(str) {
+    return String(str || "")
+      .replace(/[\u2018\u2019\u201B\u2032]/g, "'")
+      .replace(/[\u201C\u201D\u201F\u2033]/g, "\"")
+      .replace(/\u00A0/g, " ");
+  }
+
+  function describeReadingGrade(grade) {
+    var g = Number(grade) || 8;
+    if (g <= 7.5) return "Easy (General Public)";
+    if (g <= 10.5) return "Clear (Standard Web & Business)";
+    if (g <= 13.5) return "Moderate (Professional / Technical)";
+    return "Advanced (Academic / Specialist)";
+  }
+
   VeriRank.Lexicon = {
     STOPWORDS: STOPWORDS,
     GENERIC_SEO_WEAK_WORDS: GENERIC_SEO_WEAK_WORDS,
@@ -1677,7 +1869,9 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     POLARITY_MARKERS: POLARITY_MARKERS,
     toTitleCase: toTitleCase,
     escapeHtml: escapeHtml,
-    slugify: slugify
+    slugify: slugify,
+    normalizeTypography: normalizeTypography,
+    describeReadingGrade: describeReadingGrade
   };
 })(window);
 
@@ -1687,6 +1881,9 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
   var VeriRank = (global.VeriRank = global.VeriRank || {});
 
   var STORAGE_KEY = "verirank_seo_profile_v1";
+  var SITE_SETTINGS_KEY = "verirank_site_settings_v1";
+  var LOCAL_HISTORY_KEY = "verirank_local_history_v1";
+  var AUTOSAVE_DRAFT_KEY = "verirank_autosave_draft_v1";
 
   var FACTORY_PROFILE = {
     name: "Durable Dual-Engine Standard (2026+)",
@@ -1849,6 +2046,140 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     return deepClone(FACTORY_PROFILE);
   }
 
+  function normalizeBaseUrl(rawUrl) {
+    var val = String(rawUrl || "").trim();
+    if (!val) return "https://yoursite.com";
+    if (!/^https?:\/\//i.test(val)) {
+      val = "https://" + val;
+    }
+    return val.replace(/\/+$/, "");
+  }
+
+  function getSiteSettings() {
+    var def = { baseUrl: "https://yoursite.com", brandName: "", indexNowKey: "" };
+    try {
+      if (global.localStorage) {
+        var raw = global.localStorage.getItem(SITE_SETTINGS_KEY);
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") {
+            return {
+              baseUrl: normalizeBaseUrl(parsed.baseUrl || def.baseUrl),
+              brandName: String(parsed.brandName || "").trim(),
+              indexNowKey: String(parsed.indexNowKey || "").trim()
+            };
+          }
+        }
+      }
+    } catch (e) {
+      // Ignore storage errors
+    }
+    return def;
+  }
+
+  function saveSiteSettings(settings) {
+    var s = settings || {};
+    var normalized = {
+      baseUrl: normalizeBaseUrl(s.baseUrl),
+      brandName: String(s.brandName || "").trim(),
+      indexNowKey: String(s.indexNowKey || "").trim()
+    };
+    try {
+      if (global.localStorage) {
+        global.localStorage.setItem(SITE_SETTINGS_KEY, JSON.stringify(normalized));
+      }
+    } catch (e) {
+      // Safe no-op
+    }
+    return normalized;
+  }
+
+  function saveDraftState(draft) {
+    try {
+      if (global.localStorage && draft) {
+        global.localStorage.setItem(AUTOSAVE_DRAFT_KEY, JSON.stringify({
+          text: String(draft.text || ""),
+          preset: String(draft.preset || "corporate"),
+          overrideKeyword: String(draft.overrideKeyword || "")
+        }));
+      }
+    } catch (e) {
+      // Safe no-op
+    }
+  }
+
+  function loadDraftState() {
+    try {
+      if (global.localStorage) {
+        var raw = global.localStorage.getItem(AUTOSAVE_DRAFT_KEY);
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (parsed && typeof parsed.text === "string" && parsed.text.trim()) {
+            return parsed;
+          }
+        }
+      }
+    } catch (e) {
+      // Safe no-op
+    }
+    return null;
+  }
+
+  function getLocalHistory() {
+    try {
+      if (global.localStorage) {
+        var raw = global.localStorage.getItem(LOCAL_HISTORY_KEY);
+        if (raw) {
+          var arr = JSON.parse(raw);
+          if (Array.isArray(arr)) return arr;
+        }
+      }
+    } catch (e) {
+      // Safe no-op
+    }
+    return [];
+  }
+
+  function addLocalHistoryEntry(entry) {
+    if (!entry || !entry.sourceText) return getLocalHistory();
+    var list = getLocalHistory();
+    var item = {
+      id: entry.id || ("h_" + Date.now() + "_" + Math.floor(Math.random() * 1000)),
+      timestamp: entry.timestamp || new Date().toISOString(),
+      title: String(entry.title || "Untitled SEO Page").slice(0, 90),
+      primaryKeyphrase: String(entry.primaryKeyphrase || ""),
+      preset: String(entry.preset || "corporate"),
+      googleScore: Number(entry.googleScore) || 0,
+      bingScore: Number(entry.bingScore) || 0,
+      sourceText: String(entry.sourceText || ""),
+      overrideKeyword: String(entry.overrideKeyword || "")
+    };
+    list = list.filter(function (existing) {
+      return !(existing.sourceText === item.sourceText && existing.preset === item.preset && existing.overrideKeyword === item.overrideKeyword);
+    });
+    list.unshift(item);
+    if (list.length > 10) list = list.slice(0, 10);
+    try {
+      if (global.localStorage) {
+        global.localStorage.setItem(LOCAL_HISTORY_KEY, JSON.stringify(list));
+      }
+    } catch (e) {
+      // Safe no-op
+    }
+    return list;
+  }
+
+  function clearLocalHistory() {
+    try {
+      if (global.localStorage) {
+        global.localStorage.removeItem(LOCAL_HISTORY_KEY);
+      }
+    } catch (e) {
+      // Safe no-op
+    }
+    return [];
+  }
+
   VeriRank.Profiles = {
     FACTORY_PROFILE: FACTORY_PROFILE,
     CONTENT_PRESETS: CONTENT_PRESETS,
@@ -1856,6 +2187,14 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     getActiveProfile: getActiveProfile,
     saveCustomProfile: saveCustomProfile,
     resetProfile: resetProfile,
+    normalizeBaseUrl: normalizeBaseUrl,
+    getSiteSettings: getSiteSettings,
+    saveSiteSettings: saveSiteSettings,
+    saveDraftState: saveDraftState,
+    loadDraftState: loadDraftState,
+    getLocalHistory: getLocalHistory,
+    addLocalHistoryEntry: addLocalHistoryEntry,
+    clearLocalHistory: clearLocalHistory,
     deepClone: deepClone
   };
 })(window);
@@ -1924,7 +2263,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
   }
 
   function parseDocument(rawInput) {
-    var raw = String(rawInput || "").replace(/\r\n/g, "\n").trim();
+    var raw = Lex.normalizeTypography(rawInput).replace(/\r\n/g, "\n").trim();
     var format = detectFormat(raw);
     var title = "";
     var metaDescription = "";
@@ -2512,7 +2851,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       return low.indexOf(primary) !== -1 && /\b(is|are|refers|depend|rely|adopt|designed|protect|reduce|preserve|validate)\b/.test(low);
     });
     if (defSents.length > 0) {
-      addQuestion("Why do organizations use " + primary + "?", [defSents[0]], "purpose");
+      addQuestion("How does " + primary + " work in practice?", [defSents[0]], "purpose");
     }
 
     // 2. Requirements / Negation / Boundary question
@@ -2608,7 +2947,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     "What", "When", "Where", "Which", "Does", "Organizations", "Apply", "Govern",
     "Factors", "Details", "Standards", "And", "For", "With", "The", "This", "These",
     "First", "Second", "Third", "Finally", "However", "Therefore", "Because",
-    "Inspection", "Procedure", "Features", "Specifications", "Highlights", "Insights", "Synopsis", "Complete"
+    "Inspection", "Procedure", "Features", "Specifications", "Highlights", "Insights", "Synopsis", "Complete", "Practice"
   ]);
 
   function normalizeNumberToken(tok) {
@@ -2762,6 +3101,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
   }
 
   function extractFingerprint(sourceText) {
+    sourceText = Lex.normalizeTypography(sourceText);
     var nums = extractNumbersFromProse(sourceText);
     var ents = extractEntitiesFromProse(sourceText, false);
     var stems = getContentStems(sourceText);
@@ -2795,6 +3135,8 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
   }
 
   function verify(sourceText, candidateBodyText, provenanceRecords) {
+    sourceText = Lex.normalizeTypography(sourceText);
+    candidateBodyText = Lex.normalizeTypography(candidateBodyText);
     var fp = extractFingerprint(sourceText);
     var issues = [];
 
@@ -3251,6 +3593,17 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     // Also compute a pure on-page body score (excluding external head/IndexNow/Schema) for transparent reporting
     var onPageBodyScore = Math.round(((gTopical + gPassage + gStruct + gEeat) / 75 * 50) + ((bLead + bCopilot + bKw) / 60 * 50));
 
+    var metaHasTopic = !!(primary && metaDesc && (metaDesc.toLowerCase().indexOf(primary) !== -1 || metaDesc.toLowerCase().indexOf(primary.split(" ")[0]) !== -1));
+    var placementMatrix = [
+      { id: "title", label: "SEO Title", passed: !!(inTitleExact || (isCreative && titleHasConcept)), optional: false, detail: inTitleExact ? "Exact Focus Keyword in title" : (titleHasConcept ? "Topic word in title" : "Add Focus Keyword to SEO Title") },
+      { id: "meta", label: "Meta Description", passed: !!(metaHasTopic && metaGoodGoogle), optional: false, detail: metaGoodGoogle ? "135-160 chars with topic match" : "Aim for 135-160 chars mentioning your topic" },
+      { id: "slug", label: "URL Slug", passed: !!inSlug, optional: false, detail: inSlug ? "/" + slug : "Include keyword in URL slug" },
+      { id: "h1", label: "H1 Heading", passed: isCreative ? true : !!inH1Exact, optional: isCreative, detail: isCreative ? "Optional for creative prose" : (inH1Exact ? "Focus Keyword in H1" : "Add Focus Keyword to H1") },
+      { id: "intro", label: "Opening Intro", passed: !!inLead100, optional: false, detail: inLead100 ? "Appears in first " + (profile.bing.leadWindowWords || 100) + " words" : "Mention keyword earlier in intro" },
+      { id: "h2", label: "H2 Subheadings", passed: isCreative ? true : !!(inH2Exact || h2Count >= 1), optional: isCreative, detail: isCreative ? "Optional for creative prose" : (h2Count + " H2 section(s)") },
+      { id: "density", label: "Keyword Density (" + exactDensityPct + "%)", passed: !!densityOkGoogle, optional: false, detail: densityOkGoogle ? "Healthy range (0.4%-" + profile.google.maxExactDensityPct + "%)" : "Outside 0.4%-" + profile.google.maxExactDensityPct + "% sweet spot" }
+    ];
+
     return {
       google: {
         total: googleTotal,
@@ -3275,6 +3628,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       },
       harmonyScore: harmonyScore,
       onPageBodyScore: Math.min(100, onPageBodyScore),
+      placementMatrix: placementMatrix,
       metrics: {
         exactCount: exactCount,
         exactDensityPct: exactDensityPct,
@@ -3425,7 +3779,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     return built || primaryTitle.slice(0, maxChars);
   }
 
-  function buildTitleVariants(analysis, profile, contentMode) {
+  function buildTitleVariants(analysis, profile, contentMode, brandName) {
     var primary = analysis.subject.primaryKeyphrase;
     var primaryTitle = Lex.toTitleCase(primary);
     var sec1 = analysis.subject.secondaryKeyphrases[0] ? Lex.toTitleCase(analysis.subject.secondaryKeyphrases[0].phrase) : "";
@@ -3442,13 +3796,27 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       ? ["Balanced Book/Story Title (Recommended)", "Reader Discovery Title", "Exact Topic Match"]
       : ["Dual-Engine Balanced (Recommended)", "Google Semantic Intent", "Bing Exact-Lead Focus"];
 
-    var unique = [];
-    var seen = new Set();
-    [
+    var candidatesList = [
       { label: labels[0], text: v1 },
       { label: labels[1], text: v2 },
       { label: labels[2], text: v3 }
-    ].forEach(function (item) {
+    ];
+
+    var cleanBrand = String(brandName || "").trim();
+    if (cleanBrand) {
+      var bCand1 = primaryTitle + (sec1 ? ": " + sec1 : "") + " | " + cleanBrand;
+      var bCand2 = primaryTitle + " | " + cleanBrand;
+      var chosenBrandTitle = (bCand1.length <= maxC && Lex.estimatePixelWidth(bCand1) <= maxP)
+        ? bCand1
+        : ((bCand2.length <= maxC && Lex.estimatePixelWidth(bCand2) <= maxP) ? bCand2 : "");
+      if (chosenBrandTitle) {
+        candidatesList.push({ label: "Branded SEO Title", text: chosenBrandTitle });
+      }
+    }
+
+    var unique = [];
+    var seen = new Set();
+    candidatesList.forEach(function (item) {
       if (!seen.has(item.text)) {
         seen.add(item.text);
         item.chars = item.text.length;
@@ -3504,7 +3872,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     return chunks;
   }
 
-  function renderHtmlFromBlocks(blocks, title, metaDescription, slug, jsonLdObj, ogTypeInput) {
+  function renderHtmlFromBlocks(blocks, title, metaDescription, canonicalOrSlug, jsonLdObj, ogTypeInput, brandName) {
     var esc = Lex.escapeHtml;
     var ogType = ogTypeInput || "article";
     var bodyParts = [];
@@ -3526,21 +3894,29 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     }
     var articleHtml = "<article>\n" + bodyParts.join("\n") + "\n</article>";
     var jsonLdScript = "<" + "script type=\"application/ld+json\">\n" + JSON.stringify(jsonLdObj, null, 2) + "\n<" + "/script>";
-    var canonical = "https://example.com/" + slug;
+    var canonical = /^https?:\/\//i.test(String(canonicalOrSlug || ""))
+      ? String(canonicalOrSlug)
+      : ("https://yoursite.com/" + String(canonicalOrSlug || "document").replace(/^\/+/, ""));
 
-    var headTags = [
+    var headList = [
       "<title>" + esc(title) + "</title>",
       "<meta name=\"description\" content=\"" + esc(metaDescription) + "\">",
       "<link rel=\"canonical\" href=\"" + esc(canonical) + "\">",
       "<meta property=\"og:type\" content=\"" + esc(ogType) + "\">",
       "<meta property=\"og:title\" content=\"" + esc(title) + "\">",
       "<meta property=\"og:description\" content=\"" + esc(metaDescription) + "\">",
-      "<meta property=\"og:url\" content=\"" + esc(canonical) + "\">",
+      "<meta property=\"og:url\" content=\"" + esc(canonical) + "\">"
+    ];
+    if (brandName) {
+      headList.push("<meta property=\"og:site_name\" content=\"" + esc(brandName) + "\">");
+    }
+    headList.push(
       "<meta name=\"twitter:card\" content=\"summary_large_image\">",
       "<meta name=\"twitter:title\" content=\"" + esc(title) + "\">",
       "<meta name=\"twitter:description\" content=\"" + esc(metaDescription) + "\">",
       jsonLdScript
-    ].join("\n");
+    );
+    var headTags = headList.join("\n");
 
     var fullHtmlDocument = [
       "<!DOCTYPE html>",
@@ -3889,10 +4265,17 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     var optimizedMarkdown = mdLines.join("\n\n");
 
     // 7. Build Metadata, JSON-LD, IndexNow, Internal Link Anchors & HTML
-    var titleVariants = buildTitleVariants(analysis, profile, contentMode);
-    var selectedTitle = titleVariants[0].text;
-    var metaDescription = buildGroundedMetaDescription(analysis, primary, profile);
-    var slug = Lex.slugify(primary);
+    var siteSettings = opts.siteSettings || (VeriRank.Profiles.getSiteSettings ? VeriRank.Profiles.getSiteSettings() : { baseUrl: "https://yoursite.com", brandName: "", indexNowKey: "" });
+    var baseUrl = VeriRank.Profiles.normalizeBaseUrl ? VeriRank.Profiles.normalizeBaseUrl(siteSettings.baseUrl) : "https://yoursite.com";
+    var brandName = String(siteSettings.brandName || "").trim();
+    var indexNowKey = String(siteSettings.indexNowKey || "").trim() || "YOUR_BING_INDEXNOW_KEY";
+    var hostMatch = baseUrl.replace(/^https?:\/\//i, "").split("/")[0] || "yoursite.com";
+
+    var titleVariants = buildTitleVariants(analysis, profile, contentMode, brandName);
+    var selectedTitle = opts.customTitle ? String(opts.customTitle).trim() : titleVariants[0].text;
+    var metaDescription = opts.customMetaDescription ? String(opts.customMetaDescription).trim() : buildGroundedMetaDescription(analysis, primary, profile);
+    var slug = opts.customSlug ? Lex.slugify(opts.customSlug) : Lex.slugify(primary);
+    var canonicalUrl = baseUrl + "/" + slug;
 
     var schemaType = analysis.intent.recommendedSchemaType || "Article";
     var ogType = "article";
@@ -3913,7 +4296,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       "keywords": [primary].concat(secondaries.slice(0, 4).map(function (s) { return s.phrase; })).join(", "),
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://example.com/" + slug
+        "@id": canonicalUrl
       }
     };
     if (schemaType === "Product" || schemaType === "Book" || schemaType === "CreativeWork") {
@@ -3941,38 +4324,49 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     };
 
     var indexNowPayload = {
-      host: "example.com",
-      key: "YOUR_BING_INDEXNOW_KEY",
-      keyLocation: "https://example.com/YOUR_BING_INDEXNOW_KEY.txt",
-      urlList: ["https://example.com/" + slug]
+      host: hostMatch,
+      key: indexNowKey,
+      keyLocation: "https://" + hostMatch + "/" + indexNowKey + ".txt",
+      urlList: [canonicalUrl]
     };
 
     var internalLinkSuggestions = secondaries.slice(0, 4).map(function (sec) {
+      var tSlug = Lex.slugify(sec.phrase);
       return {
         anchorText: sec.phrase,
-        suggestedTargetUrl: "/" + Lex.slugify(sec.phrase),
+        suggestedTargetUrl: "/" + tSlug,
         occurrencesInSource: sec.occurrences
       };
     });
 
-    var renderedHtml = renderHtmlFromBlocks(finalBlocks, selectedTitle, metaDescription, slug, jsonLd, ogType);
+    var renderedHtml = renderHtmlFromBlocks(finalBlocks, selectedTitle, metaDescription, canonicalUrl, jsonLd, ogType, brandName);
+
+    var openGraphObj = {
+      "og:type": ogType,
+      "og:title": selectedTitle,
+      "og:description": metaDescription,
+      "og:url": canonicalUrl
+    };
+    if (brandName) {
+      openGraphObj["og:site_name"] = brandName;
+    }
 
     var metadata = {
       title: selectedTitle,
       titleVariants: titleVariants,
       metaDescription: metaDescription,
       slug: slug,
-      canonicalUrl: "https://example.com/" + slug,
-      openGraph: {
-        "og:type": ogType,
-        "og:title": selectedTitle,
-        "og:description": metaDescription,
-        "og:url": "https://example.com/" + slug
-      },
+      canonicalUrl: canonicalUrl,
+      ogType: ogType,
+      baseUrl: baseUrl,
+      brandName: brandName,
+      indexNowKey: indexNowKey,
+      openGraph: openGraphObj,
       jsonLd: jsonLd,
       indexNowPayload: indexNowPayload,
       internalLinkSuggestions: internalLinkSuggestions,
-      headTags: renderedHtml.headTags
+      headTags: renderedHtml.headTags,
+      metaFactLock: { passed: true, issues: [] }
     };
 
     // 8. Fact-Lock Verification & Post-Optimization Scoring
@@ -4018,9 +4412,91 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     });
   }
 
+  function updateResultMetadata(currentResult, metaOverrides, profileInput) {
+    if (!currentResult) return null;
+    var ov = metaOverrides || {};
+    var profile = profileInput || VeriRank.Profiles.getActiveProfile();
+    var prevMeta = currentResult.metadata;
+    var siteSettings = ov.siteSettings || (VeriRank.Profiles.getSiteSettings ? VeriRank.Profiles.getSiteSettings() : { baseUrl: prevMeta.baseUrl || "https://yoursite.com", brandName: prevMeta.brandName || "", indexNowKey: prevMeta.indexNowKey || "" });
+    var baseUrl = VeriRank.Profiles.normalizeBaseUrl ? VeriRank.Profiles.normalizeBaseUrl(siteSettings.baseUrl) : (prevMeta.baseUrl || "https://yoursite.com");
+    var brandName = String(siteSettings.brandName || "").trim();
+    var indexNowKey = String(siteSettings.indexNowKey || "").trim() || "YOUR_BING_INDEXNOW_KEY";
+    var hostMatch = baseUrl.replace(/^https?:\/\//i, "").split("/")[0] || "yoursite.com";
+
+    var title = ov.title !== undefined ? String(ov.title).trim() : prevMeta.title;
+    var metaDesc = ov.metaDescription !== undefined ? String(ov.metaDescription).trim() : prevMeta.metaDescription;
+    var rawSlug = ov.slug !== undefined ? String(ov.slug).trim() : prevMeta.slug;
+    var slug = Lex.slugify(rawSlug || prevMeta.slug);
+    var canonicalUrl = baseUrl + "/" + slug;
+    var ogType = prevMeta.ogType || (prevMeta.openGraph && prevMeta.openGraph["og:type"]) || "article";
+
+    var jsonLd = JSON.parse(JSON.stringify(prevMeta.jsonLd));
+    if (jsonLd && Array.isArray(jsonLd["@graph"]) && jsonLd["@graph"][0]) {
+      var rootNode = jsonLd["@graph"][0];
+      rootNode.headline = title;
+      if (Object.prototype.hasOwnProperty.call(rootNode, "name")) {
+        rootNode.name = title;
+      }
+      rootNode.description = metaDesc;
+      if (rootNode.mainEntityOfPage) {
+        rootNode.mainEntityOfPage["@id"] = canonicalUrl;
+      }
+    }
+
+    var indexNowPayload = {
+      host: hostMatch,
+      key: indexNowKey,
+      keyLocation: "https://" + hostMatch + "/" + indexNowKey + ".txt",
+      urlList: [canonicalUrl]
+    };
+
+    var renderedHtml = renderHtmlFromBlocks(currentResult.blocks, title, metaDesc, canonicalUrl, jsonLd, ogType, brandName);
+    var openGraphObj = {
+      "og:type": ogType,
+      "og:title": title,
+      "og:description": metaDesc,
+      "og:url": canonicalUrl
+    };
+    if (brandName) {
+      openGraphObj["og:site_name"] = brandName;
+    }
+
+    var metaFactLock = { passed: true, issues: [] };
+    if (metaDesc && VeriRank.FactLock) {
+      var flCheck = VeriRank.FactLock.verify(currentResult.sourceText, metaDesc, []);
+      metaFactLock = { passed: flCheck.passed, issues: flCheck.issues };
+    }
+
+    var titleVariants = buildTitleVariants(currentResult.analysis, profile, currentResult.contentMode, brandName);
+    var newMetadata = Object.assign({}, prevMeta, {
+      title: title,
+      titleVariants: titleVariants,
+      metaDescription: metaDesc,
+      slug: slug,
+      canonicalUrl: canonicalUrl,
+      ogType: ogType,
+      baseUrl: baseUrl,
+      brandName: brandName,
+      indexNowKey: indexNowKey,
+      openGraph: openGraphObj,
+      jsonLd: jsonLd,
+      indexNowPayload: indexNowPayload,
+      headTags: renderedHtml.headTags,
+      metaFactLock: metaFactLock
+    });
+
+    var afterScores = VeriRank.Scorer.score(currentResult.optimizedMarkdown, newMetadata, currentResult.afterAnalysis, profile);
+    return Object.assign({}, currentResult, {
+      metadata: newMetadata,
+      fullHtmlDocument: renderedHtml.fullHtmlDocument,
+      afterScores: afterScores
+    });
+  }
+
   VeriRank.Optimizer = {
     optimize: optimize,
     rescoreEditedMarkdown: rescoreEditedMarkdown,
+    updateResultMetadata: updateResultMetadata,
     renderHtmlFromBlocks: renderHtmlFromBlocks
   };
 })(window);
@@ -4209,9 +4685,43 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     ];
   }
 
+  function csvEscape(val) {
+    return "\"" + String(val === undefined || val === null ? "" : val).replace(/\r?\n/g, " ").replace(/"/g, "\"\"") + "\"";
+  }
+
+  function buildBatchCsv(batchItems) {
+    var header = "File Name,Content Mode,Focus Keyword,SEO Title,Meta Description,Canonical URL,Word Count,Reading Grade,Google Before,Google After,Bing Before,Bing After,Keyword Density %,Fact-Lock Status,Grounding %";
+    var csvRows = [header];
+
+    for (var i = 0; i < (batchItems || []).length; i++) {
+      var item = batchItems[i];
+      if (!item || !item.result) continue;
+      var res = item.result;
+      var grade = res.afterAnalysis && res.afterAnalysis.readability ? res.afterAnalysis.readability.gradeLevel : "";
+      csvRows.push([
+        csvEscape(item.fileName),
+        csvEscape(res.contentMode || "corporate"),
+        csvEscape(res.analysis.subject.primaryKeyphrase),
+        csvEscape(res.metadata.title),
+        csvEscape(res.metadata.metaDescription),
+        csvEscape(res.metadata.canonicalUrl),
+        res.afterScores.metrics.wordCount,
+        grade,
+        res.beforeScores.google.total,
+        res.afterScores.google.total,
+        res.beforeScores.bing.total,
+        res.afterScores.bing.total,
+        res.afterScores.metrics.exactDensityPct,
+        csvEscape(res.factLock.status),
+        res.factLock.groundingScore
+      ].join(","));
+    }
+
+    return "\uFEFF" + csvRows.join("\n");
+  }
+
   function buildBatchPackageFiles(batchItems) {
     var allFiles = [];
-    var csvRows = ["File,DetectedSubject,GoogleBefore,GoogleAfter,BingBefore,BingAfter,Harmony,FactLockStatus,GroundingScore"];
 
     for (var i = 0; i < batchItems.length; i++) {
       var item = batchItems[i];
@@ -4219,21 +4729,9 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       var folderName = Lex.slugify(item.fileName.replace(/\.[^.]+$/, ""));
       var docFiles = buildDocumentPackageFiles(res, folderName);
       allFiles = allFiles.concat(docFiles);
-
-      csvRows.push([
-        "\"" + item.fileName.replace(/"/g, "\"\"") + "\"",
-        "\"" + res.analysis.subject.primaryKeyphrase.replace(/"/g, "\"\"") + "\"",
-        res.beforeScores.google.total,
-        res.afterScores.google.total,
-        res.beforeScores.bing.total,
-        res.afterScores.bing.total,
-        res.afterScores.harmonyScore,
-        res.factLock.status,
-        res.factLock.groundingScore
-      ].join(","));
     }
 
-    allFiles.push({ path: "batch-summary.csv", content: csvRows.join("\n") });
+    allFiles.push({ path: "batch-summary.csv", content: buildBatchCsv(batchItems) });
     return allFiles;
   }
 
@@ -4257,6 +4755,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     createZipBytes: createZipBytes,
     createZipBlob: createZipBlob,
     buildDocumentPackageFiles: buildDocumentPackageFiles,
+    buildBatchCsv: buildBatchCsv,
     buildBatchPackageFiles: buildBatchPackageFiles,
     buildAuditReportHtml: buildAuditReportHtml,
     triggerDownload: triggerDownload
@@ -4631,6 +5130,49 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       allPresetsOk,
       "Verified: " + presetIds.join(", "));
 
+    var wordDocSrc = "Software validation doesn\u2019t replace clinical audits.";
+    var wordDocFlipped = "Software validation replaces clinical audits.";
+    var wordFl = VeriRank.FactLock.verify(wordDocSrc, wordDocFlipped, []);
+    assert("Smart-quote normalization protects MS Word curly-apostrophe negations",
+      !wordFl.passed && wordFl.issues.some(function (i) { return i.type === "POLARITY_FLIP"; }),
+      "Caught " + wordFl.issues.length + " curly-apostrophe polarity flip(s)");
+
+    var customSiteRes = VeriRank.Optimizer.optimize(s1, {
+      siteSettings: { baseUrl: "https://acmecloud.io/guides", brandName: "AcmeCloud", indexNowKey: "idx9988" }
+    });
+    var editedMetaRes = VeriRank.Optimizer.updateResultMetadata(customSiteRes, {
+      title: "Zero Trust Access Guide | AcmeCloud",
+      slug: "custom-cloud-slug",
+      siteSettings: { baseUrl: "https://acmecloud.io/guides", brandName: "AcmeCloud", indexNowKey: "idx9988" }
+    });
+    assert("Custom Website Domain, Brand Name & Live SERP Snippet Editor update tags cleanly",
+      editedMetaRes.metadata.canonicalUrl === "https://acmecloud.io/guides/custom-cloud-slug" &&
+      editedMetaRes.metadata.indexNowPayload.key === "idx9988" &&
+      editedMetaRes.metadata.headTags.indexOf("example.com") === -1 &&
+      editedMetaRes.metadata.headTags.indexOf("AcmeCloud") !== -1,
+      "Canonical: " + editedMetaRes.metadata.canonicalUrl);
+
+    assert("7-Point Keyword Placement Matrix & universal FAQ phrasing verified",
+      Array.isArray(r1.afterScores.placementMatrix) &&
+      r1.afterScores.placementMatrix.length === 7 &&
+      r1.afterScores.placementMatrix.every(function (p) { return p.passed; }) &&
+      r1.optimizedMarkdown.indexOf("Why do organizations use") === -1,
+      "All 7 placement checks passed");
+
+    var csvExport = VeriRank.Exporter.buildBatchCsv([{ fileName: "sample.txt", result: r1 }]);
+    var histSaved = VeriRank.Profiles.addLocalHistoryEntry({
+      title: r1.metadata.title,
+      primaryKeyphrase: r1.analysis.subject.primaryKeyphrase,
+      preset: "corporate",
+      googleScore: r1.afterScores.google.total,
+      bingScore: r1.afterScores.bing.total,
+      sourceText: s1,
+      overrideKeyword: ""
+    });
+    assert("Agency CSV export includes Excel UTF-8 BOM & Local History persists",
+      csvExport.charCodeAt(0) === 0xFEFF && csvExport.indexOf("SEO Title,Meta Description,Canonical URL") !== -1 && histSaved.length >= 1,
+      "CSV length: " + csvExport.length + " chars, history items: " + histSaved.length);
+
     var passedCount = checks.filter(function (c) { return c.passed; }).length;
     var failedCount = checks.length - passedCount;
     var summary = {
@@ -4659,6 +5201,7 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     currentResult: null,
     activePreset: "corporate",
     activeProfile: VeriRank.Profiles.buildProfileForPreset(VeriRank.Profiles.getActiveProfile(), "corporate"),
+    siteSettings: VeriRank.Profiles.getSiteSettings ? VeriRank.Profiles.getSiteSettings() : { baseUrl: "https://yoursite.com", brandName: "", indexNowKey: "" },
     selectedTitleIdx: 0,
     viewMode: "preview",
     batchItems: [],
@@ -4803,6 +5346,43 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     }
   }
 
+  function copyRichHtml(htmlContent, plainFallback) {
+    var msg = "Formatted content copied (ready to paste into Word / Google Docs).";
+    var fallbackExec = function () {
+      var box = document.createElement("div");
+      box.contentEditable = "true";
+      box.style.position = "fixed";
+      box.style.left = "-9999px";
+      box.innerHTML = htmlContent;
+      document.body.appendChild(box);
+      var range = document.createRange();
+      range.selectNodeContents(box);
+      var sel = global.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      document.execCommand("copy");
+      sel.removeAllRanges();
+      document.body.removeChild(box);
+      $("studioActionStatus").textContent = msg;
+      showToast(msg, "ok");
+    };
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.write && typeof ClipboardItem !== "undefined") {
+        var item = new ClipboardItem({
+          "text/html": new Blob([htmlContent], { type: "text/html" }),
+          "text/plain": new Blob([plainFallback || ""], { type: "text/plain" })
+        });
+        navigator.clipboard.write([item]).then(function () {
+          $("studioActionStatus").textContent = msg;
+          showToast(msg, "ok");
+        }).catch(fallbackExec);
+        return;
+      }
+    } catch (e) { }
+    fallbackExec();
+  }
+
   function applyContentPreset(presetId, shouldRunOptimize) {
     var preset = VeriRank.Profiles.CONTENT_PRESETS[presetId] || VeriRank.Profiles.CONTENT_PRESETS.corporate;
     state.activePreset = preset.id;
@@ -4840,8 +5420,57 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       includeFaq: $("optFaq").checked,
       tightenReadability: $("optTighten").checked,
       convertLists: $("optLists").checked,
-      profile: state.activeProfile
+      profile: state.activeProfile,
+      siteSettings: state.siteSettings
     };
+  }
+
+  function renderLocalHistory() {
+    if (!VeriRank.Profiles || !VeriRank.Profiles.getLocalHistory) return;
+    var list = VeriRank.Profiles.getLocalHistory();
+    if ($("toggleHistoryBtn")) {
+      $("toggleHistoryBtn").textContent = "Recent (" + list.length + ")";
+    }
+    var drawer = $("localHistoryDrawer");
+    if (!drawer) return;
+    if (list.length === 0) {
+      drawer.innerHTML = "<div class='muted'>No saved runs yet. Optimize any text and it will be remembered here automatically.</div>";
+      return;
+    }
+    drawer.innerHTML = "<div class='card-title' style='margin-bottom:4px;'><span>Recent Optimizations (Saved Offline in Browser)</span>" +
+      "<button type='button' id='clearLocalHistoryBtn' class='btn sm'>Clear History</button></div>" +
+      list.map(function (h, idx) {
+        var dt = h.timestamp ? new Date(h.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "";
+        return "<div class='history-row'>" +
+          "<div style='min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>" +
+            "<strong>" + Lex.escapeHtml(h.title) + "</strong> " +
+            "<span class='muted'>(" + Lex.escapeHtml(h.primaryKeyphrase) + " &bull; G:" + h.googleScore + " / B:" + h.bingScore + " &bull; " + Lex.escapeHtml(dt) + ")</span>" +
+          "</div>" +
+          "<button type='button' class='btn sm' data-hist-idx='" + idx + "'>Load</button>" +
+          "</div>";
+      }).join("");
+
+    var clearBtn = $("clearLocalHistoryBtn");
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        VeriRank.Profiles.clearLocalHistory();
+        renderLocalHistory();
+        showToast("Cleared recent local history.", "ok");
+      });
+    }
+    var hBtns = drawer.querySelectorAll("[data-hist-idx]");
+    for (var i = 0; i < hBtns.length; i++) {
+      hBtns[i].addEventListener("click", function () {
+        var entry = VeriRank.Profiles.getLocalHistory()[parseInt(this.getAttribute("data-hist-idx"), 10)];
+        if (!entry) return;
+        $("sourceTextarea").value = entry.sourceText || "";
+        $("overrideKeywordInput").value = entry.overrideKeyword || "";
+        applyContentPreset(entry.preset || "corporate", false);
+        runOptimization();
+        drawer.style.display = "none";
+        showToast("Loaded draft from Recent history.", "ok");
+      });
+    }
   }
 
   function runOptimization() {
@@ -4856,6 +5485,23 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     state.currentResult = res;
     renderResult(res);
     updateSourceTelemetry();
+    if (VeriRank.Profiles && VeriRank.Profiles.saveDraftState) {
+      VeriRank.Profiles.saveDraftState({
+        text: raw,
+        preset: state.activePreset,
+        overrideKeyword: $("overrideKeywordInput").value.trim()
+      });
+      VeriRank.Profiles.addLocalHistoryEntry({
+        title: res.metadata.title,
+        primaryKeyphrase: res.analysis.subject.primaryKeyphrase,
+        preset: state.activePreset,
+        googleScore: res.afterScores.google.total,
+        bingScore: res.afterScores.bing.total,
+        sourceText: raw,
+        overrideKeyword: $("overrideKeywordInput").value.trim()
+      });
+      renderLocalHistory();
+    }
     $("restoreVerifiedBtn").style.display = "none";
     if ($("engineSpeedBadge") && typeof res.durationMs === "number") {
       $("engineSpeedBadge").textContent = res.durationMs + " ms";
@@ -4906,50 +5552,43 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     }).join("");
   }
 
-  function renderSerpSection(res) {
-    var variants = res.metadata.titleVariants || [{ label: "Default", text: res.metadata.title, chars: res.metadata.title.length, pixels: Lex.estimatePixelWidth(res.metadata.title) }];
-    var activeVariant = variants[state.selectedTitleIdx] || variants[0];
-    var titleText = activeVariant.text;
-    var descText = res.metadata.metaDescription;
-    var urlText = "https://example.com/" + res.metadata.slug;
-
-    $("serpGoogleUrl").textContent = urlText;
-    $("serpGoogleTitle").textContent = titleText;
-    $("serpGoogleDesc").textContent = descText;
-    $("serpGoogleMeter").textContent = "Length: " + titleText.length + "/60 chars | Est. Width: " + Lex.estimatePixelWidth(titleText) + "/580px | Meta: " + descText.length + "/160 chars";
-
-    $("serpBingUrl").textContent = urlText;
-    $("serpBingTitle").textContent = titleText;
-    $("serpBingDesc").textContent = descText;
-    $("serpBingMeter").textContent = "Exact Lead: " + (res.afterScores.bing.breakdown.exactLeadPlacement.score) + "/" + res.afterScores.bing.breakdown.exactLeadPlacement.max + " | Copilot Q&A Ready";
-
-    $("titleVariantsList").innerHTML = variants.map(function (v, idx) {
-      return "<button type='button' class='pill " + (idx === state.selectedTitleIdx ? "selected" : "") + "' data-title-idx='" + idx + "'>" +
-        Lex.escapeHtml(v.label) + ": \"" + Lex.escapeHtml(v.text) + "\" (" + v.chars + "c / " + v.pixels + "px)</button>";
-    }).join("");
-
-    var variantBtns = $("titleVariantsList").querySelectorAll("[data-title-idx]");
-    for (var i = 0; i < variantBtns.length; i++) {
-      variantBtns[i].addEventListener("click", function () {
-        state.selectedTitleIdx = parseInt(this.getAttribute("data-title-idx"), 10);
-        renderSerpSection(state.currentResult);
-      });
-    }
-
-    $("jsonLdPreview").textContent = JSON.stringify(res.metadata.jsonLd, null, 2);
-    $("indexNowPreview").textContent = JSON.stringify(res.metadata.indexNowPayload, null, 2);
-    $("headTagsPreview").textContent = res.metadata.headTags;
-    $("internalLinksBox").innerHTML = "<strong>Contextual Internal Link Anchor Suggestions:</strong> " +
-      res.metadata.internalLinkSuggestions.map(function (l) {
-        return "<code>" + Lex.escapeHtml(l.anchorText) + "</code> &rarr; <code>" + Lex.escapeHtml(l.suggestedTargetUrl) + "</code>";
-      }).join(" &bull; ");
+  function highlightSerpSnippet(descText, focusPhrase) {
+    var safe = Lex.escapeHtml(descText || "");
+    var tokens = String(focusPhrase || "").toLowerCase().match(/[a-z0-9-]{3,}/g) || [];
+    var seen = {};
+    tokens.forEach(function (tok) {
+      if (seen[tok] || Lex.STOPWORDS.has(tok)) return;
+      seen[tok] = true;
+      var escTok = tok.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      safe = safe.replace(new RegExp("\\b(" + escTok + ")\\b", "gi"), "<strong>$1</strong>");
+    });
+    return safe;
   }
 
-  function renderResult(res) {
-    $("warningsContainer").innerHTML = (res.warnings || []).map(function (w) {
-      return "<div class='alert-banner warn'><strong>Guardrail Notice:</strong> " + Lex.escapeHtml(w) + "</div>";
-    }).join("");
+  function truncateSerpTitle(title, maxPx) {
+    var s = String(title || "");
+    if (Lex.estimatePixelWidth(s) <= maxPx) return s;
+    var words = s.split(" ");
+    var built = "";
+    for (var i = 0; i < words.length; i++) {
+      var cand = built ? built + " " + words[i] : words[i];
+      if (Lex.estimatePixelWidth(cand + "...") > maxPx) break;
+      built = cand;
+    }
+    return (built || s.slice(0, 48)) + "...";
+  }
 
+  function renderPlacementMatrix(res) {
+    if (!$("placementMatrixBox") || !res.afterScores.placementMatrix) return;
+    $("placementMatrixBox").innerHTML = res.afterScores.placementMatrix.map(function (item) {
+      var cls = item.passed ? "ok" : "warn";
+      var icon = item.passed ? "&#10003;" : "!";
+      return "<span class='placement-pill " + cls + "' title='" + Lex.escapeHtml(item.detail) + "'>" +
+        icon + " " + Lex.escapeHtml(item.label) + "</span>";
+    }).join("");
+  }
+
+  function updateScoreTiles(res) {
     var gAfter = res.afterScores.google.total;
     var gBefore = res.beforeScores.google.total;
     var bAfter = res.afterScores.bing.total;
@@ -4975,6 +5614,142 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     $("scoreFactLock").className = "score-value " + (res.factLock.passed ? "ok" : "bad");
     $("scoreFactLockDetail").textContent = res.factLock.groundingScore + "% Grounded (" + res.factLock.issues.length + " issues)";
     setScoreRing("ringFactLock", res.factLock.passed ? res.factLock.groundingScore : 15, res.factLock.passed ? "ok" : "bad");
+  }
+
+  function renderSerpSection(res) {
+    var variants = res.metadata.titleVariants || [{ label: "Default", text: res.metadata.title, chars: res.metadata.title.length, pixels: Lex.estimatePixelWidth(res.metadata.title) }];
+    var titleText = res.metadata.title || variants[0].text;
+    var descText = res.metadata.metaDescription || "";
+    var urlText = res.metadata.canonicalUrl || ("https://yoursite.com/" + res.metadata.slug);
+    var primary = res.analysis.subject.primaryKeyphrase;
+
+    var maxPx = state.activeProfile.google.titleMaxPixels || 580;
+    var titlePx = Lex.estimatePixelWidth(titleText);
+    var displayGoogleTitle = truncateSerpTitle(titleText, maxPx);
+    var highlightedDesc = highlightSerpSnippet(descText, primary);
+
+    $("serpGoogleUrl").textContent = urlText;
+    $("serpGoogleTitle").textContent = displayGoogleTitle;
+    $("serpGoogleDesc").innerHTML = highlightedDesc;
+    $("serpGoogleMeter").textContent = "Length: " + titleText.length + "/60 chars | Est. Width: " + titlePx + "/" + maxPx + "px | Meta: " + descText.length + "/160 chars";
+
+    $("serpBingUrl").textContent = urlText;
+    $("serpBingTitle").textContent = titleText;
+    $("serpBingDesc").innerHTML = highlightedDesc;
+    $("serpBingMeter").textContent = "Exact Lead: " + (res.afterScores.bing.breakdown.exactLeadPlacement.score) + "/" + res.afterScores.bing.breakdown.exactLeadPlacement.max + " | Copilot Ready";
+
+    if ($("siteBaseUrlInput") && document.activeElement !== $("siteBaseUrlInput")) {
+      $("siteBaseUrlInput").value = state.siteSettings.baseUrl || "https://yoursite.com";
+    }
+    if ($("siteBrandNameInput") && document.activeElement !== $("siteBrandNameInput")) {
+      $("siteBrandNameInput").value = state.siteSettings.brandName || "";
+    }
+    if ($("siteIndexNowKeyInput") && document.activeElement !== $("siteIndexNowKeyInput")) {
+      $("siteIndexNowKeyInput").value = state.siteSettings.indexNowKey || "";
+    }
+    if ($("serpEditTitleInput") && document.activeElement !== $("serpEditTitleInput")) {
+      $("serpEditTitleInput").value = titleText;
+    }
+    if ($("serpEditSlugInput") && document.activeElement !== $("serpEditSlugInput")) {
+      $("serpEditSlugInput").value = res.metadata.slug || "";
+    }
+    if ($("serpSlugPreviewLabel")) {
+      $("serpSlugPreviewLabel").textContent = "/" + (res.metadata.slug || "");
+    }
+    if ($("serpEditDescInput") && document.activeElement !== $("serpEditDescInput")) {
+      $("serpEditDescInput").value = descText;
+    }
+
+    if ($("serpTitleMeterLabel") && $("serpTitleMeterFill")) {
+      $("serpTitleMeterLabel").textContent = titleText.length + " / 60 chars (" + titlePx + " / " + maxPx + "px)";
+      var tPct = Math.min(100, Math.round((titlePx / maxPx) * 100));
+      $("serpTitleMeterFill").style.width = tPct + "%";
+      $("serpTitleMeterFill").className = "meter-fill " + (titlePx <= maxPx && titleText.length >= 35 ? "" : (titlePx > maxPx ? "bad" : "warn"));
+    }
+
+    if ($("serpDescMeterLabel") && $("serpDescMeterFill")) {
+      $("serpDescMeterLabel").textContent = descText.length + " / 160 chars";
+      var dPct = Math.min(100, Math.round((descText.length / 160) * 100));
+      $("serpDescMeterFill").style.width = dPct + "%";
+      $("serpDescMeterFill").className = "meter-fill " + (descText.length >= 135 && descText.length <= 160 ? "" : (descText.length > 165 ? "bad" : "warn"));
+    }
+
+    if ($("serpMetaFactWarning")) {
+      var mfl = res.metadata.metaFactLock;
+      if (mfl && !mfl.passed && mfl.issues.length > 0) {
+        $("serpMetaFactWarning").style.display = "block";
+        $("serpMetaFactWarning").innerHTML = "<div class='alert-banner warn' style='margin-bottom:0;'><strong>Fact-Lock Notice on Meta Description:</strong> " +
+          Lex.escapeHtml(mfl.issues[0].explanation) + "</div>";
+      } else {
+        $("serpMetaFactWarning").style.display = "none";
+      }
+    }
+
+    $("titleVariantsList").innerHTML = variants.map(function (v, idx) {
+      var isSel = v.text === titleText || idx === state.selectedTitleIdx;
+      return "<button type='button' class='pill " + (isSel ? "selected" : "") + "' data-title-idx='" + idx + "'>" +
+        Lex.escapeHtml(v.label) + ": \"" + Lex.escapeHtml(v.text) + "\" (" + v.chars + "c / " + v.pixels + "px)</button>";
+    }).join("");
+
+    var variantBtns = $("titleVariantsList").querySelectorAll("[data-title-idx]");
+    for (var i = 0; i < variantBtns.length; i++) {
+      variantBtns[i].addEventListener("click", function () {
+        state.selectedTitleIdx = parseInt(this.getAttribute("data-title-idx"), 10);
+        var chosen = variants[state.selectedTitleIdx];
+        if (chosen && VeriRank.Optimizer.updateResultMetadata) {
+          state.currentResult = VeriRank.Optimizer.updateResultMetadata(state.currentResult, { title: chosen.text, siteSettings: state.siteSettings }, state.activeProfile);
+          if ($("serpEditTitleInput")) $("serpEditTitleInput").value = chosen.text;
+          updateScoreTiles(state.currentResult);
+          renderPlacementMatrix(state.currentResult);
+          renderBreakdown("googleBreakdown", state.currentResult.afterScores.google.breakdown, false);
+          renderBreakdown("bingBreakdown", state.currentResult.afterScores.bing.breakdown, true);
+          renderSerpSection(state.currentResult);
+        }
+      });
+    }
+
+    $("jsonLdPreview").textContent = JSON.stringify(res.metadata.jsonLd, null, 2);
+    $("indexNowPreview").textContent = JSON.stringify(res.metadata.indexNowPayload, null, 2);
+    $("headTagsPreview").textContent = res.metadata.headTags;
+    $("internalLinksBox").innerHTML = "<strong>Contextual Internal Link Anchor Suggestions:</strong> " +
+      res.metadata.internalLinkSuggestions.map(function (l) {
+        return "<code>" + Lex.escapeHtml(l.anchorText) + "</code> &rarr; <code>" + Lex.escapeHtml(l.suggestedTargetUrl) + "</code>";
+      }).join(" &bull; ");
+  }
+
+  function applyLiveSerpEdit() {
+    if (!state.currentResult || !VeriRank.Optimizer.updateResultMetadata) return;
+    if (VeriRank.Profiles && VeriRank.Profiles.saveSiteSettings) {
+      state.siteSettings = VeriRank.Profiles.saveSiteSettings({
+        baseUrl: $("siteBaseUrlInput") ? $("siteBaseUrlInput").value : state.siteSettings.baseUrl,
+        brandName: $("siteBrandNameInput") ? $("siteBrandNameInput").value : state.siteSettings.brandName,
+        indexNowKey: $("siteIndexNowKeyInput") ? $("siteIndexNowKeyInput").value : state.siteSettings.indexNowKey
+      });
+    }
+    var updated = VeriRank.Optimizer.updateResultMetadata(state.currentResult, {
+      title: $("serpEditTitleInput") ? $("serpEditTitleInput").value : state.currentResult.metadata.title,
+      slug: $("serpEditSlugInput") ? $("serpEditSlugInput").value : state.currentResult.metadata.slug,
+      metaDescription: $("serpEditDescInput") ? $("serpEditDescInput").value : state.currentResult.metadata.metaDescription,
+      siteSettings: state.siteSettings
+    }, state.activeProfile);
+    state.currentResult = updated;
+    updateScoreTiles(updated);
+    renderPlacementMatrix(updated);
+    renderBreakdown("googleBreakdown", updated.afterScores.google.breakdown, false);
+    renderBreakdown("bingBreakdown", updated.afterScores.bing.breakdown, true);
+    renderSerpSection(updated);
+  }
+
+  function renderResult(res) {
+    $("warningsContainer").innerHTML = (res.warnings || []).map(function (w) {
+      return "<div class='alert-banner warn'><strong>Guardrail Notice:</strong> " + Lex.escapeHtml(w) + "</div>";
+    }).join("");
+
+    var gAfter = res.afterScores.google.total;
+    var gBefore = res.beforeScores.google.total;
+    var bAfter = res.afterScores.bing.total;
+    var bBefore = res.beforeScores.bing.total;
+    updateScoreTiles(res);
 
     var primary = res.analysis.subject.primaryKeyphrase;
     $("candidatePills").innerHTML = res.analysis.subject.candidateKeyphrases.map(function (c, idx) {
@@ -5004,14 +5779,16 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     $("splitAfterBadge").textContent = "Google " + gAfter + " | Bing " + bAfter;
 
     renderFactLockSection(res);
+    renderPlacementMatrix(res);
     renderBreakdown("googleBreakdown", res.afterScores.google.breakdown, false);
     renderBreakdown("bingBreakdown", res.afterScores.bing.breakdown, true);
 
+    var gradeDesc = Lex.describeReadingGrade ? Lex.describeReadingGrade(res.afterAnalysis.readability.gradeLevel) : "";
     $("subjectSummaryBox").innerHTML =
       "<div><strong>Focus Keyword:</strong> <code>" + Lex.escapeHtml(res.analysis.subject.primaryKeyphrase) + "</code></div>" +
       "<div class='mt-8'><strong>Reader Search Intent:</strong> <span class='badge primary'>" + Lex.escapeHtml(res.analysis.intent.primary.toUpperCase()) + " (" + res.analysis.intent.confidence + "%)</span> &bull; <strong>Schema Type:</strong> <code>" + Lex.escapeHtml(res.metadata && res.metadata.jsonLd && res.metadata.jsonLd["@graph"] && res.metadata.jsonLd["@graph"][0] ? res.metadata.jsonLd["@graph"][0]["@type"] : res.analysis.intent.recommendedSchemaType) + "</code></div>" +
-      "<div class='mt-8'><strong>Reading Ease (Flesch):</strong> " + res.afterAnalysis.readability.fleschReadingEase + "/100 &bull; <strong>Avg Sentence:</strong> " + res.afterAnalysis.readability.avgSentenceWords + " words &bull; <strong>Long Paragraphs:</strong> " + res.afterAnalysis.readability.longParagraphCount + "</div>" +
-      "<div class='mt-8'><strong>Related Topic Phrases Found:</strong> " + res.analysis.subject.secondaryKeyphrases.map(function (s) { return "<span class='badge'>" + Lex.escapeHtml(s.phrase) + "</span>"; }).join(" ") + "</div>";
+      "<div class='mt-8'><strong>Reading Level:</strong> Grade " + res.afterAnalysis.readability.gradeLevel + " (" + Lex.escapeHtml(gradeDesc) + ") &bull; <strong>Flesch Ease:</strong> " + res.afterAnalysis.readability.fleschReadingEase + "/100 &bull; <strong>Avg Sentence:</strong> " + res.afterAnalysis.readability.avgSentenceWords + "w</div>" +
+      "<div class='mt-8'><strong>Related Topic Phrases Found:</strong> " + res.analysis.subject.secondaryKeyphrases.map(function (s) { return "<span class='badge'>" + Lex.escapeHtml(s.phrase) + " (" + s.occurrences + "x)</span>"; }).join(" ") + "</div>";
 
     $("diagnosticsChecklist").innerHTML = res.afterScores.diagnostics.map(function (d) {
       var cls = d.status === "pass" ? "ok" : (d.status === "warn" ? "warn" : "bad");
@@ -5184,11 +5961,13 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
     if (state.batchItems.length === 0) {
       tbody.innerHTML = "<tr><td colspan='7' class='muted'>No files queued yet.</td></tr>";
       $("downloadBatchZipBtn").disabled = true;
+      if ($("downloadBatchCsvBtn")) $("downloadBatchCsvBtn").disabled = true;
       $("saveBatchFolderBtn").disabled = true;
       return;
     }
     var allDone = state.batchItems.every(function (it) { return !!it.result; });
     $("downloadBatchZipBtn").disabled = !allDone;
+    if ($("downloadBatchCsvBtn")) $("downloadBatchCsvBtn").disabled = !allDone;
     $("saveBatchFolderBtn").disabled = !allDone;
 
     tbody.innerHTML = state.batchItems.map(function (it, idx) {
@@ -5610,12 +6389,55 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       });
     }
 
-    // Live source telemetry debounced
+    // Live source telemetry & auto-save draft debounced
     var telTimer = null;
     $("sourceTextarea").addEventListener("input", function () {
       clearTimeout(telTimer);
-      telTimer = setTimeout(updateSourceTelemetry, 120);
+      telTimer = setTimeout(function () {
+        updateSourceTelemetry();
+        if (VeriRank.Profiles && VeriRank.Profiles.saveDraftState) {
+          VeriRank.Profiles.saveDraftState({
+            text: $("sourceTextarea").value,
+            preset: state.activePreset,
+            overrideKeyword: $("overrideKeywordInput").value.trim()
+          });
+        }
+      }, 150);
     });
+
+    if ($("toggleHistoryBtn") && $("localHistoryDrawer")) {
+      $("toggleHistoryBtn").addEventListener("click", function () {
+        var d = $("localHistoryDrawer");
+        d.style.display = d.style.display === "none" ? "block" : "none";
+        renderLocalHistory();
+      });
+    }
+
+    // Global Ctrl+Enter / Cmd+Enter quick optimize shortcut
+    document.addEventListener("keydown", function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        e.preventDefault();
+        runOptimization();
+      }
+    });
+
+    // Live SERP Snippet & Site Settings Editor
+    var serpTimer = null;
+    ["siteBaseUrlInput", "siteBrandNameInput", "siteIndexNowKeyInput", "serpEditTitleInput", "serpEditSlugInput", "serpEditDescInput"].forEach(function (fid) {
+      var el = $(fid);
+      if (el) {
+        el.addEventListener("input", function () {
+          clearTimeout(serpTimer);
+          serpTimer = setTimeout(applyLiveSerpEdit, 120);
+        });
+      }
+    });
+    if ($("resetSerpSnippetBtn")) {
+      $("resetSerpSnippetBtn").addEventListener("click", function () {
+        runOptimization();
+        showToast("Reset SERP Title, Slug, and Meta Description to auto-generated defaults.", "ok");
+      });
+    }
 
     $("clearSourceBtn").addEventListener("click", function () {
       $("sourceTextarea").value = "";
@@ -5655,6 +6477,13 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
         : "Warning: Manual edit introduced ungrounded content flagged by Fact-Lock.";
     });
 
+    if ($("copyRichTextBtn")) {
+      $("copyRichTextBtn").addEventListener("click", function () {
+        if (state.currentResult) {
+          copyRichHtml($("previewPane").innerHTML, $("markdownOutputArea").value);
+        }
+      });
+    }
     $("copyOptimizedBtn").addEventListener("click", function () {
       if (state.currentResult) copyText($("markdownOutputArea").value, "Optimized Markdown copied.");
     });
@@ -5734,6 +6563,14 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       runBatchOptimization();
     });
     $("runBatchBtn").addEventListener("click", runBatchOptimization);
+    if ($("downloadBatchCsvBtn")) {
+      $("downloadBatchCsvBtn").addEventListener("click", function () {
+        var csv = VeriRank.Exporter.buildBatchCsv(state.batchItems);
+        var blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+        VeriRank.Exporter.triggerDownload("verirank-seo-audit-report.csv", blob);
+        showToast("Exported Excel-ready Audit CSV.", "ok");
+      });
+    }
     $("downloadBatchZipBtn").addEventListener("click", function () {
       var files = VeriRank.Exporter.buildBatchPackageFiles(state.batchItems);
       var blob = VeriRank.Exporter.createZipBlob(files);
@@ -5863,9 +6700,17 @@ window.__VERIRANK_CLOUD__ = { edition: "vercel", defaultKey: "sb_publishable_ies
       activateMainTab("selftest");
     }
 
-    // Boot with Sample 1
-    $("sourceTextarea").value = VeriRank.Samples[0].text;
+    // Restore auto-saved draft or boot with Sample 1
+    var savedDraft = VeriRank.Profiles && VeriRank.Profiles.loadDraftState ? VeriRank.Profiles.loadDraftState() : null;
+    if (savedDraft && savedDraft.text && savedDraft.text.trim()) {
+      $("sourceTextarea").value = savedDraft.text;
+      $("overrideKeywordInput").value = savedDraft.overrideKeyword || "";
+      applyContentPreset(savedDraft.preset || "corporate", false);
+    } else {
+      $("sourceTextarea").value = VeriRank.Samples[0].text;
+    }
     runOptimization();
+    renderLocalHistory();
   }
 
   if (document.readyState === "loading") {
