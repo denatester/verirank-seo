@@ -265,13 +265,14 @@
     });
     var bizMdLow = multiBizWoven.optimizedMarkdown.toLowerCase();
     var creMdLow = multiCreativeWoven.optimizedMarkdown.toLowerCase();
-    var boldMarkersEven = ((multiBizWoven.optimizedMarkdown.match(/\*\*/g) || []).length % 2) === 0;
-    var hasUnbalancedBold = /\*\*[^*\n]+\*\*\s+[a-z]+\*\*/i.test(multiBizWoven.optimizedMarkdown);
+    var allLinesBalancedBold = multiBizWoven.optimizedMarkdown.split("\n").every(function (ln) {
+      return ((ln.match(/\*\*/g) || []).length % 2) === 0;
+    });
     assert("Multi-Keyword Smart Weaver Uses In-Place Expansion, Clause Merging & Zero Repeated Templates",
       bizMdLow.indexOf("many roofers rush **residential roof repair** jobs") !== -1 &&
       bizMdLow.indexOf("**roof repair cost**") !== -1 &&
-      !hasUnbalancedBold && boldMarkersEven &&
-      bizMdLow.indexOf("**roof leak inspection** and **roof repair checklist**") !== -1 &&
+      bizMdLow.indexOf("**roof leak inspection**, **roof repair checklist**, and **local roof repair**") !== -1 &&
+      allLinesBalancedBold &&
       creMdLow.indexOf("deep space salvage novel") !== -1 &&
       creMdLow.indexOf("space opera") !== -1 &&
       creMdLow.indexOf("interstellar mystery") !== -1 &&

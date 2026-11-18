@@ -81,13 +81,19 @@
     "sydney", "melbourne", "dubai", "uk", "canada", "australia", "india", "ireland", "nz",
     "ashburn", "aldie", "herndon", "vienna", "reston", "fairfax", "leesburg", "sterling",
     "manassas", "chantilly", "centreville", "langley", "woodbridge", "warrenton", "bristow",
-    "mclean", "arlington", "alexandria", "bethesda", "rockville",
+    "mclean", "arlington", "alexandria", "bethesda", "rockville", "county", "gaithersburg",
+    "germantown", "loudoun", "potomac", "wheaton", "hyattsville", "bowie", "frederick",
+    "hagerstown", "tysons", "culpeper", "stafford", "fredericksburg", "winchester",
+    "purcellville", "dumfries", "lorton", "springfield", "annandale", "burke", "oakton",
+    "laurel", "greenbelt", "clarksburg", "damascus", "olney",
+    "philippines", "malaysia", "singapore", "nigeria", "pakistan", "bangladesh", "kenya", "ghana", "jamaica", "african", "zealand",
     "reddit", "youtube", "quora", "wikipedia", "yelp", "angi", "thumbtack", "craigslist",
     "lowes", "walmart", "amazon", "tiktok", "meme", "lyrics", "pdf", "login", "salary", "hiring"
   ]);
 
   var MULTIWORD_GEO_NOISE = [
-    "home depot", "las vegas", "los angeles", "san diego", "san antonio", "sign in", "pdf download", "silver spring"
+    "home depot", "las vegas", "los angeles", "san diego", "san antonio", "sign in", "pdf download",
+    "silver spring", "falls church", "great falls", "college park", "front royal", "south africa", "new zealand"
   ];
 
   var TRAILING_STATE_CODE_RE = /(?:\s+|,\s*)(al|ak|az|ar|ca|co|ct|de|fl|ga|ia|id|il|ks|ky|la|ma|md|mi|mn|mo|ms|mt|nc|nd|ne|nh|nj|nm|nv|ny|oh|pa|ri|sc|sd|tn|tx|ut|va|vt|wa|wi|wv|wy)$/i;
